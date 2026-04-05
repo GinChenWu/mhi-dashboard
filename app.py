@@ -304,7 +304,7 @@ def process_market_data(sector_name, tickers, name_map, selected_date, weights):
             
             records.append({
                 "代碼": ticker,
-                "名稱": name_map.get(ticker, "-"),
+                "名稱": name_map.get(ticker) or ticker.split('.')[0],
                 "最新收盤價": round(close_today, 2),
                 "單日漲跌幅 (%)": round(pct_change, 2),
                 "成交量差異倍數": round(vol_today / vol_yesterday, 2) if vol_yesterday > 0 else 1,
@@ -706,7 +706,7 @@ else:
                     "", key=f"chk_{ticker}", label_visibility="collapsed"
                 )
                 r_cols[1].write(ticker)
-                r_cols[2].write(row["名稱"])
+                r_cols[2].markdown(row["名稱"])
                 r_cols[3].write(f"{row['最新收盤價']}")
                 pct = row["單日漲跌幅 (%)"]
                 r_cols[4].write(f"{'🟢' if pct >= 0 else '🔴'} {pct:.2f}%")
