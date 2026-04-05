@@ -145,15 +145,6 @@ FALLBACK_NAME_MAP = json.loads(_b64.b64decode(_NAMES_B64).decode('utf-8'))
 
 
 
-# 載入預存的中文名稱備用表
-_names_path = os.path.join(os.path.dirname(__file__), 'names.json')
-try:
-    with open(_names_path, encoding='utf-8') as _f:
-        FALLBACK_NAME_MAP = {**_BUILTIN_NAMES, **json.load(_f)}
-except Exception as _e:
-    print('names.json load failed, using builtin:', _e)
-    FALLBACK_NAME_MAP = _BUILTIN_NAMES.copy()
-
 
 @st.cache_data(ttl=86400)
 def get_twse_mapping():
