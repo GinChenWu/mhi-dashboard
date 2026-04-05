@@ -735,7 +735,8 @@ else:
                 "代碼": ticker,
                 "名稱": row["名稱"],
                 "收盤價": f"{row['最新收盤價']}",
-                f"漲跌幅({selected_pct_label})": f"{'🟢' if pct >= 0 else '🔴'} {pct:.2f}%",
+                "趨勢": "🟢" if pct >= 0 else "🔴",
+                f"漲跌幅({selected_pct_label})": float(pct),
                 "量差倍數": f"{row['成交量差異倍數']:.2f}x",
                 "新聞熱度": f"📰 {news_1d_str}/{news_7d_str}篇{spike_tag}",
                 "站上月線": row["站上月線"]
@@ -749,9 +750,13 @@ else:
                 df_editor,
                 hide_index=True,
                 use_container_width=True,
-                disabled=["代碼", "名稱", "收盤價", f"漲跌幅({selected_pct_label})", "量差倍數", "新聞熱度", "站上月線"],
+                disabled=["代碼", "名稱", "收盤價", "趨勢", f"漲跌幅({selected_pct_label})", "量差倍數", "新聞熱度", "站上月線"],
                 column_config={
-                    "刪除": st.column_config.CheckboxColumn("刪除", default=False)
+                    "刪除": st.column_config.CheckboxColumn("刪除", default=False),
+                    f"漲跌幅({selected_pct_label})": st.column_config.NumberColumn(
+                        f"漲跌幅({selected_pct_label})",
+                        format="%.2f %%"
+                    )
                 },
                 key="ticker_editor"
             )
