@@ -169,8 +169,8 @@ def get_twse_mapping():
                     code, name = parts
                     ext = ".TW" if mode == '2' else ".TWO"
                     mapping[f"{code.strip()}{ext}"] = name.strip()
-        # 合併 fallback（TWSE 有的優先）
-        result = {**FALLBACK_NAME_MAP, **mapping}
+        # 合併 fallback（FALLBACK 優先，避免 TWSE 回傳亂碼覆蓋正確名稱）
+        result = {**mapping, **FALLBACK_NAME_MAP}
         return result
     except Exception as e:
         print("Fetching TWSE names failed, using fallback:", e)
