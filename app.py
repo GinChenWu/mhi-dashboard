@@ -59,51 +59,91 @@ import urllib3
 import io
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# 硬編碼備用名稱（names.json 讀不到時使用）
-_BUILTIN_NAMES = {
-    "1342.TW":"八貫","1560.TW":"中砂","1708.TW":"東鹼","1710.TW":"東聯","1711.TW":"永光",
-    "1727.TW":"中華化","1773.TW":"勝一","2059.TW":"川湖","2208.TW":"台船","2301.TW":"光寶科",
-    "2308.TW":"台達電","2312.TW":"金寶","2313.TW":"華通","2314.TW":"台揚","2317.TW":"鴻海",
-    "2324.TW":"仁寶","2327.TW":"國巨","2330.TW":"台積電","2332.TW":"友訊","2337.TW":"旺宏",
-    "2338.TW":"光罩","2342.TW":"茂矽","2344.TW":"華邦電","2345.TW":"智邦","2353.TW":"宏碁",
-    "2354.TW":"鴻準","2356.TW":"英業達","2357.TW":"華碩","2360.TW":"致茂","2364.TW":"倫飛",
-    "2367.TW":"燿華","2375.TW":"凱美","2376.TW":"技嘉","2382.TW":"廣達","2383.TW":"台光電",
-    "2395.TW":"研華","2404.TW":"漢唐","2408.TW":"南亞科","2412.TW":"中華電","2419.TW":"仲琦",
-    "2421.TW":"建準","2428.TW":"興勤","2432.TW":"倚天","2451.TW":"創見","2455.TW":"全新",
-    "2458.TW":"義隆","2465.TW":"麗臺","2467.TW":"志聖","2472.TW":"立隆電","2485.TW":"兆赫",
-    "2486.TW":"一詮","2492.TW":"華新科","2601.TW":"益航","2603.TW":"長榮","2605.TW":"新興",
-    "2606.TW":"裕民","2607.TW":"榮運","2609.TW":"陽明","2612.TW":"中航","2613.TW":"中櫃",
-    "2614.TW":"東森","2615.TW":"萬海","2617.TW":"台航","2634.TW":"漢翔","2637.TW":"慧洋-KY",
-    "3004.TW":"豐達科","3005.TW":"神基","3006.TW":"晶豪科","3013.TW":"晟銘電","3014.TW":"聯陽",
-    "3016.TW":"嘉晶","3017.TW":"奇鋐","3026.TW":"禾伸堂","3037.TW":"欣興","3044.TW":"健鼎",
-    "3062.TW":"建漢","3090.TW":"日電貿","3149.TW":"正達","3189.TW":"景碩","3231.TW":"緯創",
-    "3311.TW":"閎暉","3338.TW":"泰碩","3380.TW":"明泰","3413.TW":"京鼎","3450.TW":"聯鈞",
-    "3533.TW":"嘉澤","3583.TW":"辛耘","3596.TW":"智易","3653.TW":"健策","3661.TW":"世芯-KY",
-    "3704.TW":"合勤控","4560.TW":"強信-KY","4572.TW":"駐龍","4739.TW":"康普","4755.TW":"三福化",
-    "4770.TW":"上品","4906.TW":"正文","4934.TW":"太極","4938.TW":"和碩","4958.TW":"臻鼎-KY",
-    "4967.TW":"十銓","4977.TW":"眾達-KY","4989.TW":"榮科","5388.TW":"中磊","5608.TW":"四維航",
-    "6112.TW":"邁達特","6117.TW":"迎廣","6139.TW":"亞翔","6155.TW":"鈞寶","6196.TW":"帆宣",
-    "6202.TW":"盛群","6213.TW":"聯茂","6216.TW":"居易","6230.TW":"尼得科超眾","6271.TW":"同欣電",
-    "6282.TW":"康舒","6285.TW":"啟碁","6414.TW":"樺漢","6415.TW":"矽力-KY","6426.TW":"統新",
-    "6442.TW":"光聖","6449.TW":"鈺邦","6451.TW":"訊芯-KY","6515.TW":"穎崴","6531.TW":"愛普",
-    "6591.TW":"動力-KY","6669.TW":"緯穎","6753.TW":"龍德造船","8011.TW":"台通","8033.TW":"雷虎",
-    "8046.TW":"南電","8110.TW":"華東","8112.TW":"至上","8150.TW":"南茂","8215.TW":"明基材",
-    "8222.TW":"寶一","8271.TW":"宇瞻","8299.TWO":"群聯","8349.TWO":"雷虎科","8996.TW":"高力",
-    "3071.TWO":"協禧","3081.TWO":"聯亞","3105.TWO":"穩懋","3131.TWO":"弘塑","3163.TWO":"波若威",
-    "3228.TWO":"金麗科","3234.TWO":"光環","3260.TWO":"威剛","3272.TWO":"東碩","3289.TWO":"宜特",
-    "3324.TWO":"雙鴻","3363.TWO":"上詮","3402.TWO":"漢科","3426.TWO":"台興","3483.TWO":"力致",
-    "3491.TWO":"昇達科","3498.TWO":"陽程","3499.TWO":"環天科","3540.TWO":"曜越","3551.TWO":"世禾",
-    "3558.TWO":"神準","3587.TWO":"閎康","3624.TWO":"光頡","3680.TWO":"家登","3693.TWO":"營邦",
-    "3707.TWO":"漢磊","4543.TWO":"萬在","4721.TWO":"美琪瑪","4768.TWO":"晶呈科技","4908.TWO":"前鼎",
-    "4909.TWO":"新復興","4973.TWO":"廣穎","4979.TWO":"華星光","5009.TWO":"榮剛","5223.TWO":"安力-KY",
-    "5289.TWO":"宜鼎","5328.TWO":"華容","5425.TWO":"台半","5426.TWO":"振發","5443.TWO":"均豪",
-    "5483.TWO":"中美晶","6124.TWO":"業強","6125.TWO":"廣運","6127.TWO":"九豪","6173.TWO":"信昌電",
-    "6187.TWO":"萬潤","6204.TWO":"艾華","6223.TWO":"旺矽","6274.TWO":"台燿","6275.TWO":"元山",
-    "6284.TWO":"佳邦","6419.TWO":"京晨科","6488.TWO":"環球晶","6509.TWO":"聚和","6510.TWO":"精測",
-    "6532.TWO":"瑞耘","6596.TWO":"寬宏藝術","6640.TWO":"均華","6643.TWO":"M31","6667.TWO":"信紘科",
-    "6683.TWO":"雍智科技","6829.TWO":"千附精密","8032.TWO":"光菱","8043.TWO":"蜜望實","8050.TWO":"廣積",
-    "8086.TWO":"宏捷科","8088.TWO":"品安","8091.TWO":"翔名","8255.TWO":"朋程",
-}
+# 備用名稱表（base64 encoded JSON，避免任何 Windows/Linux 編碼差異）
+import base64 as _b64
+_NAMES_B64 = (
+    "eyIxMzQyLlRXIjogIuWFq+iyqyIsICIxNTYwLlRXIjogIuS4reeggiIsICIxNzA4LlRXIjogIuadsem5"
+    "vCIsICIxNzEwLlRXIjogIuadseiBryIsICIxNzExLlRXIjogIuawuOWFiSIsICIxNzI3LlRXIjogIuS4"
+    "reiPr+WMliIsICIxNzczLlRXIjogIuWLneS4gCIsICIyMDU5LlRXIjogIuW3nea5liIsICIyMjA4LlRX"
+    "IjogIuWPsOiIuSIsICIyMzAxLlRXIjogIuWFieWvtuenkSIsICIyMzA4LlRXIjogIuWPsOmBlOmbuyIs"
+    "ICIyMzEyLlRXIjogIumHkeWvtiIsICIyMzEzLlRXIjogIuiPr+mAmiIsICIyMzE0LlRXIjogIuWPsOaP"
+    "miIsICIyMzE3LlRXIjogIum0u+a1tyIsICIyMzI0LlRXIjogIuS7geWvtiIsICIyMzI3LlRXIjogIuWc"
+    "i+W3qCoiLCAiMjMzMC5UVyI6ICLlj7DnqY3pm7siLCAiMjMzMi5UVyI6ICLlj4voqIoiLCAiMjMzNy5U"
+    "VyI6ICLml7rlro8iLCAiMjMzOC5UVyI6ICLlhYnnvakiLCAiMjM0Mi5UVyI6ICLojILnn70iLCAiMjM0"
+    "NC5UVyI6ICLoj6/pgqbpm7siLCAiMjM0NS5UVyI6ICLmmbrpgqYiLCAiMjM1My5UVyI6ICLlro/nooEi"
+    "LCAiMjM1NC5UVyI6ICLptLvmupYiLCAiMjM1Ni5UVyI6ICLoi7Hmpa3pgZQiLCAiMjM1Ny5UVyI6ICLo"
+    "j6/noqkiLCAiMjM2MC5UVyI6ICLoh7TojIIiLCAiMjM2NC5UVyI6ICLlgKvpo5siLCAiMjM2Ny5UVyI6"
+    "ICLnh7/oj68iLCAiMjM3NS5UVyI6ICLlh7Hnvo4iLCAiMjM3Ni5UVyI6ICLmioDlmIkiLCAiMjM4Mi5U"
+    "VyI6ICLlu6PpgZQiLCAiMjM4My5UVyI6ICLlj7DlhYnpm7siLCAiMjM5NS5UVyI6ICLnoJToj68iLCAi"
+    "MjQwNC5UVyI6ICLmvKLllJAiLCAiMjQwOC5UVyI6ICLljZfkup7np5EiLCAiMjQxMi5UVyI6ICLkuK3o"
+    "j6/pm7siLCAiMjQxOS5UVyI6ICLku7LnkKYiLCAiMjQyMS5UVyI6ICLlu7rmupYiLCAiMjQyOC5UVyI6"
+    "ICLoiIjli6QiLCAiMjQ1MS5UVyI6ICLlibXoposiLCAiMjQ1NS5UVyI6ICLlhajmlrAiLCAiMjQ1OC5U"
+    "VyI6ICLnvqnpmoYiLCAiMjQ2NS5UVyI6ICLpupfoh7oiLCAiMjQ2Ny5UVyI6ICLlv5fogZYiLCAiMjQ3"
+    "Mi5UVyI6ICLnq4vpmobpm7siLCAiMjQ4NS5UVyI6ICLlhYbotasiLCAiMjQ4Ni5UVyI6ICLkuIDoqa4i"
+    "LCAiMjQ5Mi5UVyI6ICLoj6/mlrDnp5EiLCAiMjYwMS5UVyI6ICLnm4roiKoiLCAiMjYwMy5UVyI6ICLp"
+    "lbfmpq4iLCAiMjYwNS5UVyI6ICLmlrDoiIgiLCAiMjYwNi5UVyI6ICLoo5XmsJEiLCAiMjYwNy5UVyI6"
+    "ICLmpq7pgYsiLCAiMjYwOS5UVyI6ICLpmb3mmI4iLCAiMjYxMi5UVyI6ICLkuK3oiKoiLCAiMjYxMy5U"
+    "VyI6ICLkuK3mq4MiLCAiMjYxNC5UVyI6ICLmnbHmo64iLCAiMjYxNS5UVyI6ICLokKzmtbciLCAiMjYx"
+    "Ny5UVyI6ICLlj7DoiKoiLCAiMjYzNC5UVyI6ICLmvKLnv5QiLCAiMjYzNy5UVyI6ICLmhafmtIstS1ki"
+    "LCAiMzAwNC5UVyI6ICLosZDpgZTnp5EiLCAiMzAwNS5UVyI6ICLnpZ7ln7oiLCAiMzAwNi5UVyI6ICLm"
+    "mbbosarnp5EiLCAiMzAxMy5UVyI6ICLmmZ/pipjpm7siLCAiMzAxNC5UVyI6ICLoga/pmb0iLCAiMzAx"
+    "Ni5UVyI6ICLlmInmmbYiLCAiMzAxNy5UVyI6ICLlpYfpi5AiLCAiMzAyNi5UVyI6ICLnpr7kvLjloIIi"
+    "LCAiMzAzNy5UVyI6ICLmrKPoiIgiLCAiMzA0NC5UVyI6ICLlgaXpvI4iLCAiMzA2Mi5UVyI6ICLlu7rm"
+    "vKIiLCAiMzA5MC5UVyI6ICLml6Xpm7vosr8iLCAiMzE0OS5UVyI6ICLmraPpgZQiLCAiMzE4OS5UVyI6"
+    "ICLmma/noqkiLCAiMzIzMS5UVyI6ICLnt6/libUiLCAiMzMxMS5UVyI6ICLplo7mmokiLCAiMzMzOC5U"
+    "VyI6ICLms7DnoqkiLCAiMzM4MC5UVyI6ICLmmI7ms7AiLCAiMzQxMy5UVyI6ICLkuqzpvI4iLCAiMzQ1"
+    "MC5UVyI6ICLoga/piJ4iLCAiMzUzMy5UVyI6ICLlmInmvqQiLCAiMzU4My5UVyI6ICLovpvogJgiLCAi"
+    "MzU5Ni5UVyI6ICLmmbrmmJMiLCAiMzY1My5UVyI6ICLlgaXnrZYiLCAiMzY2MS5UVyI6ICLkuJboiq8t"
+    "S1kiLCAiMzcwNC5UVyI6ICLlkIjli6TmjqciLCAiNDU2MC5UVyI6ICLlvLfkv6EtS1kiLCAiNDU3Mi5U"
+    "VyI6ICLpp5Dpvo0iLCAiNDczOS5UVyI6ICLlurfmma4iLCAiNDc1NS5UVyI6ICLkuInnpo/ljJYiLCAi"
+    "NDc3MC5UVyI6ICLkuIrlk4EiLCAiNDkwNi5UVyI6ICLmraPmlociLCAiNDkzNC5UVyI6ICLlpKrmpbUi"
+    "LCAiNDkzOC5UVyI6ICLlkoznoqkiLCAiNDk1OC5UVyI6ICLoh7vpvI4tS1kiLCAiNDk2Ny5UVyI6ICLl"
+    "jYHpipMiLCAiNDk3Ny5UVyI6ICLnnL7pgZQtS1kiLCAiNDk4OS5UVyI6ICLmpq7np5EiLCAiNTM4OC5U"
+    "VyI6ICLkuK3no4oiLCAiNTYwOC5UVyI6ICLlm5vntq3oiKoiLCAiNjExMi5UVyI6ICLpgoHpgZTnibki"
+    "LCAiNjExNy5UVyI6ICLov47lu6MiLCAiNjEzOS5UVyI6ICLkup7nv5QiLCAiNjE1NS5UVyI6ICLpiJ7l"
+    "r7YiLCAiNjE5Ni5UVyI6ICLluIblrqMiLCAiNjIwMi5UVyI6ICLnm5vnvqQiLCAiNjIxMy5UVyI6ICLo"
+    "ga/ojIIiLCAiNjIxNi5UVyI6ICLlsYXmmJMiLCAiNjIzMC5UVyI6ICLlsLzlvpfnp5HotoXnnL4iLCAi"
+    "NjI3MS5UVyI6ICLlkIzmrKPpm7siLCAiNjI4Mi5UVyI6ICLlurfoiJIiLCAiNjI4NS5UVyI6ICLllZ/n"
+    "ooEiLCAiNjQxNC5UVyI6ICLmqLrmvKIiLCAiNjQxNS5UVyI6ICLnn73lipsqLUtZIiwgIjY0MjYuVFci"
+    "OiAi57Wx5pawIiwgIjY0NDIuVFciOiAi5YWJ6IGWIiwgIjY0NDkuVFciOiAi6Yi66YKmIiwgIjY0NTEu"
+    "VFciOiAi6KiK6IqvLUtZIiwgIjY1MTUuVFciOiAi56mO5bS0IiwgIjY1MzEuVFciOiAi5oSb5pmuKiIs"
+    "ICI2NTkxLlRXIjogIuWLleWKmy1LWSIsICI2NjY5LlRXIjogIue3r+epjiIsICI2NzUzLlRXIjogIum+"
+    "jeW+t+mAoOiIuSIsICI4MDExLlRXIjogIuWPsOmAmiIsICI4MDMzLlRXIjogIumbt+iZjiIsICI4MDQ2"
+    "LlRXIjogIuWNl+mbuyIsICI4MTEwLlRXIjogIuiPr+adsSIsICI4MTEyLlRXIjogIuiHs+S4iiIsICI4"
+    "MTUwLlRXIjogIuWNl+iMgiIsICI4MjE1LlRXIjogIuaYjuWfuuadkCIsICI4MjIyLlRXIjogIuWvtuS4"
+    "gCIsICI4MjcxLlRXIjogIuWuh+eeuyIsICI4OTk2LlRXIjogIumrmOWKmyIsICIyNDMyLlRXIjogIuWA"
+    "muWkqSIsICIzMDcxLlRXTyI6ICLljZTnpqciLCAiMzA4MS5UV08iOiAi6IGv5LqeIiwgIjMxMDUuVFdP"
+    "IjogIuepqeaHiyIsICIzMTMxLlRXTyI6ICLlvJjloZEiLCAiMzE2My5UV08iOiAi5rOi6Iul5aiBIiwg"
+    "IjMyMjguVFdPIjogIumHkem6l+enkSIsICIzMjM0LlRXTyI6ICLlhYnnkrAiLCAiMzI2MC5UV08iOiAi"
+    "5aiB5YmbIiwgIjMyNzIuVFdPIjogIuadseeiqSIsICIzMjg5LlRXTyI6ICLlrpznibkiLCAiMzMyNC5U"
+    "V08iOiAi6ZuZ6bS7IiwgIjMzNjMuVFdPIjogIuS4iuipriIsICIzNDAyLlRXTyI6ICLmvKLnp5EiLCAi"
+    "MzQyNi5UV08iOiAi5Y+w6IiIIiwgIjM0ODMuVFdPIjogIuWKm+iHtCIsICIzNDkxLlRXTyI6ICLmmIfp"
+    "gZTnp5EiLCAiMzQ5OC5UV08iOiAi6Zm956iLIiwgIjM0OTkuVFdPIjogIueSsOWkqeenkSIsICIzNTQw"
+    "LlRXTyI6ICLmm5zotooiLCAiMzU1MS5UV08iOiAi5LiW56a+IiwgIjM1NTguVFdPIjogIuelnua6liIs"
+    "ICIzNTg3LlRXTyI6ICLplo7lurciLCAiMzYyNC5UV08iOiAi5YWJ6aChIiwgIjM2ODAuVFdPIjogIuWu"
+    "tueZuyIsICIzNjkzLlRXTyI6ICLnh5/pgqYiLCAiMzcwNy5UV08iOiAi5ryi56OKIiwgIjQ1NDMuVFdP"
+    "IjogIuiQrOWcqCIsICI0NzIxLlRXTyI6ICLnvo7nkKrnkaoiLCAiNDc2OC5UV08iOiAi5pm25ZGI56eR"
+    "5oqAIiwgIjQ5MDguVFdPIjogIuWJjem8jiIsICI0OTA5LlRXTyI6ICLmlrDlvqnoiIgiLCAiNDk3My5U"
+    "V08iOiAi5buj56mOIiwgIjQ5NzkuVFdPIjogIuiPr+aYn+WFiSIsICI1MDA5LlRXTyI6ICLmpq7liZsi"
+    "LCAiNTIyMy5UV08iOiAi5a6J5YqbLUtZIiwgIjUyODkuVFdPIjogIuWunOm8jiIsICI1MzI4LlRXTyI6"
+    "ICLoj6/lrrkiLCAiNTQyNS5UV08iOiAi5Y+w5Y2KIiwgIjU0MjYuVFdPIjogIuaMr+eZvCIsICI1NDQz"
+    "LlRXTyI6ICLlnYfosaoiLCAiNTQ4My5UV08iOiAi5Lit576O5pm2IiwgIjYxMjQuVFdPIjogIualreW8"
+    "tyIsICI2MTI1LlRXTyI6ICLlu6PpgYsiLCAiNjEyNy5UV08iOiAi5Lmd6LGqIiwgIjYxNzMuVFdPIjog"
+    "IuS/oeaYjOmbuyIsICI2MTg3LlRXTyI6ICLokKzmvaQiLCAiNjIwNC5UV08iOiAi6Im+6I+vIiwgIjYy"
+    "MjMuVFdPIjogIuaXuuefvSIsICI2Mjc0LlRXTyI6ICLlj7Dnh78iLCAiNjI3NS5UV08iOiAi5YWD5bGx"
+    "IiwgIjYyODQuVFdPIjogIuS9s+mCpiIsICI2NDE5LlRXTyI6ICLkuqzmmajnp5EiLCAiNjQ4OC5UV08i"
+    "OiAi55Kw55CD5pm2IiwgIjY1MDkuVFdPIjogIuiBmuWSjCIsICI2NTEwLlRXTyI6ICLnsr7muKwiLCAi"
+    "NjUzMi5UV08iOiAi55Ge6ICYIiwgIjY1OTYuVFdPIjogIuWvrOWuj+iXneihkyIsICI2NjQwLlRXTyI6"
+    "ICLlnYfoj68iLCAiNjY0My5UV08iOiAiTTMxIiwgIjY2NjcuVFdPIjogIuS/oee0mOenkSIsICI2Njgz"
+    "LlRXTyI6ICLpm43mmbrnp5HmioAiLCAiNjgyOS5UV08iOiAi5Y2D6ZmE57K+5a+GIiwgIjgwMzIuVFdP"
+    "IjogIuWFieiPsSIsICI4MDQzLlRXTyI6ICLonJzmnJvlr6YiLCAiODA1MC5UV08iOiAi5buj56mNIiwg"
+    "IjgwODYuVFdPIjogIuWuj+aNt+enkSIsICI4MDg4LlRXTyI6ICLlk4HlrokiLCAiODA5MS5UV08iOiAi"
+    "57+U5ZCNIiwgIjgyNTUuVFdPIjogIuaci+eoiyIsICI4Mjk5LlRXTyI6ICLnvqToga8iLCAiODM0OS5U"
+    "V08iOiAi6Zu36JmO56eRIn0="
+)
+FALLBACK_NAME_MAP = json.loads(_b64.b64decode(_NAMES_B64).decode('utf-8'))
+
+
 
 # 載入預存的中文名稱備用表
 _names_path = os.path.join(os.path.dirname(__file__), 'names.json')
