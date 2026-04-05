@@ -57,28 +57,53 @@ import urllib3
 import io
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# 常見標的中文名稱備用表（TWSE 被擋時使用）
+FALLBACK_NAME_MAP = {
+    "2330.TW":"台積電","2317.TW":"鴻海","2454.TW":"聯發科","2382.TW":"廣達",
+    "2308.TW":"台達電","2303.TW":"聯電","6669.TW":"緯穎","2356.TW":"英業達",
+    "3017.TW":"奇鋐","2421.TW":"建準","3338.TW":"泰碩","6182.TW":"合晶",
+    "3413.TW":"京鼎","3583.TW":"辛耘","6196.TW":"帆宣","3450.TW":"聯鈞",
+    "6442.TW":"ladder","4977.TW":"眾達","2345.TW":"智邦","3704.TW":"合勤控",
+    "3596.TW":"智易","2344.TW":"華邦電","2408.TW":"南亞科","8299.TWO":"群聯",
+    "2327.TW":"國巨","2492.TW":"華新科","3090.TW":"日電貿","3037.TW":"欣興",
+    "3189.TW":"景碩","8046.TW":"南電","3707.TWO":"漢磊","4934.TW":"太極",
+    "6415.TW":"矽力-KY","2314.TW":"台揚","6285.TW":"啟碁","2412.TW":"中華電",
+    "2603.TW":"長榮","2609.TW":"陽明","2615.TW":"萬海","2606.TW":"裕民",
+    "2637.TW":"慧洋-KY","2612.TW":"中航","6515.TW":"穎崴","6223.TWO":"旺矽",
+    "7828.TWO":"貿聯-KY","4755.TW":"三福化","4770.TW":"上品","1710.TW":"東聯",
+    "2208.TW":"台船","6753.TW":"英諾特","2634.TW":"漢翔",
+}
+
 @st.cache_data(ttl=86400)
 def get_twse_mapping():
     try:
         mapping = {}
-        for mode in ['2', '4']: # 2: 上市, 4: 上櫃
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept-Language': 'zh-TW,zh;q=0.9',
+            'Referer': 'https://isin.twse.com.tw/',
+        }
+        for mode in ['2', '4']:  # 2: 上市, 4: 上櫃
             url = f"https://isin.twse.com.tw/isin/C_public.jsp?strMode={mode}"
-            res = requests.get(url, verify=False, timeout=10)
+            res = requests.get(url, headers=headers, verify=False, timeout=10)
+            res.encoding = 'big5'  # 強制指定 Big5 編碼
             df = pd.read_html(io.StringIO(res.text))[0]
             df.columns = df.iloc[0]
             df = df.iloc[1:]
             df = df.dropna(subset=['有價證券代號及名稱'])
-            
             for val in df['有價證券代號及名稱']:
                 parts = str(val).split('\u3000')
                 if len(parts) == 2:
                     code, name = parts
                     ext = ".TW" if mode == '2' else ".TWO"
                     mapping[f"{code.strip()}{ext}"] = name.strip()
-        return mapping
+        # 合併 fallback（TWSE 有的優先）
+        result = {**FALLBACK_NAME_MAP, **mapping}
+        return result
     except Exception as e:
-        print("Fetching TWSE names failed:", e)
-        return {}
+        print("Fetching TWSE names failed, using fallback:", e)
+        return FALLBACK_NAME_MAP.copy()
+
 
 NEWS_BASELINE = 0.3          # 無異常時的消息面基準分
 NEWS_SPIKE_SCORE = 0.85     # 偵測到異常爆量時的消息面分數
