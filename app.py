@@ -435,7 +435,6 @@ def process_market_data(sector_name, tickers, name_map, selected_date, weights, 
 # 每個族群的代表性標的（快速掃描用，不發回全部）
 PROXY_TICKERS = {
     "散熱":            ['3017.TW','2421.TW','3338.TW'],
-    "矽光子":           ['3450.TW','6442.TW','4977.TW'],
     "AI 伺服器":       ['2330.TW','2382.TW','6669.TW'],
     "半導體設備":        ['3413.TW','3583.TW','6196.TW'],
     "網通設備組件":      ['2345.TW','3704.TW','3596.TW'],
@@ -498,7 +497,7 @@ def get_hottest_sector(sectors, date_str):
 # --- Sidebar ---
 st.sidebar.header("過濾條件設定")
 available_sectors = [
-    "散熱", "矽光子", "AI 伺服器", "半導體設備", "網通設備組件",
+    "散熱", "AI 伺服器", "半導體設備", "網通設備組件",
     "記憶體", "被動元件", "ABF載板", "第三代半導體", "低軌道衛星通訊", 
     "電子代工OEMODM", "半導體廠務與設備", "軍工", "貨櫃航運", "散裝航運", 
     "探針卡", "半導體特化", "光通訊、矽光子與光學元件", "半導體晶圓與代工", 
