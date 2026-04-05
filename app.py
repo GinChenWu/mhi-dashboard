@@ -695,84 +695,66 @@ else:
         
     st.subheader(f"📊 {selected_sector} 標的清單原始明細 ({len(df_details)} 檔)")
 
-    # --- 批量操作工具列 ---
+    # --- 批量操作工具列 (使用 DataFrame 表格優化手機版排版) ---
     if not df_details.empty:
-        visible_tickers = [row["代碼"] for _, row in df_details.iterrows()
-                           if row["代碼"] not in st.session_state.removed_tickers]
+        editor_records = []
+        for _, row in df_details.iterrows():
+            ticker = row["代碼"]
+            if ticker in st.session_state.removed_tickers:
+                continue
 
-        # 使用 st.form：勾 checkbox 不會觸發重算，按提交才會
-        with st.form(key="ticker_form", border=False):
-            # 表頭工具列
-            bulk_col1, bulk_col2, bulk_col3, _ = st.columns([1.3, 1.5, 1.5, 5.7])
-            bulk_col1.form_submit_button("☑️ 全選", on_click=lambda: None, disabled=True)  # 純視覺佔位，全選用下方邏輯
-            submit_delete = bulk_col3.form_submit_button("🗑️ 刪除勾選", type="primary", use_container_width=True)
+            pct = row["單日漲跌幅 (%)"]
+            news_7d = int(row.get('近7日新聞熱度 (篇)', 0))
+            news_1d = int(row.get('今日新聞 (篇)', 0))
+            
+            # 處理 RSS 上限 100 篇的視覺顯示與防呆
+            is_capped = (news_1d >= 100 and news_7d >= 100)
+            if is_capped:
+                is_spike = False
+                news_1d_str = "100+"
+                news_7d_str = "100+"
+            else:
+                mu = news_7d / 7.0
+                sigma = mu ** 0.5 if mu > 0 else 0
+                is_spike = news_1d > mu + sigma and news_1d > 0
+                news_1d_str = "100+" if news_1d >= 100 else str(news_1d)
+                news_7d_str = "100+" if news_7d >= 100 else str(news_7d)
 
-            st.divider()
+            spike_tag = " 🔥" if is_spike else ""
 
-            # 欄位標頭
-            header_cols = st.columns([0.5, 1.2, 1.8, 1.2, 1.0, 1.0, 1.4, 0.8, 0.8])
-            for col, h in zip(header_cols, ["", "代碼", "名稱", "收盤價", "漲跌幅(%)", "量差倍數", "今日/7日新聞", "月線", "單刪"]):
-                col.markdown(f"**{h}**")
-            st.divider()
+            editor_records.append({
+                "刪除": False,
+                "代碼": ticker,
+                "名稱": row["名稱"],
+                "收盤價": f"{row['最新收盤價']}",
+                "漲跌幅(%)": f"{'🟢' if pct >= 0 else '🔴'} {pct:.2f}%",
+                "量差倍數": f"{row['成交量差異倍數']:.2f}x",
+                "新聞熱度": f"📰 {news_1d_str}/{news_7d_str}篇{spike_tag}",
+                "站上月線": row["站上月線"]
+            })
 
-            check_state = {}
-            for _, row in df_details.iterrows():
-                ticker = row["代碼"]
-                if ticker in st.session_state.removed_tickers:
-                    continue
-                r_cols = st.columns([0.5, 1.2, 1.8, 1.2, 1.0, 1.0, 1.4, 0.8, 0.8])
-                check_state[ticker] = r_cols[0].checkbox(
-                    "", key=f"chk_{ticker}", label_visibility="collapsed"
-                )
-                r_cols[1].write(ticker)
-                r_cols[2].markdown(row["名稱"])
-                r_cols[3].write(f"{row['最新收盤價']}")
-                pct = row["單日漲跌幅 (%)"]
-                r_cols[4].write(f"{'🟢' if pct >= 0 else '🔴'} {pct:.2f}%")
-                r_cols[5].write(f"{row['成交量差異倍數']:.2f}x")
-                news_7d = int(row.get('近7日新聞熱度 (篇)', 0))
-                news_1d = int(row.get('今日新聞 (篇)', 0))
-                
-                # 處理 RSS 上限 100 篇的視覺顯示與防呆
-                is_capped = (news_1d >= 100 and news_7d >= 100)
-                
-                if is_capped:
-                    is_spike = False
-                    news_1d_str = "100+"
-                    news_7d_str = "100+"
-                else:
-                    mu = news_7d / 7.0
-                    sigma = mu ** 0.5 if mu > 0 else 0
-                    is_spike = news_1d > mu + sigma and news_1d > 0
-                    news_1d_str = "100+" if news_1d >= 100 else str(news_1d)
-                    news_7d_str = "100+" if news_7d >= 100 else str(news_7d)
+        df_editor = pd.DataFrame(editor_records)
+        
+        if not df_editor.empty:
+            # 渲染原生資料表（支援手機橫向捲動）
+            edited_df = st.data_editor(
+                df_editor,
+                hide_index=True,
+                use_container_width=True,
+                disabled=["代碼", "名稱", "收盤價", "漲跌幅(%)", "量差倍數", "新聞熱度", "站上月線"],
+                column_config={
+                    "刪除": st.column_config.CheckboxColumn("刪除", default=False)
+                },
+                key="ticker_editor"
+            )
 
-                spike_tag = " 🔥" if is_spike else ""
-                r_cols[6].write(f"📰 {news_1d_str}/{news_7d_str}篇{spike_tag}")
-                r_cols[7].write(row["站上月線"])
+            if st.button("🗑️ 刪除已勾選標的", type="primary"):
+                to_remove = set(edited_df[edited_df["刪除"] == True]["代碼"].tolist())
+                if to_remove:
+                    st.session_state.removed_tickers |= to_remove
+                    st.rerun()
 
-            # 表單底部也放一個刪除按鈕，方便不用滾回頂部
-            st.divider()
-            bottom_delete = st.form_submit_button("🗑️ 刪除所有勾選的標的", type="primary", use_container_width=True)
-
-        # form 提交後才觸發刪除 + 重算
-        if submit_delete or bottom_delete:
-            to_remove = {t for t, checked in check_state.items() if checked}
-            if to_remove:
-                st.session_state.removed_tickers |= to_remove
-                st.rerun()
-
-        # 表格外的逐列「立即單刪」❌（不在 form 裡，點擊立即生效）
-        st.caption("💡 勾選後按「刪除勾選」一次移除；或直接點各列 ❌ 立即移除單筆")
-
-        # 快速全選 / 取消全選（在 form 外，不影響重算）
-        sel1, sel2, _ = st.columns([1.3, 1.5, 7.2])
-        if sel1.button("☑️ 全選", key="select_all"):
-            # 透過預填 session_state 的方式在下次渲染時讓 checkbox 預設為勾選
-            # Streamlit form checkbox 不支援動態預設，改用提示
-            st.toast("請在表格內手動全勾後按刪除", icon="ℹ️")
-        if sel2.button("🔲 取消全選", key="deselect_all"):
-            st.toast("重新整理頁面即可清空勾選", icon="ℹ️")
+            st.caption("💡 提示：手機版可左右滑動查看完整資料。勾選左側後按下「刪除」即可從本次計算中移除。")
 
 
 
