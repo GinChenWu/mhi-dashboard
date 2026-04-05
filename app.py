@@ -247,7 +247,7 @@ def fetch_all_news(tickers_tuple, name_map):
     return articles
 
 @st.cache_data(ttl=3600)
-def process_market_data(sector_name, tickers, name_map, selected_date, weights):
+def process_market_data(sector_name, tickers, name_map, selected_date, weights, pct_window_days=1):
     w_breadth, w_capital, w_corr, w_news = weights
     if not tickers:
         return None, pd.DataFrame()
@@ -300,8 +300,10 @@ def process_market_data(sector_name, tickers, name_map, selected_date, weights):
             vol_yesterday = float(v_series.iloc[-2])
             ma20 = float(c_series.rolling(window=20).mean().iloc[-1])
             
-            # 漲跌幅
-            pct_change = ((close_today - close_yesterday) / close_yesterday) * 100
+            # 漲跌幅 (根據設定的交易日天數)
+            idx = -min(len(c_series), pct_window_days + 1)
+            close_base = float(c_series.iloc[idx])
+            pct_change = ((close_today - close_base) / close_base) * 100
             
             # 確認站上月線
             above_ma20 = "✅" if close_today > ma20 else "❌"
@@ -321,7 +323,7 @@ def process_market_data(sector_name, tickers, name_map, selected_date, weights):
                 "代碼": ticker,
                 "名稱": name_map.get(ticker) or ticker.split('.')[0],
                 "最新收盤價": round(close_today, 2),
-                "單日漲跌幅 (%)": round(pct_change, 2),
+                "期間漲跌幅 (%)": round(pct_change, 2),
                 "成交量差異倍數": round(vol_today / vol_yesterday, 2) if vol_yesterday > 0 else 1,
                 "近7日新聞熱度 (篇)": ticker_news_7d,
                 "今日新聞 (篇)": ticker_news_1d,
@@ -498,6 +500,10 @@ default_idx = available_sectors.index(st.session_state.hottest_sector) \
 selected_sector = st.sidebar.selectbox("請選擇族群名稱", available_sectors, index=default_idx)
 selected_date = st.sidebar.date_input("選擇日期", datetime.now())
 
+pct_window_options = {"單日": 1, "近1週": 5, "近1個月": 20, "近3個月": 60}
+selected_pct_label = st.sidebar.selectbox("漲跌幅計算期間", list(pct_window_options.keys()), index=2)
+pct_window_days = pct_window_options[selected_pct_label]
+
 st.sidebar.divider()
 st.sidebar.subheader("➕ 自訂額外標的")
 custom_tickers_input = st.sidebar.text_input(
@@ -554,7 +560,9 @@ with st.spinner(f"正在分析 {selected_sector} 相關特徵..."):
     base_tickers -= st.session_state.removed_tickers
 
     tickers = list(base_tickers)
-    mhi_data, df_details, df_history = process_market_data(selected_sector, tuple(sorted(tickers)), name_map, selected_date, weights)
+    mhi_data, df_details, df_history = process_market_data(
+        selected_sector, tuple(sorted(tickers)), name_map, selected_date, weights, pct_window_days
+    )
 
 
 if mhi_data is None:
@@ -703,7 +711,7 @@ else:
             if ticker in st.session_state.removed_tickers:
                 continue
 
-            pct = row["單日漲跌幅 (%)"]
+            pct = row["期間漲跌幅 (%)"]
             news_7d = int(row.get('近7日新聞熱度 (篇)', 0))
             news_1d = int(row.get('今日新聞 (篇)', 0))
             
