@@ -500,7 +500,7 @@ default_idx = available_sectors.index(st.session_state.hottest_sector) \
 selected_sector = st.sidebar.selectbox("請選擇族群名稱", available_sectors, index=default_idx)
 selected_date = st.sidebar.date_input("選擇日期", datetime.now())
 
-pct_window_options = {"單日": 1, "近1週": 5, "近1個月": 20, "近3個月": 60}
+pct_window_options = {"單日": 1, "近1週": 5, "近1個月": 30, "近3個月": 90}
 selected_pct_label = st.sidebar.selectbox("漲跌幅計算期間", list(pct_window_options.keys()), index=2)
 pct_window_days = pct_window_options[selected_pct_label]
 
@@ -735,7 +735,7 @@ else:
                 "代碼": ticker,
                 "名稱": row["名稱"],
                 "收盤價": f"{row['最新收盤價']}",
-                "漲跌幅(%)": f"{'🟢' if pct >= 0 else '🔴'} {pct:.2f}%",
+                f"漲跌幅({selected_pct_label})": f"{'🟢' if pct >= 0 else '🔴'} {pct:.2f}%",
                 "量差倍數": f"{row['成交量差異倍數']:.2f}x",
                 "新聞熱度": f"📰 {news_1d_str}/{news_7d_str}篇{spike_tag}",
                 "站上月線": row["站上月線"]
@@ -749,7 +749,7 @@ else:
                 df_editor,
                 hide_index=True,
                 use_container_width=True,
-                disabled=["代碼", "名稱", "收盤價", "漲跌幅(%)", "量差倍數", "新聞熱度", "站上月線"],
+                disabled=["代碼", "名稱", "收盤價", f"漲跌幅({selected_pct_label})", "量差倍數", "新聞熱度", "站上月線"],
                 column_config={
                     "刪除": st.column_config.CheckboxColumn("刪除", default=False)
                 },
