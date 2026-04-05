@@ -1,9 +1,8 @@
 requests
 beautifulsoup4
 lxml
-finvizfinance
 yfinance
 pandas
-playwright
+numpy
 streamlit
 plotly
