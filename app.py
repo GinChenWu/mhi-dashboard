@@ -349,6 +349,10 @@ def process_market_data(sector_name, tickers, name_map, selected_date, weights):
         nd = news_counts.get(t, {})
         c1 = nd.get('count_1d', 0)
         c7 = nd.get('count_7d', 0)
+        # Google News RSS 有 100 篇上限。若雙雙觸頂，代表該標的熱度極高（如台積電），但無法算作短期爆量突刺，排除假訊號。
+        if c1 >= 100 and c7 >= 100:
+            continue
+            
         mu = c7 / 7.0
         sigma = mu ** 0.5 if mu > 0 else 0
         if c1 > mu + sigma and c1 > 0:
@@ -728,11 +732,23 @@ else:
                 r_cols[5].write(f"{row['成交量差異倍數']:.2f}x")
                 news_7d = int(row.get('近7日新聞熱度 (篇)', 0))
                 news_1d = int(row.get('今日新聞 (篇)', 0))
-                mu = news_7d / 7.0
-                sigma = mu ** 0.5 if mu > 0 else 0
-                is_spike = news_1d > mu + sigma and news_1d > 0
+                
+                # 處理 RSS 上限 100 篇的視覺顯示與防呆
+                is_capped = (news_1d >= 100 and news_7d >= 100)
+                
+                if is_capped:
+                    is_spike = False
+                    news_1d_str = "100+"
+                    news_7d_str = "100+"
+                else:
+                    mu = news_7d / 7.0
+                    sigma = mu ** 0.5 if mu > 0 else 0
+                    is_spike = news_1d > mu + sigma and news_1d > 0
+                    news_1d_str = "100+" if news_1d >= 100 else str(news_1d)
+                    news_7d_str = "100+" if news_7d >= 100 else str(news_7d)
+
                 spike_tag = " 🔥" if is_spike else ""
-                r_cols[6].write(f"📰 {news_1d}/{news_7d}篇{spike_tag}")
+                r_cols[6].write(f"📰 {news_1d_str}/{news_7d_str}篇{spike_tag}")
                 r_cols[7].write(row["站上月線"])
 
             # 表單底部也放一個刪除按鈕，方便不用滾回頂部
