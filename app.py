@@ -304,15 +304,18 @@ def process_market_data(sector_name, tickers, name_map, selected_date, weights, 
             t = future_to_tgt[future]
             news_counts[t] = future.result()   # {'count_1d':N, 'count_7d':M}
     
+    errors = []
     for ticker in tickers:
         try:
             if ticker not in close_df.columns:
+                errors.append(f"{ticker} not in close_df")
                 continue
                 
             c_series = close_df[ticker].dropna()
             v_series = vol_df[ticker].dropna()
             
             if len(c_series) < 20: 
+                errors.append(f"{ticker} c_series len {len(c_series)} < 20")
                 continue
                 
             close_today = float(c_series.iloc[-1])
@@ -353,13 +356,15 @@ def process_market_data(sector_name, tickers, name_map, selected_date, weights, 
                 "站上月線": above_ma20
             })
         except Exception as e:
+            errors.append(f"{ticker} exception: {type(e).__name__} {e}")
             print(f"Skipping {ticker} due to error: {e}")
             continue
             
     df_records = pd.DataFrame(records)
     
     if valid_count == 0:
-        return None, df_records, None
+        error_msg = "; ".join(errors) if errors else f"All skipped. close_df len: {len(close_df)}, empty? {close_df.empty}"
+        return error_msg, df_records, None
         
     breadth_score = round((up_count / valid_count), 2)  # 0~1
     capital_score = min(1.0, (total_vol_ratio / valid_count) / 2.0)  # Assuming 2.0x volume is 100% heat
@@ -592,16 +597,17 @@ with st.spinner(f"正在分析 {selected_sector} 相關特徵..."):
     )
 
 
-if mhi_data is None:
-    st.error(f"由於無法取得足夠的行情資料，{selected_sector} 暫停計算。")
-else:
-    total_score = mhi_data['total']
-    
-    # 決定顏色
-    if total_score > 0.8: color = "#FF4B4B"
-    elif total_score < 0.2: color = "#1E90FF"
-    elif total_score >= 0.5: color = "#00FA9A"
-    else: color = "#FFA500"
+    if mhi_data is None or isinstance(mhi_data, str):
+        err = mhi_data if isinstance(mhi_data, str) else "未知錯誤"
+        st.error(f"由於無法取得足夠的行情資料，{selected_sector} 暫停計算。\nDEBUG INFO: {err}")
+    else:
+        total_score = mhi_data['total']
+        
+        # 決定顏色
+        if total_score > 0.8: color = "#FF4B4B"
+        elif total_score < 0.2: color = "#1E90FF"
+        elif total_score >= 0.5: color = "#00FA9A"
+        else: color = "#FFA500"
 
     st.markdown(f"<h1 style='color:{color}; font-size:56px; border-bottom: 3px solid rgba(255,255,255,0.1); padding-bottom:10px;'>{total_score:.2f}</h1>", unsafe_allow_html=True)
 
