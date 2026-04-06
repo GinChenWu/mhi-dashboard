@@ -458,8 +458,8 @@ PROXY_TICKERS = {
     "散裝航運":          ['2606.TW','2637.TW','2612.TW'],
     "探針卡":           ['6515.TW','6223.TWO','7828.TWO'],
     "半導體特化":        ['4755.TW','4770.TW','1710.TW'],
-    "光通訊、矽光子與光學元件": ['3363.TWO','3008.TW','6442.TW','4908.TWO','3665.TW','6820.TWO','6197.TW','3450.TW','4977.TW'],
-    "半導體晶圓與代工": ['2303.TW','3105.TWO','6488.TWO','3711.TW','2301.TW']
+    "光通訊、矽光子與光學元件": ['3363.TWO','3008.TW','6442.TW','4908.TWO','3665.TW','6820.TWO','6197.TW','3450.TW','4977.TW','3163.TWO','3081.TWO','6414.TW'],
+    "半導體晶圓與代工": ['2330.TW','2303.TW','3105.TWO','6488.TWO','3711.TW','2301.TW']
 }
 
 @st.cache_data(ttl=3600)
@@ -732,6 +732,16 @@ with st.spinner(f"正在分析 {selected_sector} 相關特徵..."):
         st.plotly_chart(fig_trend, config={'displayModeBar': False})
         
     st.subheader(f"📊 {selected_sector} 標的清單原始明細 ({len(df_details)} 檔)")
+
+    # --- 診斷與重置區塊 ---
+    if len(df_details) <= 2 and (not st.session_state.removed_tickers):
+        st.info("💡 系統偵測到標的數量較少，若與預期不符，可點擊下方重置按鈕。")
+        
+    if st.session_state.removed_tickers or len(df_details) <= 2:
+        if st.button("♻️ 重置此族群清單 (清除所有暫時移除紀錄)", use_container_width=True):
+            st.session_state.removed_tickers = set()
+            st.session_state.added_tickers = set()
+            st.rerun()
 
     # --- 批量操作工具列 (使用 DataFrame 表格優化手機版排版) ---
     if not df_details.empty:

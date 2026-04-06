@@ -44,6 +44,8 @@ class SectorMapper:
             '散裝航運':         ['2612.TW','2605.TW','2606.TW','2617.TW','2613.TW','2637.TW','2601.TW','5608.TW','2607.TW','2614.TW'],
             '探針卡':           ['7828.TWO','6515.TW','6683.TWO','3289.TWO','6510.TWO','6223.TWO','3680.TWO','3587.TWO'],
             '半導體特化':        ['4770.TW','1727.TW','1710.TW','1708.TW','6509.TWO','4721.TWO','4768.TWO','4739.TW','4755.TW','1711.TW','1773.TW'],
+            '光通訊、矽光子與光學元件': ['3363.TWO','3008.TW','6442.TW','4908.TWO','3665.TW','6820.TWO','6197.TW','3450.TW','4977.TW','3163.TWO','3081.TWO','6414.TW','6274.TWO','6419.TWO','4979.TWO','2345.TW','4989.TW','3380.TW','8011.TW','3149.TW','4909.TWO','6451.TW','3234.TWO'],
+            '半導體晶圓與代工': ['2303.TW','3105.TWO','6488.TWO','3711.TW','2301.TW'],
         }
 
         tickers = set()
@@ -52,7 +54,7 @@ class SectorMapper:
         for k, v in fallback_map.items():
             if k in sector_name or sector_name in k:
                 tickers.update(v)
-                break
+                # 拿掉 break，允許複合名稱同時匹配多個關鍵字並聯集標的
 
         # 2. Playwright 只作補充（雲端環境無 Playwright 時自動略過）
         if PLAYWRIGHT_AVAILABLE:
@@ -74,7 +76,9 @@ class SectorMapper:
                             ticker = parts[-1]
                             ticker_code = ticker.replace('.TW', '').replace('.TWO', '')
                             if ticker_code.isdigit() and len(ticker_code) >= 4:
-                                tickers.add(f"{ticker_code}.TW")
+                                # 根據原始連結判斷市場，避免櫃買標的一律被加上 .TW
+                                suffix = ".TWO" if ".TWO" in ticker.upper() or "/quote/" in href and ".TWO" in href.upper() else ".TW"
+                                tickers.add(f"{ticker_code}{suffix}")
                     browser.close()
             except Exception as e:
                 print(f"[!] Playwright 補充抓取失敗 (不影響主要結果): {e}")
@@ -106,7 +110,9 @@ class SectorMapper:
                 mock_map = {
                     "AI 伺服器": ["NVDA", "SMCI", "AMD", "DELL", "HPE"],
                     "散熱": ["VRT", "MOD", "FLS"],
-                    "矽光子": ["MRVL", "CSCO", "LITE", "COHR"]
+                    "矽光子": ["MRVL", "CSCO", "LITE", "COHR"],
+                    "光通訊、矽光子與光學元件": ["MRVL", "CSCO", "LITE", "COHR", "AAOI", "AVGO"],
+                    "半導體晶圓與代工": ["TSM", "UMC", "INTC", "AMAT", "ASML"]
                 }
                 for k, v in mock_map.items():
                     if k in industry_name:
