@@ -240,7 +240,7 @@ def fetch_all_news(tickers_tuple, name_map):
             root = ET.fromstring(res.text)
             items = root.findall('./channel/item')
             result = []
-            for item in items[:5]:  # 每檔最多5則
+            for item in items[:15]:  # 每檔最多15則
                 title_el = item.find('title')
                 link_el  = item.find('link')
                 pub_el   = item.find('pubDate')
