@@ -19,29 +19,214 @@ import json
 st.set_page_config(page_title="MHI Analytics Dashboard", layout="wide", initial_sidebar_state="expanded")
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
+
+/* ═══════════════════════════════════════════
+   MESH GRADIENT BACKGROUND
+   ═══════════════════════════════════════════ */
+.stApp {
+    background-color: #0d0d1a;
+    background-image:
+        radial-gradient(ellipse at 15% 20%, rgba(139, 92, 246, 0.45) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 10%, rgba(236, 72, 153, 0.35) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(59, 130, 246, 0.30) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 75%, rgba(16, 185, 129, 0.20) 0%, transparent 50%),
+        radial-gradient(ellipse at 5%  85%, rgba(245, 101, 101, 0.20) 0%, transparent 45%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   GLOBAL FONT
+   ═══════════════════════════════════════════ */
 html, body, [class*="css"] {
     font-family: 'Outfit', sans-serif !important;
+    color: rgba(255, 255, 255, 0.92) !important;
 }
+
+/* ═══════════════════════════════════════════
+   HEADINGS — gradient text
+   ═══════════════════════════════════════════ */
 h1, h2, h3 {
-    background: -webkit-linear-gradient(45deg, #FF6B6B, #4ECDC4);
+    background: linear-gradient(135deg, #a78bfa, #f472b6, #60a5fa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-weight: 700;
+    letter-spacing: -0.3px;
 }
+
+/* ═══════════════════════════════════════════
+   GLASS MIXIN APPLIED TO STREAMLIT CONTAINERS
+   ═══════════════════════════════════════════ */
+/* Main content area */
+.main .block-container {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.40);
+    padding: 2rem 2.5rem !important;
+    margin-top: 1rem;
+}
+
+/* Sidebar glass panel */
+[data-testid="stSidebar"] {
+    background: rgba(13, 13, 26, 0.55) !important;
+    backdrop-filter: blur(20px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ═══════════════════════════════════════════
+   PLOTLY CHART — glass card
+   ═══════════════════════════════════════════ */
 .stPlotlyChart {
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+        0 8px 32px 0 rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
     overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.3s ease;
+    padding: 8px;
 }
 .stPlotlyChart:hover {
-    transform: translateY(-5px) scale(1.01);
+    transform: translateY(-4px) scale(1.005);
+    box-shadow:
+        0 16px 48px 0 rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20);
 }
-.stDataFrame {
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+
+/* ═══════════════════════════════════════════
+   DATA TABLE / EDITOR — glass card
+   ═══════════════════════════════════════════ */
+.stDataFrame, [data-testid="stDataEditor"] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
     overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════
+   WIDGETS — glass style
+   ═══════════════════════════════════════════ */
+/* Selectbox, date input, text input */
+[data-testid="stSelectbox"] > div,
+[data-testid="stDateInput"] > div,
+[data-testid="stTextInput"] > div {
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 10px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+[data-testid="stSelectbox"] > div:focus-within,
+[data-testid="stTextInput"] > div:focus-within {
+    border-color: rgba(167, 139, 250, 0.55) !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+/* Sliders */
+[data-testid="stSlider"] {
+    padding: 4px 0;
+}
+
+/* Buttons */
+.stButton > button {
+    background: rgba(139, 92, 246, 0.20) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(167, 139, 250, 0.35) !important;
+    border-radius: 10px !important;
+    color: rgba(255,255,255,0.92) !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.2px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255,255,255,0.10);
+}
+.stButton > button:hover {
+    background: rgba(139, 92, 246, 0.35) !important;
+    border-color: rgba(167, 139, 250, 0.60) !important;
+    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.30), inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-1px);
+}
+.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.50), rgba(236, 72, 153, 0.40)) !important;
+    border-color: rgba(167, 139, 250, 0.50) !important;
+}
+
+/* ═══════════════════════════════════════════
+   METRIC CARDS
+   ═══════════════════════════════════════════ */
+[data-testid="stMetric"] {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.10);
+    padding: 1rem 1.2rem;
+}
+
+/* ═══════════════════════════════════════════
+   SPINNER / STATUS MESSAGES
+   ═══════════════════════════════════════════ */
+[data-testid="stStatusWidget"],
+[data-testid="stNotification"] {
+    background: rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(12px);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.10);
+}
+
+/* ═══════════════════════════════════════════
+   DIVIDERS
+   ═══════════════════════════════════════════ */
+hr {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+    margin: 1.5rem 0;
+}
+
+/* ═══════════════════════════════════════════
+   RADIO BUTTONS
+   ═══════════════════════════════════════════ */
+[data-testid="stRadio"] label {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 8px;
+    padding: 2px 10px;
+    transition: background 0.2s ease;
+}
+[data-testid="stRadio"] label:has(input:checked) {
+    background: rgba(139, 92, 246, 0.25);
+    border-color: rgba(167, 139, 250, 0.45);
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.35);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(167, 139, 250, 0.55);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -615,11 +800,21 @@ with st.spinner(f"正在分析 {selected_sector} 相關特徵..."):
     pct_r = f"{weights[2]*100:.0f}%"
     pct_n = f"{weights[3]*100:.0f}%"
     st.markdown(f"""
-<div style='margin:10px 0 18px 0; padding:14px 20px;
-     background:rgba(255,255,255,0.04); border-radius:12px;
-     border:1px solid rgba(255,255,255,0.08); font-family:monospace;
-     font-size:14px; line-height:2;'>
-  <span style='color:rgba(255,255,255,0.5); font-size:12px;'>📐 MHI 計算公式（可在左側 Sidebar 調整權重）</span><br/>
+<div style='
+     margin:10px 0 20px 0;
+     padding:18px 24px;
+     background: rgba(255,255,255,0.06);
+     backdrop-filter: blur(12px) saturate(150%);
+     -webkit-backdrop-filter: blur(12px) saturate(150%);
+     border-radius: 16px;
+     border: 1px solid rgba(255,255,255,0.14);
+     border-top: 1px solid rgba(255,255,255,0.22);
+     border-left: 1px solid rgba(255,255,255,0.18);
+     box-shadow: 0 8px 32px 0 rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.12);
+     font-family:monospace;
+     font-size:14px;
+     line-height:2.2;'>
+  <span style='color:rgba(255,255,255,0.45); font-size:11px; letter-spacing:1px; text-transform:uppercase;'>📐 MHI 計算公式（可在左側 Sidebar 調整權重）</span><br/>
   <b style='color:{color}'>MHI</b> =
   <span style='color:#4ECDC4'><b>{sub['動能廣度']:.2f}</b> × {pct_b}</span>
   &nbsp;+&nbsp;
@@ -629,7 +824,7 @@ with st.spinner(f"正在分析 {selected_sector} 相關特徵..."):
   &nbsp;+&nbsp;
   <span style='color:#FF9A76'><b>{sub['消息面']:.2f}</b> × {pct_n}</span>
   &nbsp;=&nbsp;
-  <b style='color:{color}; font-size:16px;'>{total_score:.3f}</b>
+  <b style='color:{color}; font-size:17px;'>{total_score:.3f}</b>
 </div>
 """, unsafe_allow_html=True)
 
@@ -871,19 +1066,28 @@ with st.spinner(f"正在分析 {selected_sector} 相關特徵..."):
             tag_color = "#4ECDC4"
             st.markdown(
                 f"""
-<div style='padding:12px 16px; margin-bottom:10px;
-     border-left:4px solid {tag_color};
-     background:rgba(255,255,255,0.04);
-     border-radius:0 8px 8px 0;'>
+<div style='
+     padding: 14px 18px;
+     margin-bottom: 10px;
+     border-left: 3px solid {tag_color};
+     background: rgba(255,255,255,0.06);
+     backdrop-filter: blur(10px) saturate(140%);
+     -webkit-backdrop-filter: blur(10px) saturate(140%);
+     border-radius: 0 12px 12px 0;
+     border-top: 1px solid rgba(255,255,255,0.10);
+     border-right: 1px solid rgba(255,255,255,0.06);
+     border-bottom: 1px solid rgba(255,255,255,0.04);
+     box-shadow: 0 4px 20px rgba(0,0,0,0.20);
+     transition: background 0.2s ease;'>
   <span style='font-size:11px; color:{tag_color}; font-weight:600;
                letter-spacing:1px;'>{art['name']} ({art['ticker']})</span>
   &nbsp;·&nbsp;
-  <span style='font-size:11px; color:rgba(255,255,255,0.45);'>{art['source']}</span>
+  <span style='font-size:11px; color:rgba(255,255,255,0.40);'>{art['source']}</span>
   &nbsp;·&nbsp;
-  <span style='font-size:11px; color:rgba(255,255,255,0.4);'>{art['pub']}</span><br/>
+  <span style='font-size:11px; color:rgba(255,255,255,0.35);'>{art['pub']}</span><br/>
   <a href='{art['link']}' target='_blank'
-     style='font-size:14px; color:white; text-decoration:none; font-weight:500;
-            line-height:1.5;'>
+     style='font-size:14px; color:rgba(255,255,255,0.92); text-decoration:none;
+            font-weight:500; line-height:1.6;'>
     {art['title']}
   </a>
 </div>""",

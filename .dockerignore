@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.env
+.venv
+venv/
+
+# 測試 / 除錯用腳本，不需要打包
+test_*.py
+debug_*.py
+patcher.py
+generate_mappings.py
+mhi_calculator.py
+daily_market_heat.csv
+
+# 其他專案目錄
+shop/
+product_tool/
