@@ -21,212 +21,263 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
 
-/* ═══════════════════════════════════════════
-   MESH GRADIENT BACKGROUND
-   ═══════════════════════════════════════════ */
+/* 1. MESH GRADIENT BACKGROUND — more vivid orbs */
 .stApp {
-    background-color: #0d0d1a;
+    background: #080818 !important;
     background-image:
-        radial-gradient(ellipse at 15% 20%, rgba(139, 92, 246, 0.45) 0%, transparent 55%),
-        radial-gradient(ellipse at 85% 10%, rgba(236, 72, 153, 0.35) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 80%, rgba(59, 130, 246, 0.30) 0%, transparent 55%),
-        radial-gradient(ellipse at 90% 75%, rgba(16, 185, 129, 0.20) 0%, transparent 50%),
-        radial-gradient(ellipse at 5%  85%, rgba(245, 101, 101, 0.20) 0%, transparent 45%);
-    background-attachment: fixed;
-    min-height: 100vh;
+        radial-gradient(ellipse at 15% 15%, rgba(139,92,246,0.55) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 8%,  rgba(236,72,153,0.40) 0%, transparent 48%),
+        radial-gradient(ellipse at 55% 85%, rgba(59,130,246,0.40) 0%, transparent 52%),
+        radial-gradient(ellipse at 88% 80%, rgba(16,185,129,0.22) 0%, transparent 45%),
+        radial-gradient(ellipse at 5%  90%, rgba(245,101,101,0.22) 0%, transparent 45%) !important;
+    background-attachment: fixed !important;
+}
+/* Animated floating orbs via pseudo-elements */
+.stApp::before {
+    content: '';
+    position: fixed;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,0.28) 0%, transparent 65%);
+    filter: blur(45px);
+    top: -120px; left: -120px;
+    animation: orb1 18s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+.stApp::after {
+    content: '';
+    position: fixed;
+    width: 460px; height: 460px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(236,72,153,0.22) 0%, transparent 65%);
+    filter: blur(55px);
+    bottom: -100px; right: -100px;
+    animation: orb2 22s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+@keyframes orb1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33%      { transform: translate(130px,90px) scale(1.12); }
+    66%      { transform: translate(-70px,150px) scale(0.94); }
+}
+@keyframes orb2 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    40%      { transform: translate(-110px,-70px) scale(1.16); }
+    70%      { transform: translate(90px,-130px) scale(0.88); }
 }
 
-/* ═══════════════════════════════════════════
-   GLOBAL FONT
-   ═══════════════════════════════════════════ */
-html, body, [class*="css"] {
-    font-family: 'Outfit', sans-serif !important;
-    color: rgba(255, 255, 255, 0.92) !important;
+/* 2. TRANSPARENCY CHAIN — clear all Streamlit intermediate layers */
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stMainBlockContainer"],
+[data-testid="stVerticalBlock"],
+[data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stHorizontalBlock"],
+[data-testid="column"],
+section.main, .main, .block-container {
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
-/* ═══════════════════════════════════════════
-   HEADINGS — gradient text
-   ═══════════════════════════════════════════ */
-h1, h2, h3 {
-    background: linear-gradient(135deg, #a78bfa, #f472b6, #60a5fa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 700;
-    letter-spacing: -0.3px;
+/* 3. HEADER / TOOLBAR — glass-ify the black bar */
+[data-testid="stHeader"],
+header[data-testid="stHeader"] {
+    background: rgba(8,8,24,0.65) !important;
+    backdrop-filter: blur(22px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.45) !important;
+}
+[data-testid="stToolbar"],
+[data-testid="stToolbarActions"],
+[data-testid="MainMenu"] {
+    background: transparent !important;
 }
 
-/* ═══════════════════════════════════════════
-   GLASS MIXIN APPLIED TO STREAMLIT CONTAINERS
-   ═══════════════════════════════════════════ */
-/* Main content area */
-.main .block-container {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    box-shadow: 0 8px 40px 0 rgba(0, 0, 0, 0.40);
-    padding: 2rem 2.5rem !important;
-    margin-top: 1rem;
-}
-
-/* Sidebar glass panel */
+/* 4. SIDEBAR — frosted glass */
 [data-testid="stSidebar"] {
-    background: rgba(13, 13, 26, 0.55) !important;
-    backdrop-filter: blur(20px) saturate(160%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.4) !important;
+    background: rgba(6,6,26,0.70) !important;
+    backdrop-filter: blur(26px) saturate(190%) !important;
+    -webkit-backdrop-filter: blur(26px) saturate(190%) !important;
+    border-right: 1px solid rgba(255,255,255,0.09) !important;
+    box-shadow: 4px 0 44px rgba(0,0,0,0.55) !important;
+}
+[data-testid="stSidebarContent"],
+[data-testid="stSidebarUserContent"],
+[data-testid="stSidebarHeader"] {
+    background: transparent !important;
 }
 
-/* ═══════════════════════════════════════════
-   PLOTLY CHART — glass card
-   ═══════════════════════════════════════════ */
+/* 5. PLOTLY CHARTS — floating glass cards */
+[data-testid="stPlotlyChart"],
 .stPlotlyChart {
-    background: rgba(255, 255, 255, 0.06) !important;
-    backdrop-filter: blur(12px) saturate(150%);
-    -webkit-backdrop-filter: blur(12px) saturate(150%);
-    border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow:
-        0 8px 32px 0 rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                box-shadow 0.3s ease;
-    padding: 8px;
+    background: rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(14px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(180%) !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+    border-top: 1px solid rgba(255,255,255,0.24) !important;
+    border-left: 1px solid rgba(255,255,255,0.18) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    overflow: hidden !important;
+    transition: transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275),
+                box-shadow 0.35s ease !important;
+    padding: 6px !important;
 }
+[data-testid="stPlotlyChart"]:hover,
 .stPlotlyChart:hover {
-    transform: translateY(-4px) scale(1.005);
-    box-shadow:
-        0 16px 48px 0 rgba(0, 0, 0, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.20);
+    transform: translateY(-5px) scale(1.006) !important;
+    box-shadow: 0 22px 60px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.20) !important;
+}
+/* Plotly internal svgs must be transparent */
+.js-plotly-plot .plotly .main-svg,
+.js-plotly-plot .plotly {
+    background: transparent !important;
 }
 
-/* ═══════════════════════════════════════════
-   DATA TABLE / EDITOR — glass card
-   ═══════════════════════════════════════════ */
-.stDataFrame, [data-testid="stDataEditor"] {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(12px) saturate(150%);
-    -webkit-backdrop-filter: blur(12px) saturate(150%);
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.10) !important;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
+/* 6. DATA EDITOR / TABLE */
+[data-testid="stDataEditor"],
+[data-testid="stDataFrame"],
+.stDataFrame {
+    background: rgba(255,255,255,0.055) !important;
+    backdrop-filter: blur(12px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-top: 1px solid rgba(255,255,255,0.22) !important;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.10) !important;
+    overflow: hidden !important;
 }
 
-/* ═══════════════════════════════════════════
-   WIDGETS — glass style
-   ═══════════════════════════════════════════ */
-/* Selectbox, date input, text input */
-[data-testid="stSelectbox"] > div,
-[data-testid="stDateInput"] > div,
-[data-testid="stTextInput"] > div {
-    background: rgba(255, 255, 255, 0.06) !important;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+/* 7. INPUTS (selectbox, date, text, number) */
+[data-baseweb="select"] > div,
+[data-baseweb="input"],
+[data-baseweb="input"] input,
+input[type="text"], input[type="number"],
+textarea {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
     border-radius: 10px !important;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: rgba(255,255,255,0.92) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
 }
-[data-testid="stSelectbox"] > div:focus-within,
-[data-testid="stTextInput"] > div:focus-within {
-    border-color: rgba(167, 139, 250, 0.55) !important;
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18), inset 0 1px 0 rgba(255,255,255,0.12);
+[data-baseweb="select"] > div:focus-within,
+[data-baseweb="input"]:focus-within {
+    border-color: rgba(139,92,246,0.65) !important;
+    box-shadow: 0 0 0 3px rgba(139,92,246,0.22) !important;
+}
+/* Dropdown popup */
+[data-baseweb="popover"] ul,
+[data-baseweb="menu"] {
+    background: rgba(12,10,38,0.92) !important;
+    backdrop-filter: blur(22px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 18px 44px rgba(0,0,0,0.55) !important;
 }
 
-/* Sliders */
-[data-testid="stSlider"] {
-    padding: 4px 0;
-}
-
-/* Buttons */
-.stButton > button {
-    background: rgba(139, 92, 246, 0.20) !important;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(167, 139, 250, 0.35) !important;
+/* 8. BUTTONS */
+.stButton > button,
+[data-testid="baseButton-secondary"],
+[data-testid="baseButton-primary"] {
+    background: rgba(139,92,246,0.18) !important;
+    border: 1px solid rgba(167,139,250,0.38) !important;
+    border-top: 1px solid rgba(167,139,250,0.55) !important;
     border-radius: 10px !important;
     color: rgba(255,255,255,0.92) !important;
     font-family: 'Outfit', sans-serif !important;
     font-weight: 500 !important;
-    letter-spacing: 0.2px;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255,255,255,0.10);
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    box-shadow: 0 4px 16px rgba(139,92,246,0.22), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+    transition: all 0.25s ease !important;
 }
-.stButton > button:hover {
-    background: rgba(139, 92, 246, 0.35) !important;
-    border-color: rgba(167, 139, 250, 0.60) !important;
-    box-shadow: 0 6px 25px rgba(139, 92, 246, 0.30), inset 0 1px 0 rgba(255,255,255,0.15);
-    transform: translateY(-1px);
+.stButton > button:hover,
+[data-testid="baseButton-secondary"]:hover,
+[data-testid="baseButton-primary"]:hover {
+    background: rgba(139,92,246,0.35) !important;
+    border-color: rgba(167,139,250,0.65) !important;
+    box-shadow: 0 8px 28px rgba(139,92,246,0.38), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+    transform: translateY(-2px) !important;
 }
-.stButton > button[kind="primary"] {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.50), rgba(236, 72, 153, 0.40)) !important;
-    border-color: rgba(167, 139, 250, 0.50) !important;
-}
-
-/* ═══════════════════════════════════════════
-   METRIC CARDS
-   ═══════════════════════════════════════════ */
-[data-testid="stMetric"] {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(12px) saturate(150%);
-    -webkit-backdrop-filter: blur(12px) saturate(150%);
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.10);
-    padding: 1rem 1.2rem;
+[data-testid="baseButton-primary"] {
+    background: linear-gradient(135deg,rgba(139,92,246,0.55),rgba(236,72,153,0.42)) !important;
+    border-color: rgba(167,139,250,0.55) !important;
 }
 
-/* ═══════════════════════════════════════════
-   SPINNER / STATUS MESSAGES
-   ═══════════════════════════════════════════ */
-[data-testid="stStatusWidget"],
-[data-testid="stNotification"] {
-    background: rgba(255,255,255,0.06) !important;
-    backdrop-filter: blur(12px);
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.10);
-}
-
-/* ═══════════════════════════════════════════
-   DIVIDERS
-   ═══════════════════════════════════════════ */
-hr {
-    border: none;
-    border-top: 1px solid rgba(255,255,255,0.08) !important;
-    margin: 1.5rem 0;
-}
-
-/* ═══════════════════════════════════════════
-   RADIO BUTTONS
-   ═══════════════════════════════════════════ */
+/* 9. RADIO — pill buttons */
+[data-testid="stRadio"] > div { gap: 8px !important; }
 [data-testid="stRadio"] label {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 8px;
-    padding: 2px 10px;
-    transition: background 0.2s ease;
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: 20px !important;
+    padding: 4px 14px !important;
+    transition: all 0.2s ease !important;
+}
+[data-testid="stRadio"] label:hover {
+    background: rgba(139,92,246,0.16) !important;
+    border-color: rgba(167,139,250,0.40) !important;
 }
 [data-testid="stRadio"] label:has(input:checked) {
-    background: rgba(139, 92, 246, 0.25);
-    border-color: rgba(167, 139, 250, 0.45);
+    background: rgba(139,92,246,0.32) !important;
+    border-color: rgba(167,139,250,0.60) !important;
+    box-shadow: 0 0 14px rgba(139,92,246,0.30) !important;
 }
 
-/* ═══════════════════════════════════════════
-   SCROLLBAR
-   ═══════════════════════════════════════════ */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+/* 10. TYPOGRAPHY */
+html, body, div, span, p, label, [class*="css"] {
+    font-family: 'Outfit', sans-serif !important;
+}
+h1, h2, h3, h4, h5 {
+    background: linear-gradient(135deg, #c4b5fd, #f9a8d4, #93c5fd) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.4px !important;
+}
+p, label { color: rgba(255,255,255,0.85) !important; }
+
+/* 11. SLIDER */
+[data-testid="stSlider"] [role="slider"] {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899) !important;
+    box-shadow: 0 0 14px rgba(139,92,246,0.55) !important;
+}
+
+/* 12. ALERTS */
+[data-testid="stAlert"], [data-baseweb="notification"] {
+    background: rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(12px) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+}
+
+/* 13. DIVIDERS — gradient line */
+hr {
+    border: none !important;
+    height: 1px !important;
+    background: linear-gradient(90deg,transparent,rgba(139,92,246,0.45),rgba(236,72,153,0.35),transparent) !important;
+    margin: 1.8rem 0 !important;
+}
+
+/* 14. SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-    background: rgba(139, 92, 246, 0.35);
-    border-radius: 3px;
+    background: linear-gradient(180deg,rgba(139,92,246,0.52),rgba(236,72,153,0.42));
+    border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(167, 139, 250, 0.55);
+    background: linear-gradient(180deg,rgba(167,139,250,0.72),rgba(244,114,182,0.62));
+}
+
+/* 15. SPINNER */
+[data-testid="stSpinner"] > div {
+    border-top-color: #a78bfa !important;
 }
 </style>
 """, unsafe_allow_html=True)
