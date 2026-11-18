@@ -1758,89 +1758,112 @@ function PairReport({ results, xray, onRestart, onHome }) {
 }
 
 /* ------------------------------ 光譜對話（主體驗） --------------------------- */
-/* 引導者「小譯」以一問一答，帶使用者依序走過光譜上的五個位置。內容為預先寫好的腳本。 */
+/* 整段對話只有一個場景、一個問題：「連假快到了，我們來排一下行程好不好？」
+ * 光譜上的五個位置，就是對這同一個問題的五種回答。
+ * 每一站固定三步：回答的人心裡在想什麼 → 問的人聽到什麼 → 兩邊可以怎麼做。
+ * 文中的「他」泛指回答的人，不分性別；開口的一方一律稱「問的人」。 */
 
-/* 走訪順序：任務端兩站 → 情感端兩站 → 回到中間。x 是該位置在光譜橫軸上的百分比。
- * 文中的「他」泛指站在這個位置的人，不分性別；另一方一律稱「對方」。 */
+const CHAT_QUESTION = "連假快到了，我們來排一下行程好不好？";
+
 const STOPS = [
   {
     id: "outsource", name: "任務外包", color: "#3B8C8C", x: 10, side: "任務端", motto: "用「做事」代替「在場」",
-    line: "行程你比較會排，交給你決定就好，錢我出。",
+    line: "你比較會排，你決定就好，錢我出。",
+    heart: "我把事情做好，就是在乎你。",
     feel: [
-      { label: "很體貼啊，哪裡有問題？", reply: "對說的人來說，這真的是體貼。問題不在心意，而在這份心意寄到的時候，包裝變了。" },
-      { label: "有點被丟下的感覺", reply: "你抓到了。聽的人常常就是這個感覺：事情被交辦了，人卻沒有來。" },
-      { label: "這句話我常說", reply: "那你一定是很可靠的人。接下來不是要糾正你，是想讓你看看這句話寄到對方手上的樣子。" },
+      { label: "滿好的啊，省事", reply: "確實省事，而且他是真心的。不過有些人問這句話，要的不是省事。往下看就知道。" },
+      { label: "有點被丟下", reply: "你抓到了。事情被接走了，人卻沒有來。" },
+      { label: "說不上來，怪怪的", reply: "那個怪怪的感覺很準。他答的是「誰來做」，但問的人問的其實是另一件事。" },
     ],
-    why: ["站在這裡的人，從小學到的是：愛一個人，就是把事情扛好、把錢賺夠、不給對方添麻煩。", "所以「你排，我出錢」在他的字典裡是信任，也是最有效率的分工。他沒有在偷懶，他是真的覺得這樣對對方最好。"],
-    heard: ["對方聽到的卻是：「這是你的專案，不是我們的。」", "對方查了三個晚上的民宿，想要的不是有人買單，而是有人坐下來一起期待。被外包的不只是行程，還有「一起」這兩個字。"],
-    near: ["想靠近他，別說「你都不參與」，那對他來說太模糊了。給他具體的一塊：「第二天早上交給你排，我想去一個你喜歡的地方。」", "如果你就站在這裡：不用全包，認領一小塊就好。「民宿傳給我看，早餐我來找。」"],
-    learned: "原來那句「你決定就好」裡面，裝的是信任。看得見這一點，就比較不會只聽到敷衍。",
+    why: ["他心裡想的是：你比我會排，交給你最不會出錯；我負責出錢，這樣分工最公平。", "在他學到的語言裡，把事情安排好、把錢付掉，就是在乎。這句話對他來說是信任，不是敷衍。"],
+    heard: ["但問的人說的是「我們來排行程」，重點其實在「我們」。", "所以這個回答聽起來像：「這是你的事，做完再通知我。」行程有人負責了，一起期待的那個人卻不見了。"],
+    todo: ["如果你是問的人：別說「你都不參與」，他聽不懂。給他具體的一塊：「第二天早上交給你排，帶我去一個你喜歡的地方。」", "如果你是回答的人：不用全包，認領一小塊就好：「民宿傳給我看，早餐我來找。」"],
+    recap: "任務外包的人不是不在乎，是用做事在說在乎。",
+    step: "下一次，試著認領一小塊。",
+    learned: "下次再聽到「你決定就好」，也許可以先聽見裡面的信任，再告訴他，你要的是一起。",
   },
   {
     id: "drift", name: "隨波逐流", color: "#6E9FB0", x: 30, side: "任務端", motto: "用「配合」代替「自己」",
     line: "都可以啊，看你，你喜歡就好。",
+    heart: "我不添麻煩，就是在乎你。",
     feel: [
-      { label: "很好相處啊", reply: "一開始真的是。但想像一下，連續三年，每一餐、每一趟旅行、每一個決定，都是你一個人在選。" },
-      { label: "久了會有點累", reply: "對，那種累有個名字，叫決策的孤獨。所有選擇的重量，都在一個人身上。" },
-      { label: "我只是不想起衝突", reply: "我懂。很多說「都可以」的人不是沒有想法，而是很早就學會：有想法，會帶來麻煩。" },
+      { label: "很好相處啊", reply: "一次兩次是。但如果每一餐、每一趟旅行都是這個回答，所有決定就都落在問的人身上了。" },
+      { label: "那我還問你幹嘛", reply: "對。問的人想要的是一個意見，拿到的卻是問題被原封不動還回來。" },
+      { label: "他是不是其實不想去", reply: "很多人會這樣猜。沒有意見，很容易被聽成沒有興趣。" },
     ],
-    why: ["站在這裡的人，可能在一個「乖、不吵、配合」才會被喜歡的環境裡長大。", "久了，他不是在隱藏自己的喜好，而是真的不太確定自己喜歡什麼。說「都可以」的當下，他是真心想讓對方開心。"],
-    heard: ["對方會開始想：「我到底在跟誰談戀愛？」", "當一個人永遠沒有意見，對方面對的就像一面鏡子，只照得見自己。久了會覺得孤單，甚至好奇：如果沒有我，這個人自己想去哪裡？"],
-    near: ["想靠近他，別問開放題。給他小小的二選一，然後認真對待他的答案：「拉麵還是咖哩？你選的我都想試。」讓他慢慢發現，有想法是安全的。", "如果你就站在這裡：說「都可以」之前停三秒，找出一個再小都好的偏好，說出來。「我今天想吃熱的。」這樣就夠了。"],
-    learned: "原來「都可以」的背後，常常是一個很怕添麻煩的人。",
+    why: ["他心裡想的是：我沒有特別的想法，你開心最重要，我不想因為我的意見讓你為難。", "很多站在這裡的人，從小是靠「乖、不吵、配合」被喜歡的。久了，他不是在藏自己的喜好，而是真的不太確定自己喜歡什麼。"],
+    heard: ["問的人聽到的是：「這件事我不參與，你自己決定。」", "而且會開始好奇：這個人自己到底想去哪裡？跟一個永遠沒有意見的人在一起，像是對著鏡子講話。"],
+    todo: ["如果你是問的人：別問開放題。給他二選一，然後認真採用他的答案：「海邊還是山上？你選的我都想去。」", "如果你是回答的人：說「都可以」之前停三秒，找出一個再小都好的偏好：「我想找一天睡到自然醒。」"],
+    recap: "隨波逐流的人不是沒有心，是怕自己的想法變成別人的麻煩。",
+    step: "下一次，先說出一個小小的偏好。",
+    learned: "下次再聽到「都可以」，也許可以多等他三秒，讓他知道他的想法不是麻煩。",
   },
   {
     id: "quiet", name: "安靜離職", color: "#C2697B", x: 90, side: "情感端", motto: "把感受「收起來」",
-    line: "沒事，我自己處理好了，你忙你的。",
+    line: "沒關係，我自己排好了，你忙你的。",
+    heart: "我不再期待，就不會痛。",
     feel: [
-      { label: "聽起來很獨立、很懂事", reply: "大部分人都這麼想，所以這是光譜上最容易被錯過的位置。" },
-      { label: "感覺其實有事", reply: "你的天線很好。「處理好了」和「沒事」，其實是兩件不一樣的事。" },
-      { label: "我也常這樣說", reply: "那你大概已經試過很多次了吧。先跟你說一聲：辛苦了。" },
+      { label: "太好了，好貼心", reply: "大部分人都會這樣想，所以這是光譜上最容易被錯過的位置。" },
+      { label: "咦，怎麼沒找我一起", reply: "你的天線很好。「排好了」聽起來是好消息，但裡面少了一個邀請。" },
+      { label: "是不是在生我的氣", reply: "不一定是生氣。是比生氣更安靜一點的東西，往下看。" },
     ],
-    why: ["站在這裡的人，不是一開始就這樣的。他說過、暗示過，也吵過。", "每一次沒被接住，他就把期待調低一格。到最後，自己處理，比再失望一次不痛。這句話不是冷淡，是他保護自己的最後一道門。"],
-    heard: ["對方聽到的是好消息：「沒事、很獨立、我們很穩定。」於是安心地繼續忙。", "沒有爭吵被當成了感情好。但其實，還願意抱怨的人，才是還在投資的人。"],
-    near: ["想靠近他，不要追問「到底怎麼了」逼他解釋。出現就好：「不用現在講，我買宵夜過去，在旁邊陪你。」", "如果你就站在這裡：你的需要沒有消失，只是還沒被聽懂。再說一次，但這次附上說明書：「我不需要你解決，我需要你聽我講十分鐘。」"],
-    learned: "原來「沒事」是一扇快要關上的門，不是一句報平安。",
+    why: ["他心裡想的是：以前我約過你一起排，你說「你決定就好」。幾次之後我學會不要問，自己來比較不會失望。", "所以這句話不是體貼，也不是賭氣，而是他把期待收起來之後，剩下的禮貌。"],
+    heard: ["問的人聽到的卻是好消息：行程有了、對方沒抱怨、一切順利。", "沒有爭吵被當成了感情好。但還願意抱怨的人，才是還抱著期待的人。安靜，反而是該靠近的時候。"],
+    todo: ["如果你是問的人：不要只說「謝謝你排好了」。走過去看：「給我看你排了什麼？有哪一段我可以加進來？」", "如果你是回答的人：你的期待沒有消失，只是沒被聽懂。再說一次，這次說得具體一點：「我想要你跟我一起選民宿，二十分鐘就好。」"],
+    recap: "安靜離職的人不是沒事，是不想再失望一次。",
+    step: "下一次，試著再邀對方一次，說得具體一點。",
+    learned: "下次再聽到「我自己來就好」，也許可以先不要鬆一口氣，而是走過去看看。",
   },
   {
     id: "interrogate", name: "高壓逼問", color: "#D9414F", x: 70, side: "情感端", motto: "把感受「丟出去」",
-    line: "你現在就給我講清楚！我現在就要知道答案！",
+    line: "你到底想不想去？現在就給我一個答案！",
+    heart: "我抓緊一點，才不會失去你。",
     feel: [
-      { label: "好有壓迫感", reply: "對，身體會比腦袋先反應：心跳加快、想逃，或整個人當機。這時候說出口的，都不會是真心話。" },
-      { label: "但事情總要講清楚吧", reply: "要講清楚，這個需要完全合理。只是「要談」可以堅持，「現在」可以放手。" },
-      { label: "我急起來也會這樣", reply: "謝謝你願意承認。這通常不是兇，是太害怕失去。" },
+      { label: "我只是問個行程而已啊", reply: "對，問的人會覺得莫名其妙：一個普通的問題，換來一場質問。" },
+      { label: "壓力好大，不想講了", reply: "身體會比腦袋先反應：想逃，或整個人當機。這時候說出口的，都不會是真心話。" },
+      { label: "他是不是累積很久了", reply: "你看得很準。這句話通常不是針對今天這一題。" },
     ],
-    why: ["站在這裡的人看起來最強勢，其實是光譜上最慌的人。平常再冷靜的人，慌起來也可能滑到這裡。", "他感覺到對方在遠離，卻不知道為什麼，那種不確定讓他受不了。逼問是他唯一會的求救方式：「拜託告訴我發生什麼事，我才知道怎麼修。」"],
-    heard: ["對方聽到的是：「我被審問了。」牆會立刻升起來。", "更可惜的是，人對一段感情的記憶，常常由最後一幕決定。一場難堪的逼問，會回頭把之前所有的好，都重新上色。"],
-    near: ["想靠近他，他需要的是一個確定的時間，而不是立刻的答案：「我現在講不出來，但明天晚上，我一定跟你講完。」", "如果你就站在這裡：先說出底下那句真話：「我很慌，我怕失去你。」然後把時間還給對方：「你什麼時候可以談？」"],
-    learned: "原來最兇的那一句話底下，是最害怕的那個人。",
+    why: ["他心裡想的是：這趟旅行提了好幾次都沒下文，我分不清你是忙，還是根本不想跟我去。", "那種不確定讓他很慌。他不知道怎麼說「我怕你不在乎」，一出口就變成了逼問。看起來最兇的人，常常是最害怕的人。"],
+    heard: ["問的人聽到的是：「我被審問了。」牆會立刻升起來，只想趕快結束這段對話。", "於是他更得不到答案，下次只好問得更用力。兩個人就這樣卡住。"],
+    todo: ["如果你是問的人：他要的不是立刻的答案，而是一個確定的時間：「我現在腦袋很亂。今晚九點我們坐下來排，我一定在。」", "如果你是回答的人：先說出底下那句真話，再把時間還給對方：「我有點怕你其實不想去。你什麼時候方便，我們好好講？」"],
+    recap: "高壓逼問的人不是想控制，是太怕失去。",
+    step: "下一次，先說出那句「我有點怕」。",
+    learned: "下次再被逼問，也許可以看見那句話底下的害怕，給他一個確定的時間。",
   },
   {
     id: "cocreate", name: "過程共謀", color: "#E8973A", x: 50, side: "交會區", motto: "有我，也有我們",
-    line: "民宿傳給我看看。第二天早上交給我，我想帶你去一個地方。",
+    line: "好啊，民宿傳給我看。第二天交給我排。",
+    heart: "有我，也有我們。",
     feel: [
-      { label: "聽了會很開心", reply: "因為這句話裡同時有兩個東西：一個有想法的「我」，和一個想一起的「我們」。" },
-      { label: "這也太理想了吧", reply: "它不是一種個性，是一個可以練習的動作。沒有人整天都站在這裡，包括我。" },
-      { label: "我想學這樣說", reply: "好消息是，它的配方很簡單。問我「可以怎麼靠近」就會告訴你。" },
+      { label: "聽了會開心", reply: "因為這個回答同時回了兩件事：「好，我要去」和「我想跟你一起弄」。" },
+      { label: "這也太理想了吧", reply: "它不是一種個性，只是一個動作。沒有人整天都站在這裡，包括我。" },
+      { label: "就這樣？好像也沒什麼", reply: "對，就這樣。它一點都不厲害。只是前面四站的人，都卡在某個地方，說不出這一句。" },
     ],
-    why: ["站在這裡的人不是比較會說話，而是同時守住了兩件事：知道自己要什麼，也好奇對方要什麼。", "他不把配合當成愛，也不把效率當成愛。"],
-    heard: ["對方聽到的是：「這是我們的事。」就這麼簡單。", "不用猜、不用一個人扛，也看得見眼前這個人是誰。"],
-    near: ["配方只有三步：說一個自己的想法，問一個對方的想法，認領一塊一起做。", "不必一次到位。從兩端的任何一個位置，往中間挪一小步，就夠了。"],
-    learned: "原來它不是天分，只是一個小小的、可以練習的動作。",
+    why: ["他心裡想的是：這是我們兩個的旅行。我想知道你喜歡什麼，我自己也有想去的地方。", "他同時守住了兩件事：有自己的想法，也好奇對方的想法。"],
+    heard: ["問的人聽到的是：「這是我們的事。」", "不用猜他想不想去，不用一個人扛，也看得見眼前這個人是誰。"],
+    todo: ["不管你是問的人還是回答的人，配方都一樣，只有三步：說一個自己的想法，問一個對方的想法，認領一塊一起做。", "不必一次到位。從任何一站，往中間挪一小步，就夠了。"],
+    recap: "過程共謀不是天分，是一個可以練習的小動作。",
+    step: "你已經站在中間了。記得偶爾回頭，等一等還在路上的人。",
+    learned: "那就從今天開始練習那三步：說一個想法、問一個想法、認領一塊。",
   },
 ];
 
-const CHAT_HOME = [
-  { id: "outsource", label: "你決定就好，我出錢", reply: "嗯，把事情交給信任的人。記下來了。", step: "你一開始選的是「你決定就好，我出錢」。下一次，試著多認領一小塊。" },
-  { id: "drift", label: "都可以啊，看你", reply: "嗯，以對方開心為優先。記下來了。", step: "你一開始選的是「都可以啊」。下一次，先說出一個小小的偏好。" },
-  { id: "quiet", label: "沒關係，我自己排就好", reply: "嗯，習慣自己來。記下來了。", step: "你一開始選的是「我自己排就好」。下一次，試著邀一個人進來。" },
-  { id: "cocreate", label: "我想去一個地方，你呢？", reply: "嗯，有自己的想法，也想聽對方的。記下來了。", step: "你一開始選的是「我想去一個地方，你呢？」。你已經站在交會區了，記得偶爾回頭，等一等還在路上的人。" },
+/* 開場選項的順序刻意打散，不照光譜排，避免看起來有「標準答案」。 */
+const CHAT_OPENERS = ["drift", "outsource", "cocreate", "quiet", "interrogate"];
+
+/* 每一站固定的三個提問，照順序出現。 */
+const CHAT_STEPS = [
+  { key: "why", label: "他心裡在想什麼？" },
+  { key: "heard", label: "那問的人聽到了什麼？" },
+  { key: "todo", label: "那兩邊可以怎麼做？" },
 ];
 
-const CHAT_QUESTIONS = [
-  { key: "why", label: "為什麼會這樣說？" },
-  { key: "heard", label: "對方聽到的是什麼？" },
-  { key: "near", label: "可以怎麼靠近？" },
+const STATION_LEAD = [
+  "第一站，在任務端。對同一個問題，站在這裡的人會這樣回答：",
+  "第二站，也在任務端。站在這裡的人會這樣回答：",
+  "前兩站的人，習慣用做事和配合來表達在乎。現在換到光譜的另一頭，情感端。這裡的人感受很多，差別在感受去了哪裡。第三站的人會這樣回答：",
+  "第四站，同樣在情感端。上一站把感受收起來，這一站剛好相反：",
+  "最後一站，回到光譜的中間，兩端會合的地方。站在這裡的人會這樣回答：",
 ];
 
 const g = (text) => ({ from: "guide", text });
@@ -1849,17 +1872,16 @@ function stationIntro(i, home) {
   const st = STOPS[i];
   return [
     { from: "station", stop: i },
-    g(["第一站，在任務端。站在這裡的人，常常這樣說：", "第二站，還在任務端，但往下走了一點。站在這裡的人，常常這樣說：", "現在換到光譜的另一頭，情感端。站在這裡的人，常常這樣說：", "第四站，同樣在情感端。站在這裡的人，慌起來會這樣說：", "最後一站，回到光譜的中間，兩端會合的地方。站在這裡的人會說："][i]),
+    g(STATION_LEAD[i]),
     { from: "quote", stop: i },
-    ...(home === st.id ? [g("這是你一開始選的位置。接下來的話，有一部分是說給你聽的。")] : []),
-    g("聽到這句話，你的第一個感覺是？"),
+    g(home === st.id ? "這跟你開場的回答是同一句。這一站，請你先站到對面，當一次問的人。聽到這個回答，你的感覺是？" : "假設開口問的人是你。聽到這個回答，你的感覺是？"),
   ];
 }
 
 function SpectrumChat({ onTheater, onHome }) {
   const [msgs, setMsgs] = useState([]);
   const [queue, setQueue] = useState([]);
-  const [stage, setStage] = useState({ kind: "intro", stop: -1, asked: [] });
+  const [stage, setStage] = useState({ kind: "intro", stop: -1, step: 0 });
   const [home, setHome] = useState(null);
   const started = useRef(false);
   const endRef = useRef(null);
@@ -1868,10 +1890,10 @@ function SpectrumChat({ onTheater, onHome }) {
     if (started.current) return;
     started.current = true;
     setQueue([
-      g("嗨，我是小譯。我的工作，是幫站在不同位置的人翻譯彼此的話。"),
-      g("接下來我想陪你沿著一條「溝通光譜」走一趟。光譜的一端是任務端：習慣用做事來表達在乎。另一端是情感端：習慣用感受來表達在乎。"),
-      g("我們先在任務端走兩站，再到情感端走兩站，最後回到中間。沒有好人壞人，也不分男女，同一個人在不同時候，會站到不同的位置。"),
-      g("出發前先問你一題：伴侶問「連假要去哪？」的時候，你最可能怎麼回？"),
+      g("嗨，我是小譯。我的工作，是幫想法不一樣的人翻譯彼此的話。"),
+      g("今天我們只用一個很小的場景。連假快到了，有人開口問另一半："),
+      { from: "scene" },
+      g("先別想太多。如果被問的人是你，你最可能怎麼回？"),
     ]);
   }, []);
 
@@ -1888,7 +1910,7 @@ function SpectrumChat({ onTheater, onHome }) {
   }, [queue]);
 
   useEffect(() => {
-    if (msgs.length > 2 && endRef.current) endRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    if (msgs.length > 3 && endRef.current) endRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [msgs, queue.length]);
 
   const send = (userText, guideMsgs, nextStage) => {
@@ -1898,52 +1920,98 @@ function SpectrumChat({ onTheater, onHome }) {
   };
 
   const ready = queue.length === 0 && msgs.length > 0;
+  const st = stage.stop >= 0 ? STOPS[stage.stop] : null;
+  const isLastStop = stage.stop === STOPS.length - 1;
   let options = [];
   if (ready && stage.kind === "intro") {
-    options = CHAT_HOME.map((h) => ({ label: h.label, run: () => { setHome(h.id); send(h.label, [g(h.reply), g("等一下走到你的位置時，我會提醒你。好，出發。"), ...stationIntro(0, h.id)], { kind: "feel", stop: 0, asked: [] }); } }));
+    options = CHAT_OPENERS.map((id) => {
+      const o = STOPS.find((x) => x.id === id);
+      return {
+        label: o.line,
+        run: () => {
+          setHome(id);
+          send(
+            o.line,
+            [
+              g("收到，你的回答先放在我這裡，等一下會用到。"),
+              g("其實同一個問題，至少有五種回答。它們排在一條光譜上：一端是任務端，習慣用做事來表達在乎；另一端是情感端，習慣用感受來表達在乎；中間是兩邊會合的地方。"),
+              g("我們一站一站聽。每一站我都會告訴你三件事：回答的人心裡在想什麼、問的人聽到了什麼、兩邊可以怎麼做。"),
+              ...stationIntro(0, id),
+            ],
+            { kind: "feel", stop: 0, step: 0 }
+          );
+        },
+      };
+    });
   } else if (ready && stage.kind === "feel") {
-    const st = STOPS[stage.stop];
-    options = st.feel.map((f) => ({ label: f.label, run: () => send(f.label, [g(f.reply), g("關於這個位置，你可以問我下面任何一題，順序隨你。")], { ...stage, kind: "explore" }) }));
-  } else if (ready && stage.kind === "explore") {
-    const st = STOPS[stage.stop];
-    const last = stage.stop === STOPS.length - 1;
-    options = CHAT_QUESTIONS.filter((q) => !stage.asked.includes(q.key)).map((q) => ({ label: q.label, run: () => send(q.label, st[q.key].map(g), { ...stage, asked: [...stage.asked, q.key] }) }));
-    if (stage.asked.length > 0) {
-      options.push({
-        label: last ? "五站都走完了" : "去下一站",
+    options = st.feel.map((f) => ({ label: f.label, run: () => send(f.label, [g(f.reply)], { kind: "ask", stop: stage.stop, step: 0 }) }));
+  } else if (ready && stage.kind === "ask") {
+    const q = CHAT_STEPS[stage.step];
+    const lastStep = stage.step === CHAT_STEPS.length - 1;
+    options = [
+      {
+        label: q.label,
+        run: () => send(q.label, [...st[q.key].map(g), ...(lastStep ? [g(`這一站想留給你的一句話：${st.recap}`)] : [])], lastStep ? { kind: "next", stop: stage.stop, step: 0 } : { kind: "ask", stop: stage.stop, step: stage.step + 1 }),
+      },
+    ];
+  } else if (ready && stage.kind === "next") {
+    const mine = STOPS.find((x) => x.id === home);
+    options = [
+      {
+        label: isLastStop ? "五站都走完了" : "去下一站",
         next: true,
         run: () =>
-          last
-            ? send("五站都走完了", [g("謝謝你陪我走完。"), g("你有沒有發現：前四個位置的人，其實都在保護某樣東西。怕添麻煩、怕起衝突、怕再失望、怕失去。沒有一個是不愛。"), g("走完這一趟，哪一個位置，你現在比較能理解了？")], { kind: "final", stop: stage.stop, asked: [] })
-            : send("去下一站", stationIntro(stage.stop + 1, home), { kind: "feel", stop: stage.stop + 1, asked: [] }),
-      });
-    }
+          isLastStop
+            ? send(
+                "五站都走完了",
+                [
+                  g(`回頭看一下。同一句「${CHAT_QUESTION}」，五個人給了五種回答。每一種回答底下，都有一句沒說出口的話：`),
+                  { from: "recap" },
+                  g("除了中間那一種，其他四種回答都不是不在乎。只是在乎的方式，寄到對方手上的時候走了樣。"),
+                  g(`你開場的回答是「${mine.line}」，落在「${mine.name}」。${mine.step}`),
+                  g("最後想問你：哪一站的人，是你原本最不懂、現在比較懂的？"),
+                ],
+                { kind: "final", stop: stage.stop, step: 0 }
+              )
+            : send("去下一站", stationIntro(stage.stop + 1, home), { kind: "feel", stop: stage.stop + 1, step: 0 }),
+      },
+    ];
   } else if (ready && stage.kind === "final") {
-    options = STOPS.map((st) => ({ label: st.name, run: () => send(st.name, [g(st.learned), g("理解不等於同意，也不代表你要照單全收。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。"), g("還有，人不會永遠待在同一個位置。累的時候、怕的時候、被好好愛著的時候，我們都會移動。"), g(CHAT_HOME.find((h) => h.id === home).step), g("今天就到這裡。謝謝你願意花時間，去懂跟你不一樣的人。")], { kind: "done", stop: stage.stop, asked: [] }) }));
+    options = STOPS.map((o) => ({
+      label: o.name,
+      run: () =>
+        send(
+          o.name,
+          [g(o.learned), g("理解不等於同意，也不代表要照單全收。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。"), g("還有，人不會永遠待在同一個位置。累的時候、慌的時候、被好好愛著的時候，我們都會移動。"), g("今天就到這裡。謝謝你願意花時間，去懂跟你不一樣的人。")],
+          { kind: "done", stop: stage.stop, step: 0 }
+        ),
+    }));
   }
 
   const current = stage.stop;
+  const allSeen = stage.kind === "final" || stage.kind === "done";
   return (
     <div className="mx-auto flex max-w-xl flex-col px-4 pb-16 sm:px-6">
       <div className="sticky top-0 z-10 -mx-4 border-b border-sand-800 bg-sand-950/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex items-center justify-between text-xs text-sand-500">
           <button type="button" onClick={onHome} className="hover:text-sand-300">← 首頁</button>
-          <span>{current < 0 ? "溝通光譜之旅" : `第 ${current + 1} 站／共 ${STOPS.length} 站`}</span>
+          <span>{current < 0 ? "一個問題，五種回答" : `第 ${current + 1} 站／共 ${STOPS.length} 站`}</span>
         </div>
         <div className="mt-1 flex justify-between text-[10px] text-sand-500"><span>任務端</span><span>情感端</span></div>
         <ol className="relative mt-1 h-9" aria-label="光譜上的五個位置">
           <span aria-hidden="true" className="absolute left-0 right-0 top-[5px] h-1 rounded-full bg-gradient-to-r from-cyan-400 via-amber-400 to-rose-400 opacity-50" />
-          {STOPS.map((st, i) => {
-            const seen = i < current || stage.kind === "final" || stage.kind === "done";
+          {STOPS.map((o, i) => {
+            const seen = i < current || allSeen;
             const on = i === current && !seen;
             return (
-              <li key={st.id} aria-current={on ? "step" : undefined} className="absolute top-0 flex -translate-x-1/2 flex-col items-center gap-1" style={{ left: `${st.x}%` }}>
-                <span className="h-3.5 w-3.5 rounded-full border-2" style={{ borderColor: st.color, background: seen || on ? st.color : "#FAF3E7", boxShadow: on ? `0 0 0 4px ${st.color}44` : "none" }} />
-                <span className={`whitespace-nowrap text-[11px] ${on ? "font-semibold text-sand-100" : seen ? "text-sand-300" : "text-sand-500"}`}>{st.name}</span>
+              <li key={o.id} aria-current={on ? "step" : undefined} className="absolute top-0 flex -translate-x-1/2 flex-col items-center gap-1" style={{ left: `${o.x}%` }}>
+                <span className="h-3.5 w-3.5 rounded-full border-2" style={{ borderColor: o.color, background: seen || on ? o.color : "#FAF3E7", boxShadow: on ? `0 0 0 4px ${o.color}44` : "none" }} />
+                <span className={`whitespace-nowrap text-[11px] ${on ? "font-semibold text-sand-100" : seen ? "text-sand-300" : "text-sand-500"}`}>{o.name}</span>
               </li>
             );
           })}
         </ol>
+        <p className="mt-1 truncate text-center text-[11px] text-sand-500">同一個問題：「{CHAT_QUESTION}」</p>
       </div>
 
       <div className="mt-5 flex flex-col gap-3" role="log" aria-live="polite">
@@ -1951,21 +2019,46 @@ function SpectrumChat({ onTheater, onHome }) {
           if (m.from === "user") {
             return <div key={i} className="fade-up flex justify-end"><div className="max-w-[82%] rounded-3xl rounded-br-md bg-gradient-to-r from-[#A8432F] to-[#B85C1C] px-4 py-2.5 text-[15px] leading-relaxed text-[#FFF8EC]">{m.text}</div></div>;
           }
-          if (m.from === "station") {
-            const st = STOPS[m.stop];
+          if (m.from === "scene") {
             return (
-              <div key={i} className="fade-up my-3 flex items-center gap-3 rounded-3xl border bg-sand-900 p-4 shadow-warm" style={{ borderColor: `${st.color}88` }}>
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold text-[#FFF8EC]" style={{ background: st.color }}>{m.stop + 1}</span>
+              <div key={i} className="fade-up ml-10 max-w-[82%] rounded-3xl border border-sand-700 bg-sand-800/60 px-4 py-3">
+                <div className="text-xs text-sand-500">有人問</div>
+                <p className="font-display mt-0.5 text-[17px] leading-relaxed text-sand-50">「{CHAT_QUESTION}」</p>
+              </div>
+            );
+          }
+          if (m.from === "station") {
+            const o = STOPS[m.stop];
+            return (
+              <div key={i} className="fade-up my-3 flex items-center gap-3 rounded-3xl border bg-sand-900 p-4 shadow-warm" style={{ borderColor: `${o.color}88` }}>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold text-[#FFF8EC]" style={{ background: o.color }}>{m.stop + 1}</span>
                 <div>
-                  <div className="font-display text-xl font-semibold text-sand-50">{st.name}</div>
-                  <div className="text-sm text-sand-400">{st.side}・{st.motto}</div>
+                  <div className="font-display text-xl font-semibold text-sand-50">{o.name}</div>
+                  <div className="text-sm text-sand-400">{o.side}・{o.motto}</div>
                 </div>
               </div>
             );
           }
           if (m.from === "quote") {
-            const st = STOPS[m.stop];
-            return <div key={i} className="fade-up ml-10 max-w-[82%] rounded-3xl border-l-4 px-4 py-3" style={{ borderColor: st.color, background: `${st.color}1f` }}><p className="font-display text-[17px] leading-relaxed text-sand-50">「{st.line}」</p></div>;
+            const o = STOPS[m.stop];
+            return (
+              <div key={i} className="fade-up ml-10 max-w-[82%] rounded-3xl border-l-4 px-4 py-3" style={{ borderColor: o.color, background: `${o.color}1f` }}>
+                <div className="text-xs leading-relaxed text-sand-500">問：{CHAT_QUESTION}</div>
+                <p className="font-display mt-1 text-[17px] leading-relaxed text-sand-50"><span className="mr-1 text-xs text-sand-500">答：</span>「{o.line}」</p>
+              </div>
+            );
+          }
+          if (m.from === "recap") {
+            return (
+              <ul key={i} className="fade-up ml-10 space-y-2 rounded-3xl border border-sand-800 bg-sand-900 p-4 shadow-warm">
+                {[...STOPS].sort((p, q) => p.x - q.x).map((o) => (
+                  <li key={o.id} className="flex items-start gap-2 text-sm leading-relaxed">
+                    <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: o.color }} />
+                    <span><span className="font-semibold text-sand-100">{o.name}</span><span className="text-sand-400">：{o.heart}</span></span>
+                  </li>
+                ))}
+              </ul>
+            );
           }
           const first = i === 0 || msgs[i - 1].from !== "guide";
           return (
@@ -1987,7 +2080,7 @@ function SpectrumChat({ onTheater, onHome }) {
 
       {options.length > 0 && (
         <div className="fade-up mt-5 flex flex-col items-end gap-2">
-          <div className="text-xs text-sand-500">選一個回覆</div>
+          <div className="text-xs text-sand-500">{options.length > 1 ? "選一個回覆" : "點一下繼續"}</div>
           {options.map((o) => (
             <button key={o.label} type="button" onClick={o.run} className={`max-w-[88%] rounded-3xl border px-4 py-2.5 text-right text-[15px] leading-relaxed transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${o.next ? "border-sand-600 bg-sand-800 font-medium text-sand-100" : "border-amber-400 bg-amber-400/10 text-amber-200 hover:bg-amber-400/20"}`}>
               {o.label}{o.next && <ArrowRight className="ml-1 inline h-4 w-4" />}
