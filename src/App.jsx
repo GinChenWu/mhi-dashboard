@@ -866,10 +866,10 @@ function Landing({ onStart, onChat }) {
           <span className="mt-2 block bg-gradient-to-r from-cyan-300 via-violet-300 to-amber-300 bg-clip-text text-2xl text-transparent sm:text-4xl">對話版</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-sand-300">
-          <span className="font-display text-lg text-sand-100">嗨，歡迎你來。先坐一下，喝口熱的。</span><br />
-          你有沒有過這種時候：明明很在乎一個人，說出口的話卻讓對方難過；或是對方說了一句話，你想了很久還是不懂。<br />
-          那多半不是誰不夠好，只是每個人表達在乎的方式不太一樣。<br />
-          這裡沒有測驗，也沒有對錯。只想陪你慢慢認識五種說話的方式。也許你會在裡面看見自己，也看見你在乎的那個人。
+          <span className="font-display text-lg text-sand-100">明明很在乎，話一出口卻變了樣。</span><br />
+          你是不是也遇過？想關心對方，結果吵起來；對方說「沒事」，你卻越想越不對勁。<br />
+          很多時候沒有誰對誰錯，只是兩個人習慣的說話方式不一樣。<br />
+          花十分鐘，一起看看五種常見的說話方式吧。
         </p>
         <div className="mx-auto mt-8 h-1.5 max-w-md rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-rose-400 opacity-80" />
         <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-sand-500"><span>任務端・先看事情</span><span>先看感受・情感端</span></div>
@@ -1809,9 +1809,9 @@ function stationIntro(i, home) {
   return [
     { from: "station", stop: i },
     ...st.where.map(g),
-    g("對同一句話，站在這裡的人會這樣回應。開口的人又追了一句，你看看接下來怎麼發展："),
+    g("同樣那句話，這一站的人會這樣回。你看看接下來怎麼發展："),
     { from: "quote", stop: i },
-    g(home === st.id ? "第一句回應，跟你開場選的是同一句。這一站，請你先站到對面，當一次開口的人。聽完這段對話，你的感覺是？" : "假設開口的人是你。聽完這段對話，你的感覺是？"),
+    g(home === st.id ? "這一站的第一句，就是你剛剛選的那句。這次換你當先開口的人，聽完會有什麼感覺？" : "如果你是先開口的那個人，聽完會有什麼感覺？"),
   ];
 }
 
@@ -1829,12 +1829,12 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
     if (started.current) return;
     started.current = true;
     setQueue([
-      g("嗨，我是小譯，很高興你來。"),
-      g("我平常做的事，是陪兩個很在乎彼此、卻常常聽不懂對方的人，把話翻譯給對方聽。"),
-      g("今天想陪你慢慢走一小段路。不趕時間，也沒有標準答案，照你自己的感覺回就好。"),
-      g(`我們從一個很日常的小場景開始。${scn.setup}`),
+      g("嗨，我是小譯。"),
+      g("我的工作很簡單：兩個人講話卡住的時候，幫忙翻譯一下。"),
+      g("等一下會請你看幾段很日常的對話。憑直覺回答就好，沒有對錯。"),
+      g(`先來看一個場景。${scn.setup}`),
       { from: "scene" },
-      g("如果聽到這句話的人是你，你大概會怎麼回？選最像你平常會說的那一句就好。"),
+      g("如果是你聽到這句話，你會怎麼回？"),
     ]);
   }, [scn]);
 
@@ -1875,12 +1875,12 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
           send(
             line,
             [
-              g("謝謝你告訴我。這一句我先幫你收著，等一下會再提到它。"),
-              g("同一句話，其實每個人接的方式都不一樣。我把常見的五種排成一條線，叫它「溝通光譜」。"),
+              g("好，記下來了。等一下會再回來看這一句。"),
+              g("同樣一句話，每個人回的方式都不太一樣。我把最常見的五種，由左到右排成一條線。"),
               { from: "map" },
-              g("線的左邊，是習慣先看「事情」的人；右邊，是習慣先看「感受」的人；中間是兩樣都顧到的地方。"),
-              g("沒有哪一邊比較好，也沒有哪一種人比較差。每個位置的人，都是用自己會的方式在乎對方。"),
-              g("我們先在左邊走兩站，再到右邊走兩站，最後在中間會合。每一站我會先告訴你它在哪裡，再陪你看一小段對話。那我們出發囉。"),
+              g("左邊的人習慣先處理事情，右邊的人習慣先顧感受，中間是兩邊都有顧到。"),
+              g("先說好，沒有哪一種比較差。大家都是用自己習慣的方式在關心對方。"),
+              g("我們一站一站看：先看左邊兩站，再看右邊兩站，最後回到中間。走吧。"),
               ...stationIntro(0, id),
             ],
             { kind: "feel", stop: 0, step: 0 }
