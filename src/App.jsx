@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   User,
@@ -62,6 +62,8 @@ const GLOBAL_CSS = `
 .fig { transition: opacity .9s ease, filter .9s ease; }
 .amp { transition: transform 1.2s ease; }
 .sand { transition: transform 1.2s ease; }
+@keyframes dotBounce { 0%,80%,100% { transform: translateY(0); opacity: .4; } 40% { transform: translateY(-4px); opacity: 1; } }
+.typing-dot { animation: dotBounce 1.1s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
   .orb, .ecg-scroll, .halo, .fade-up { animation: none; }
   .sig { animation-duration: 6s; }
@@ -854,7 +856,7 @@ function Mechanisms() {
   );
 }
 
-function Landing({ onStart }) {
+function Landing({ onStart, onChat }) {
   return (
     <div className="mx-auto max-w-5xl px-4 pb-24 pt-16 sm:px-6 sm:pt-24">
       <header className="fade-up text-center">
@@ -868,12 +870,12 @@ function Landing({ onStart }) {
           <span className="font-display text-lg text-sand-100">嗨，先坐一下，喝口熱的。</span><br />
           沒有人是木頭，也沒有人無理取鬧。<br className="hidden sm:block" />
           大多數感情不是死於一場大吵，而是死於一百次沒被接住的小訊號。<br className="hidden sm:block" />
-          這裡不分對錯，也不找戰犯。只想陪站在光譜兩端的兩個人，看見同一句話在彼此心裡折射成什麼顏色。
+          這裡不分對錯，也不找戰犯。只想陪你用一段對話，走過光譜上的每一個位置，看看每一種人心裡在想什麼。
         </p>
         <div className="mx-auto mt-8 h-1.5 max-w-md rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-rose-400 opacity-80" />
         <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-sand-500"><span>理性任務</span><span>情感共鳴</span></div>
-        <PrimaryButton onClick={onStart} className="mt-9">進入雙視角互動劇場（開始潛藏量表測驗）</PrimaryButton>
-        <p className="mt-3 text-xs text-sand-500">三幕劇、每人約 5 分鐘。可以一個人走，也可以兩個人輪流用同一支手機，最後一起看對照。</p>
+        <PrimaryButton onClick={onChat} className="mt-9">開始一段對話，走一趟光譜</PrimaryButton>
+        <p className="mt-3 text-xs text-sand-500">一問一答，大約十分鐘。沒有測驗，沒有分數，只有五個值得被理解的位置。</p>
       </header>
 
       <section className="mt-24">
@@ -901,7 +903,8 @@ function Landing({ onStart }) {
         <Coffee className="mx-auto mb-3 h-7 w-7 text-amber-300" />
         <h2 className="font-display text-2xl font-semibold text-sand-50">看懂折射之後，親自走一遍</h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-sand-400">你會走進同一段感情的三個夜晚。你可以選擇成為他，也可以選擇成為她。慢慢來，這裡沒有人會評分你。</p>
-        <PrimaryButton onClick={onStart} className="mt-6">進入雙視角互動劇場</PrimaryButton>
+        <PrimaryButton onClick={onChat} className="mt-6">開始一段對話</PrimaryButton>
+        <div><button type="button" onClick={onStart} className="mt-4 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">或直接進入雙視角互動劇場</button></div>
       </section>
     </div>
   );
@@ -1511,6 +1514,255 @@ function PairReport({ results, xray, onRestart, onHome }) {
   );
 }
 
+/* ------------------------------ 光譜對話（主體驗） --------------------------- */
+/* 引導者「小譯」以一問一答，帶使用者依序走過光譜上的五個位置。內容為預先寫好的腳本。 */
+
+const STOPS = [
+  {
+    id: "outsource", name: "任務外包", color: "#3B8C8C", motto: "把事情做好，就是愛",
+    line: "行程你比較會排，交給你決定就好，錢我出。",
+    feel: [
+      { label: "很體貼啊，哪裡有問題？", reply: "對說的人來說，這真的是體貼。問題不在心意，而在這份心意寄到的時候，包裝變了。" },
+      { label: "有點被丟下的感覺", reply: "你抓到了。聽的人常常就是這個感覺：事情被交辦了，人卻沒有來。" },
+      { label: "這句話我常說", reply: "那你一定是很可靠的人。接下來不是要糾正你，是想讓你看看這句話寄到對方手上的樣子。" },
+    ],
+    why: ["他從小學到的是：愛一個人，就是把事情扛好、把錢賺夠、不給對方添麻煩。", "所以「你排，我出錢」在他的字典裡，是信任，也是最有效率的分工。他沒有在偷懶，他是真的覺得這樣對你最好。"],
+    heard: ["對面的人聽到的卻是：「這是你的專案，不是我們的。」", "她查了三個晚上的民宿，想要的不是有人買單，而是有人坐下來跟她一起期待。被外包的不只是行程，還有「一起」這兩個字。"],
+    near: ["想靠近他，別說「你都不參與」，那對他來說太模糊了。給他具體的一塊：「第二天早上交給你排，我想去一個你喜歡的地方。」", "如果你就站在這裡：不用全包，認領一小塊就好。「民宿傳給我看，早餐我來找。」"],
+    learned: "原來他的「你決定」裡面，裝的是信任。看得見這一點，就比較不會只聽到敷衍。",
+  },
+  {
+    id: "drift", name: "隨波逐流", color: "#6E9FB0", motto: "不添麻煩，就是愛",
+    line: "都可以啊，看你，你喜歡就好。",
+    feel: [
+      { label: "很好相處啊", reply: "一開始真的是。但想像一下，連續三年，每一餐、每一趟旅行、每一個決定，都是你一個人在選。" },
+      { label: "久了會有點累", reply: "對，那種累有個名字，叫決策的孤獨。所有選擇的重量，都在一個人身上。" },
+      { label: "我只是不想起衝突", reply: "我懂。很多說「都可以」的人不是沒有想法，而是很早就學會：有想法，會帶來麻煩。" },
+    ],
+    why: ["他可能在一個「乖、不吵、配合」才會被喜歡的環境裡長大。", "久了，他不是在隱藏自己的喜好，而是真的不太確定自己喜歡什麼。說「都可以」的當下，他是真心想讓你開心。"],
+    heard: ["對面的人會開始想：「我到底在跟誰談戀愛？」", "當一個人永遠沒有意見，對方面對的就像一面鏡子，只照得見自己。她會覺得孤單，甚至好奇：如果沒有我，這個人自己想去哪裡？"],
+    near: ["想靠近他，別問開放題。給他小小的二選一，然後認真對待他的答案：「拉麵還是咖哩？你選的我都想試。」讓他慢慢發現，有想法是安全的。", "如果你就站在這裡：說「都可以」之前停三秒，找出一個再小都好的偏好，說出來。「我今天想吃熱的。」這樣就夠了。"],
+    learned: "原來「都可以」的背後，常常是一個很怕添麻煩的人。",
+  },
+  {
+    id: "quiet", name: "安靜離職", color: "#C2697B", motto: "不再期待，就不會痛",
+    line: "沒事，我自己處理好了，你忙你的。",
+    feel: [
+      { label: "聽起來很獨立、很懂事", reply: "大部分人都這麼想，所以這是光譜上最容易被錯過的位置。" },
+      { label: "感覺其實有事", reply: "你的天線很好。「處理好了」和「沒事」，其實是兩件不一樣的事。" },
+      { label: "我也常這樣說", reply: "那你大概已經試過很多次了吧。先跟你說一聲：辛苦了。" },
+    ],
+    why: ["她不是一開始就這樣的。她說過、暗示過，也吵過。", "每一次沒被接住，她就把期待調低一格。到最後，自己處理，比再失望一次不痛。這句話不是冷淡，是她保護自己的最後一道門。"],
+    heard: ["對面的人聽到的是好消息：「她沒事、她很獨立、我們很穩定。」於是安心地繼續忙。", "沒有爭吵被當成了感情好。但其實，還願意抱怨的人，才是還在投資的人。"],
+    near: ["想靠近她，不要追問「到底怎麼了」逼她解釋。出現就好：「不用現在講，我買宵夜過去，在旁邊陪你。」", "如果你就站在這裡：你的需要沒有消失，只是還沒被聽懂。再說一次，但這次附上說明書：「我不需要你解決，我需要你聽我講十分鐘。」"],
+    learned: "原來「沒事」是一扇快要關上的門，不是一句報平安。",
+  },
+  {
+    id: "interrogate", name: "高壓逼問", color: "#D9414F", motto: "抓得越緊，越怕失去",
+    line: "你現在就給我講清楚！我現在就要知道答案！",
+    feel: [
+      { label: "好有壓迫感", reply: "對，身體會比腦袋先反應：心跳加快、想逃，或整個人當機。這時候說出口的，都不會是真心話。" },
+      { label: "但事情總要講清楚吧", reply: "要講清楚，這個需要完全合理。只是「要談」可以堅持，「現在」可以放手。" },
+      { label: "我急起來也會這樣", reply: "謝謝你願意承認。這通常不是兇，是太害怕失去。" },
+    ],
+    why: ["他看起來最強勢，其實是光譜上最慌的人。", "他感覺到對方在遠離，卻不知道為什麼，那種不確定讓他受不了。逼問是他唯一會的求救方式：「拜託告訴我發生什麼事，我才知道怎麼修。」"],
+    heard: ["對面的人聽到的是：「我被審問了。」牆會立刻升起來。", "更可惜的是，人對一段感情的記憶，常常由最後一幕決定。一場難堪的逼問，會回頭把之前所有的好，都重新上色。"],
+    near: ["想靠近他，他需要的是一個確定的時間，而不是立刻的答案：「我現在講不出來，但明天晚上，我一定跟你講完。」", "如果你就站在這裡：先說出底下那句真話：「我很慌，我怕失去你。」然後把時間還給對方：「你什麼時候可以談？」"],
+    learned: "原來最兇的那一句話底下，是最害怕的那個人。",
+  },
+  {
+    id: "cocreate", name: "過程共謀", color: "#E8973A", motto: "有我，也有我們",
+    line: "民宿傳給我看看。第二天早上交給我，我想帶你去一個地方。",
+    feel: [
+      { label: "聽了會很開心", reply: "因為這句話裡同時有兩個東西：一個有想法的「我」，和一個想一起的「我們」。" },
+      { label: "這也太理想了吧", reply: "它不是一種個性，是一個可以練習的動作。沒有人整天都站在這裡，包括我。" },
+      { label: "我想學這樣說", reply: "好消息是，它的配方很簡單。問我「可以怎麼靠近」就會告訴你。" },
+    ],
+    why: ["站在這裡的人不是比較會說話，而是同時守住了兩件事：知道自己要什麼，也好奇對方要什麼。", "他不把配合當成愛，也不把效率當成愛。"],
+    heard: ["對面的人聽到的是：「這是我們的事。」就這麼簡單。", "不用猜、不用一個人扛，也看得見眼前這個人是誰。"],
+    near: ["配方只有三步：說一個自己的想法，問一個對方的想法，認領一塊一起做。", "不必一次到位。從前面任何一個位置，往這裡挪一小步，就夠了。"],
+    learned: "原來它不是天分，只是一個小小的、可以練習的動作。",
+  },
+];
+
+const CHAT_HOME = [
+  { id: "outsource", label: "你決定就好，我出錢", reply: "嗯，把事情交給信任的人。記下來了。", step: "你一開始選的是「你決定就好，我出錢」。下一次，試著多認領一小塊。" },
+  { id: "drift", label: "都可以啊，看你", reply: "嗯，以對方開心為優先。記下來了。", step: "你一開始選的是「都可以啊」。下一次，先說出一個小小的偏好。" },
+  { id: "quiet", label: "沒關係，我自己排就好", reply: "嗯，習慣自己來。記下來了。", step: "你一開始選的是「我自己排就好」。下一次，試著邀一個人進來。" },
+  { id: "cocreate", label: "我想去一個地方，你呢？", reply: "嗯，有自己的想法，也想聽對方的。記下來了。", step: "你一開始選的是「我想去一個地方，你呢？」。你已經站在交會區了，記得偶爾回頭，等一等還在路上的人。" },
+];
+
+const CHAT_QUESTIONS = [
+  { key: "why", label: "他為什麼會這樣說？" },
+  { key: "heard", label: "對面的人聽到什麼？" },
+  { key: "near", label: "可以怎麼靠近？" },
+];
+
+const g = (text) => ({ from: "guide", text });
+
+function stationIntro(i, home) {
+  const st = STOPS[i];
+  return [
+    { from: "station", stop: i },
+    g(i === 0 ? "第一站。站在這裡的人，常常這樣說：" : i === STOPS.length - 1 ? "最後一站，也是光譜的交會區。站在這裡的人會說：" : "下一站。站在這裡的人，常常這樣說："),
+    { from: "quote", stop: i },
+    ...(home === st.id ? [g("這是你一開始選的位置。接下來的話，有一部分是說給你聽的。")] : []),
+    g("聽到這句話，你的第一個感覺是？"),
+  ];
+}
+
+function SpectrumChat({ onTheater, onHome }) {
+  const [msgs, setMsgs] = useState([]);
+  const [queue, setQueue] = useState([]);
+  const [stage, setStage] = useState({ kind: "intro", stop: -1, asked: [] });
+  const [home, setHome] = useState(null);
+  const started = useRef(false);
+  const endRef = useRef(null);
+
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    setQueue([
+      g("嗨，我是小譯。我的工作，是幫站在不同位置的人翻譯彼此的話。"),
+      g("接下來我想陪你沿著一條「溝通光譜」走一趟。上面有五個位置，每個位置都住著一種人。沒有好人壞人，只有不同的習慣。"),
+      g("出發前先問你一題：伴侶問「連假要去哪？」的時候，你最可能怎麼回？"),
+    ]);
+  }, []);
+
+  useEffect(() => {
+    if (!queue.length) return undefined;
+    const m = queue[0];
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const delay = reduce ? 80 : Math.min(1500, 450 + (m.text ? m.text.length * 14 : 300));
+    const t = setTimeout(() => {
+      setMsgs((x) => [...x, m]);
+      setQueue((q) => q.slice(1));
+    }, delay);
+    return () => clearTimeout(t);
+  }, [queue]);
+
+  useEffect(() => {
+    if (msgs.length > 2 && endRef.current) endRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [msgs, queue.length]);
+
+  const send = (userText, guideMsgs, nextStage) => {
+    setMsgs((x) => [...x, { from: "user", text: userText }]);
+    setQueue(guideMsgs);
+    setStage(nextStage);
+  };
+
+  const ready = queue.length === 0 && msgs.length > 0;
+  let options = [];
+  if (ready && stage.kind === "intro") {
+    options = CHAT_HOME.map((h) => ({ label: h.label, run: () => { setHome(h.id); send(h.label, [g(h.reply), g("等一下走到你的位置時，我會提醒你。好，出發。"), ...stationIntro(0, h.id)], { kind: "feel", stop: 0, asked: [] }); } }));
+  } else if (ready && stage.kind === "feel") {
+    const st = STOPS[stage.stop];
+    options = st.feel.map((f) => ({ label: f.label, run: () => send(f.label, [g(f.reply), g("關於這個位置，你可以問我下面任何一題，順序隨你。")], { ...stage, kind: "explore" }) }));
+  } else if (ready && stage.kind === "explore") {
+    const st = STOPS[stage.stop];
+    const last = stage.stop === STOPS.length - 1;
+    options = CHAT_QUESTIONS.filter((q) => !stage.asked.includes(q.key)).map((q) => ({ label: q.label, run: () => send(q.label, st[q.key].map(g), { ...stage, asked: [...stage.asked, q.key] }) }));
+    if (stage.asked.length > 0) {
+      options.push({
+        label: last ? "五站都走完了" : "去下一站",
+        next: true,
+        run: () =>
+          last
+            ? send("五站都走完了", [g("謝謝你陪我走完。"), g("你有沒有發現：前四個位置的人，其實都在保護某樣東西。怕添麻煩、怕起衝突、怕再失望、怕失去。沒有一個是不愛。"), g("走完這一趟，哪一個位置，你現在比較能理解了？")], { kind: "final", stop: stage.stop, asked: [] })
+            : send("去下一站", stationIntro(stage.stop + 1, home), { kind: "feel", stop: stage.stop + 1, asked: [] }),
+      });
+    }
+  } else if (ready && stage.kind === "final") {
+    options = STOPS.map((st) => ({ label: st.name, run: () => send(st.name, [g(st.learned), g("理解不等於同意，也不代表你要照單全收。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。"), g("還有，人不會永遠待在同一個位置。累的時候、怕的時候、被好好愛著的時候，我們都會移動。"), g(CHAT_HOME.find((h) => h.id === home).step), g("今天就到這裡。謝謝你願意花時間，去懂跟你不一樣的人。")], { kind: "done", stop: stage.stop, asked: [] }) }));
+  }
+
+  const current = stage.stop;
+  return (
+    <div className="mx-auto flex max-w-xl flex-col px-4 pb-16 sm:px-6">
+      <div className="sticky top-0 z-10 -mx-4 border-b border-sand-800 bg-sand-950/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+        <div className="flex items-center justify-between text-xs text-sand-500">
+          <button type="button" onClick={onHome} className="hover:text-sand-300">← 首頁</button>
+          <span>{current < 0 ? "溝通光譜之旅" : `第 ${current + 1} 站／共 ${STOPS.length} 站`}</span>
+        </div>
+        <ol className="mt-2 flex items-start justify-between" aria-label="光譜路線">
+          {STOPS.map((st, i) => {
+            const seen = i < current || stage.kind === "final" || stage.kind === "done";
+            const on = i === current && !seen;
+            return (
+              <li key={st.id} aria-current={on ? "step" : undefined} className="flex flex-1 flex-col items-center gap-1">
+                <span className="relative flex h-4 w-full items-center justify-center">
+                  {i > 0 && <span className="absolute right-1/2 h-0.5 w-full" style={{ background: i <= current || seen ? st.color : "#EADFCB" }} />}
+                  <span className="relative h-3.5 w-3.5 rounded-full border-2" style={{ borderColor: st.color, background: seen || on ? st.color : "#FAF3E7", boxShadow: on ? `0 0 0 4px ${st.color}33` : "none" }} />
+                </span>
+                <span className={`text-[11px] ${on ? "font-semibold text-sand-100" : "text-sand-500"}`}>{st.name}</span>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-3" role="log" aria-live="polite">
+        {msgs.map((m, i) => {
+          if (m.from === "user") {
+            return <div key={i} className="fade-up flex justify-end"><div className="max-w-[82%] rounded-3xl rounded-br-md bg-gradient-to-r from-[#A8432F] to-[#B85C1C] px-4 py-2.5 text-[15px] leading-relaxed text-[#FFF8EC]">{m.text}</div></div>;
+          }
+          if (m.from === "station") {
+            const st = STOPS[m.stop];
+            return (
+              <div key={i} className="fade-up my-3 flex items-center gap-3 rounded-3xl border bg-sand-900 p-4 shadow-warm" style={{ borderColor: `${st.color}88` }}>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold text-[#FFF8EC]" style={{ background: st.color }}>{m.stop + 1}</span>
+                <div>
+                  <div className="font-display text-xl font-semibold text-sand-50">{st.name}</div>
+                  <div className="text-sm text-sand-400">{st.motto}</div>
+                </div>
+              </div>
+            );
+          }
+          if (m.from === "quote") {
+            const st = STOPS[m.stop];
+            return <div key={i} className="fade-up ml-10 max-w-[82%] rounded-3xl border-l-4 px-4 py-3" style={{ borderColor: st.color, background: `${st.color}1f` }}><p className="font-display text-[17px] leading-relaxed text-sand-50">「{st.line}」</p></div>;
+          }
+          const first = i === 0 || msgs[i - 1].from !== "guide";
+          return (
+            <div key={i} className="fade-up flex items-end gap-2">
+              <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-amber-400 font-display text-sm font-bold text-[#FFF8EC] ${first ? "" : "invisible"}`} aria-hidden="true">譯</span>
+              <div className="max-w-[82%] rounded-3xl rounded-bl-md border border-sand-800 bg-sand-900 px-4 py-2.5 text-[15px] leading-relaxed text-sand-100 shadow-warm">{m.text}</div>
+            </div>
+          );
+        })}
+        {queue.length > 0 && (
+          <div className="flex items-end gap-2" aria-label="小譯正在輸入">
+            <span className="h-8 w-8 shrink-0" />
+            <div className="flex gap-1 rounded-3xl rounded-bl-md border border-sand-800 bg-sand-900 px-4 py-3.5">
+              {[0, 1, 2].map((d) => <span key={d} className="typing-dot h-1.5 w-1.5 rounded-full bg-sand-500" style={{ animationDelay: `${d * 0.15}s` }} />)}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {options.length > 0 && (
+        <div className="fade-up mt-5 flex flex-col items-end gap-2">
+          <div className="text-xs text-sand-500">選一個回覆</div>
+          {options.map((o) => (
+            <button key={o.label} type="button" onClick={o.run} className={`max-w-[88%] rounded-3xl border px-4 py-2.5 text-right text-[15px] leading-relaxed transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${o.next ? "border-sand-600 bg-sand-800 font-medium text-sand-100" : "border-amber-400 bg-amber-400/10 text-amber-200 hover:bg-amber-400/20"}`}>
+              {o.label}{o.next && <ArrowRight className="ml-1 inline h-4 w-4" />}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {ready && stage.kind === "done" && (
+        <div className="fade-up mt-8 rounded-3xl border border-sand-800 bg-sand-900/80 p-6 text-center shadow-warm">
+          <p className="text-sm leading-relaxed text-sand-400">想親自站進其中一個位置，演一遍三個晚上的故事嗎？</p>
+          <PrimaryButton onClick={onTheater} className="mt-4">進入互動劇場</PrimaryButton>
+          <div><button type="button" onClick={onHome} className="mt-3 text-sm text-sand-500 hover:text-sand-300">回到首頁</button></div>
+        </div>
+      )}
+      <div ref={endRef} className="h-6" />
+    </div>
+  );
+}
+
 /* ---------------------------------- 主元件 --------------------------------- */
 
 export default function App() {
@@ -1552,7 +1804,8 @@ export default function App() {
       <style>{GLOBAL_CSS}</style>
       <Backdrop />
       <main className="relative">
-        {view === "landing" && <Landing onStart={() => go("setup")} />}
+        {view === "landing" && <Landing onStart={() => go("setup")} onChat={() => go("chat")} />}
+        {view === "chat" && <SpectrumChat onTheater={() => go("setup")} onHome={() => go("landing")} />}
         {view === "setup" && <Setup mode={mode} setMode={setMode} perspective={perspective} setPerspective={setPerspective} xray={xray} setXray={setXray} onBegin={() => begin()} onBack={() => go("landing")} />}
         {view === "theater" && (
           <Theater perspective={perspective} xray={xray} setXray={setXray} choices={shownChoices} shownIdx={choices.length} answered={pending !== null} onChoose={setPending} onNext={handleNext} onQuit={() => go("setup")} />
