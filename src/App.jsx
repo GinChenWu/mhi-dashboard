@@ -134,11 +134,11 @@ const LENSES = [
 /* --------------------------- 資料：雙軸光譜落點 --------------------------- */
 
 const SPECTRUM_POINTS = [
-  { id: "outsource", x: 0.1, y: 0.2, label: "任務外包", color: "#3B8C8C", desc: "任務端。「你排就好，錢我出。」把愛翻譯成分工與效率。自我是清楚的，但人不在過程裡：對方得到資源，卻得不到同伴。" },
-  { id: "drift", x: 0.3, y: 0.86, label: "隨波逐流", color: "#6E9FB0", desc: "任務端。「都可以、看你、你決定。」看似配合度滿分，實則把所有決策的重量與孤獨都留給對方。久了，對方會發現身邊這個人「少了自己」。" },
-  { id: "cocreate", x: 0.5, y: 0.16, label: "過程共謀", color: "#E8973A", desc: "光譜中間的交會區：有自己的想法（自我清晰），也願意走進對方的過程（情感在場）。不是誰配合誰，而是兩個完整的人一起決定一件事。" },
-  { id: "interrogate", x: 0.7, y: 0.72, label: "高壓逼問", color: "#D9414F", desc: "情感端。「我現在就要答案！」看起來很強勢，其實是被焦慮淹沒、把感受整個丟出去的狀態。平常再理性的人，慌起來也可能滑到這裡。越用力抓，對方的牆升得越高。" },
-  { id: "quiet", x: 0.9, y: 0.8, label: "安靜離職", color: "#C2697B", desc: "情感端。「沒事，我自己來。」感受很多，卻全部收了起來。表面風平浪靜，內心已在倒數。" },
+  { id: "outsource", x: 0.1, y: 0.2, label: "任務外包", color: "#3B8C8C", desc: "任務端的盡頭。「你排就好，錢我出。」把愛翻譯成分工與效率。自我是清楚的，但人不在過程裡：對方得到資源，卻得不到同伴。" },
+  { id: "drift", x: 0.3, y: 0.86, label: "隨波逐流", color: "#6E9FB0", desc: "任務端，往中間一步。「都可以、看你、你決定。」看似配合度滿分，實則把所有決策的重量與孤獨都留給對方。久了，對方會發現身邊這個人「少了自己」。" },
+  { id: "cocreate", x: 0.5, y: 0.16, label: "過程共謀", color: "#E8973A", desc: "正中間，兩端會合的地方：有自己的想法（自我清晰），也願意走進對方的過程（情感在場）。不是誰配合誰，而是兩個完整的人一起決定一件事。" },
+  { id: "interrogate", x: 0.7, y: 0.72, label: "高壓逼問", color: "#D9414F", desc: "情感端，往中間一步。「我現在就要答案！」看起來很強勢，其實是被焦慮淹沒、把感受整個丟出去的狀態。平常再理性的人，慌起來也可能滑到這裡。越用力抓，對方的牆升得越高。" },
+  { id: "quiet", x: 0.9, y: 0.8, label: "安靜離職", color: "#C2697B", desc: "情感端的盡頭。「沒事，我自己來。」感受很多，卻全部收了起來。表面風平浪靜，內心已在倒數。" },
 ];
 
 /* ------------------------------- 資料：劇本 ------------------------------- */
@@ -733,8 +733,8 @@ function SpectrumMap() {
           <circle cx={px(0.5)} cy={py(0.16)} r={95} fill="url(#sweet)" />
           <line x1={pad} y1={H / 2} x2={W - pad} y2={H / 2} stroke="url(#specX)" strokeWidth="3" strokeLinecap="round" />
           <line x1={W / 2} y1={pad - 14} x2={W / 2} y2={H - pad + 14} stroke="#D9C8AD" strokeWidth="1.5" strokeDasharray="4 5" />
-          <text x={pad} y={H / 2 - 10} fill="#2F6F73" fontSize="12">任務端：用做事表達</text>
-          <text x={W - pad} y={H / 2 - 10} fill="#B8404F" fontSize="12" textAnchor="end">情感端：用感受表達</text>
+          <text x={pad} y={H / 2 - 10} fill="#2F6F73" fontSize="12">任務端：注意力在事情</text>
+          <text x={W - pad} y={H / 2 - 10} fill="#B8404F" fontSize="12" textAnchor="end">情感端：注意力在感受</text>
           <text x={W / 2 + 8} y={pad - 14} fill="#54463A" fontSize="12">自我清晰</text>
           <text x={W / 2 + 8} y={H - pad + 14} fill="#8C7A66" fontSize="12">自我模糊</text>
           {SPECTRUM_POINTS.map((p) => {
@@ -886,7 +886,7 @@ function Landing({ onStart, onChat }) {
 
       <section className="mt-24">
         <SectionTitle kicker="01 ／ SPECTRUM" title="雙軸光譜：你們站在哪裡？">
-          橫軸是「在乎怎麼表達」：左邊的任務端習慣用做事，右邊的情感端習慣用感受，中間是兩邊會合的地方。縱軸是「人在不在」：關係裡還有沒有一個清楚的自己。同一個人在不同時候，也會站到不同的位置。
+          橫軸是「注意力放在哪裡」：越往左，越只看得到事情；越往右，越只剩下感受；中間是兩樣都顧到的地方。縱軸是「人在不在」：關係裡還有沒有一個清楚的自己。同一個人在不同時候，也會站到不同的位置。
         </SectionTitle>
         <SpectrumMap />
       </section>
@@ -1523,7 +1523,8 @@ const CHAT_QUESTION = "連假快到了，我們來排一下行程好不好？";
 
 const STOPS = [
   {
-    id: "outsource", name: "任務外包", color: "#3B8C8C", x: 10, side: "任務端", motto: "用「做事」代替「在場」",
+    id: "outsource", name: "任務外包", color: "#3B8C8C", x: 10, side: "任務端的盡頭（最左邊）", motto: "用「做事」代替「在場」",
+    where: ["這一站在光譜的最左邊，任務端的盡頭。", "站在這裡的人，聽到任何問題都會先把它當成一件「事情」：要做什麼、誰來做、怎樣最有效率。對方的心情不是不重要，而是根本沒有出現在他的畫面裡。"],
     line: "你比較會排，你決定就好，錢我出。",
     heart: "我把事情做好，就是在乎你。",
     feel: [
@@ -1539,7 +1540,8 @@ const STOPS = [
     learned: "下次再聽到「你決定就好」，也許可以先聽見裡面的信任，再告訴他，你要的是一起。",
   },
   {
-    id: "drift", name: "隨波逐流", color: "#6E9FB0", x: 30, side: "任務端", motto: "用「配合」代替「自己」",
+    id: "drift", name: "隨波逐流", color: "#6E9FB0", x: 30, side: "任務端，往中間一步", motto: "用「配合」代替「自己」",
+    where: ["這一站還在左半邊，但比上一站往中間靠了一步。", "往中間靠，是因為他開始在意對方的感受了：怕對方不開心、怕起衝突。還沒到中間，是因為他顧慮感受的方法，是把自己拿掉。他回答的仍然是「誰來決定」這件事，只是答案變成了「不是我」。"],
     line: "都可以啊，看你，你喜歡就好。",
     heart: "我不添麻煩，就是在乎你。",
     feel: [
@@ -1555,7 +1557,8 @@ const STOPS = [
     learned: "下次再聽到「都可以」，也許可以多等他三秒，讓他知道他的想法不是麻煩。",
   },
   {
-    id: "quiet", name: "安靜離職", color: "#C2697B", x: 90, side: "情感端", motto: "把感受「收起來」",
+    id: "quiet", name: "安靜離職", color: "#C2697B", x: 90, side: "情感端的盡頭（最右邊）", motto: "把感受「收起來」",
+    where: ["現在跳到光譜的另一頭，最右邊，情感端的盡頭。", "站在這裡的人，心裡裝滿了感受：失望、孤單、不想再期待。但這些感受，一個字都沒有說出口。表面上他把事情處理得很好，其實他已經不再讓對方進來了。"],
     line: "沒關係，我自己排好了，你忙你的。",
     heart: "我不再期待，就不會痛。",
     feel: [
@@ -1571,7 +1574,8 @@ const STOPS = [
     learned: "下次再聽到「我自己來就好」，也許可以先不要鬆一口氣，而是走過去看看。",
   },
   {
-    id: "interrogate", name: "高壓逼問", color: "#D9414F", x: 70, side: "情感端", motto: "把感受「丟出去」",
+    id: "interrogate", name: "高壓逼問", color: "#D9414F", x: 70, side: "情感端，往中間一步", motto: "把感受「丟出去」",
+    where: ["這一站也在右半邊，比上一站往中間靠了一步。", "往中間靠，是因為他還沒放棄：他還想要一個答案，還想把事情談清楚。還沒到中間，是因為推著他開口的全是情緒。上一站把感受全部收起來，這一站把感受全部丟出去。"],
     line: "你到底想不想去？現在就給我一個答案！",
     heart: "我抓緊一點，才不會失去你。",
     feel: [
@@ -1587,7 +1591,8 @@ const STOPS = [
     learned: "下次再被逼問，也許可以看見那句話底下的害怕，給他一個確定的時間。",
   },
   {
-    id: "cocreate", name: "過程共謀", color: "#E8973A", x: 50, side: "交會區", motto: "有我，也有我們",
+    id: "cocreate", name: "過程共謀", color: "#E8973A", x: 50, side: "正中間，兩端會合的地方", motto: "事情和感受都在",
+    where: ["最後一站，在光譜的正中間，兩邊走過來會合的地方。", "站在這裡的人，事情和感受都顧到了。左邊的人少了感受，右邊的人少了把感受說清楚的方法，中間的人兩樣都有。"],
     line: "好啊，民宿傳給我看。第二天交給我排。",
     heart: "有我，也有我們。",
     feel: [
@@ -1614,21 +1619,32 @@ const CHAT_STEPS = [
   { key: "todo", label: "那兩邊可以怎麼做？" },
 ];
 
-const STATION_LEAD = [
-  "第一站，在任務端。對同一個問題，站在這裡的人會這樣回答：",
-  "第二站，也在任務端。站在這裡的人會這樣回答：",
-  "前兩站的人，習慣用做事和配合來表達在乎。現在換到光譜的另一頭，情感端。這裡的人感受很多，差別在感受去了哪裡。第三站的人會這樣回答：",
-  "第四站，同樣在情感端。上一站把感受收起來，這一站剛好相反：",
-  "最後一站，回到光譜的中間，兩端會合的地方。站在這裡的人會這樣回答：",
-];
-
 const g = (text) => ({ from: "guide", text });
+
+/* 小型光譜條：五個位置照橫軸排列，可標出目前這一站 */
+function MiniSpectrum({ active, labels }) {
+  return (
+    <div className={`relative ${labels ? "h-10" : "h-4"}`} aria-hidden="true">
+      <span className="absolute left-0 right-0 top-[5px] h-1 rounded-full bg-gradient-to-r from-cyan-400 via-amber-400 to-rose-400 opacity-50" />
+      {STOPS.map((o) => {
+        const on = active === o.id;
+        return (
+          <span key={o.id} className="absolute top-0 flex -translate-x-1/2 flex-col items-center gap-1" style={{ left: `${o.x}%` }}>
+            <span className="h-3.5 w-3.5 rounded-full border-2" style={{ borderColor: o.color, background: on || (labels && !active) ? o.color : "#FAF3E7", boxShadow: on ? `0 0 0 4px ${o.color}44` : "none" }} />
+            {labels && <span className="whitespace-nowrap text-[11px] text-sand-400">{o.name}</span>}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 function stationIntro(i, home) {
   const st = STOPS[i];
   return [
     { from: "station", stop: i },
-    g(STATION_LEAD[i]),
+    ...st.where.map(g),
+    g("對同一個問題，站在這裡的人會這樣回答："),
     { from: "quote", stop: i },
     g(home === st.id ? "這跟你開場的回答是同一句。這一站，請你先站到對面，當一次問的人。聽到這個回答，你的感覺是？" : "假設開口問的人是你。聽到這個回答，你的感覺是？"),
   ];
@@ -1690,8 +1706,11 @@ function SpectrumChat({ onTheater, onHome }) {
             o.line,
             [
               g("收到，你的回答先放在我這裡，等一下會用到。"),
-              g("其實同一個問題，至少有五種回答。它們排在一條光譜上：一端是任務端，習慣用做事來表達在乎；另一端是情感端，習慣用感受來表達在乎；中間是兩邊會合的地方。"),
-              g("我們一站一站聽。每一站我都會告訴你三件事：回答的人心裡在想什麼、問的人聽到了什麼、兩邊可以怎麼做。"),
+              g("其實同一個問題，至少有五種回答。我把它們排在一條線上，叫做溝通光譜。這條線量的是：一個人回話的時候，注意力放在哪裡。"),
+              { from: "map" },
+              g("越往左，越只看得到事情；越往右，越只剩下感受；正中間是兩樣都顧到的地方。"),
+              g("我們從最左邊開始，往中間走一步；再跳到最右邊，往中間走一步；最後在中間會合。"),
+              g("每一站我會先說它在光譜的哪裡，再告訴你三件事：回答的人心裡在想什麼、問的人聽到了什麼、兩邊可以怎麼做。"),
               ...stationIntro(0, id),
             ],
             { kind: "feel", stop: 0, step: 0 }
@@ -1753,7 +1772,7 @@ function SpectrumChat({ onTheater, onHome }) {
           <button type="button" onClick={onHome} className="hover:text-sand-300">← 首頁</button>
           <span>{current < 0 ? "一個問題，五種回答" : `第 ${current + 1} 站／共 ${STOPS.length} 站`}</span>
         </div>
-        <div className="mt-1 flex justify-between text-[10px] text-sand-500"><span>任務端</span><span>情感端</span></div>
+        <div className="mt-1 flex justify-between text-[10px] text-sand-500"><span>任務端・看事情</span><span>看感受・情感端</span></div>
         <ol className="relative mt-1 h-9" aria-label="光譜上的五個位置">
           <span aria-hidden="true" className="absolute left-0 right-0 top-[5px] h-1 rounded-full bg-gradient-to-r from-cyan-400 via-amber-400 to-rose-400 opacity-50" />
           {STOPS.map((o, i) => {
@@ -1783,15 +1802,32 @@ function SpectrumChat({ onTheater, onHome }) {
               </div>
             );
           }
+          if (m.from === "map") {
+            return (
+              <div key={i} className="fade-up rounded-3xl border border-sand-800 bg-sand-900 p-4 shadow-warm">
+                <div className="mb-2 flex justify-between gap-3 text-xs leading-relaxed">
+                  <div><div className="font-semibold text-cyan-300">任務端</div><div className="text-sand-400">注意力在「事情」<br />做什麼、誰來做</div></div>
+                  <div className="text-center"><div className="font-semibold text-amber-300">中間</div><div className="text-sand-400">兩樣都顧到</div></div>
+                  <div className="text-right"><div className="font-semibold text-rose-300">情感端</div><div className="text-sand-400">注意力在「感受」<br />心情、彼此的溫度</div></div>
+                </div>
+                <MiniSpectrum labels />
+              </div>
+            );
+          }
           if (m.from === "station") {
             const o = STOPS[m.stop];
             return (
-              <div key={i} className="fade-up my-3 flex items-center gap-3 rounded-3xl border bg-sand-900 p-4 shadow-warm" style={{ borderColor: `${o.color}88` }}>
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold text-[#FFF8EC]" style={{ background: o.color }}>{m.stop + 1}</span>
-                <div>
-                  <div className="font-display text-xl font-semibold text-sand-50">{o.name}</div>
-                  <div className="text-sm text-sand-400">{o.side}・{o.motto}</div>
+              <div key={i} className="fade-up my-3 rounded-3xl border bg-sand-900 p-4 shadow-warm" style={{ borderColor: `${o.color}88` }}>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold text-[#FFF8EC]" style={{ background: o.color }}>{m.stop + 1}</span>
+                  <div>
+                    <div className="font-display text-xl font-semibold text-sand-50">{o.name}</div>
+                    <div className="text-sm text-sand-400">{o.motto}</div>
+                  </div>
                 </div>
+                <div className="mt-4"><MiniSpectrum active={o.id} /></div>
+                <div className="mt-1 flex justify-between text-[10px] text-sand-500"><span>任務端</span><span>情感端</span></div>
+                <div className="mt-2 text-center text-sm font-medium" style={{ color: o.color }}>位置：{o.side}</div>
               </div>
             );
           }
