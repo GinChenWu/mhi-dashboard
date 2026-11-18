@@ -866,10 +866,10 @@ function Landing({ onStart, onChat }) {
           <span className="mt-2 block bg-gradient-to-r from-cyan-300 via-violet-300 to-amber-300 bg-clip-text text-2xl text-transparent sm:text-4xl">對話版</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-sand-300">
-          <span className="font-display text-lg text-sand-100">嗨，先坐一下，喝口熱的。</span><br />
-          沒有人是木頭，也沒有人無理取鬧。<br className="hidden sm:block" />
-          大多數感情不是死於一場大吵，而是死於一百次沒被接住的小訊號。<br className="hidden sm:block" />
-          這裡不分對錯，也不找戰犯。只想陪你用一段對話，走過光譜上的每一個位置，看看每一種人心裡在想什麼。
+          <span className="font-display text-lg text-sand-100">嗨，歡迎你來。先坐一下，喝口熱的。</span><br />
+          你有沒有過這種時候：明明很在乎一個人，說出口的話卻讓對方難過；或是對方說了一句話，你想了很久還是不懂。<br />
+          那多半不是誰不夠好，只是每個人表達在乎的方式不太一樣。<br />
+          這裡沒有測驗，也沒有對錯。只想陪你慢慢認識五種說話的方式。也許你會在裡面看見自己，也看見你在乎的那個人。
         </p>
         <div className="mx-auto mt-8 h-1.5 max-w-md rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-rose-400 opacity-80" />
         <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-sand-500"><span>理性任務</span><span>情感共鳴</span></div>
@@ -1829,10 +1829,12 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
     if (started.current) return;
     started.current = true;
     setQueue([
-      g("嗨，我是小譯。我的工作，是幫想法不一樣的人翻譯彼此的話。"),
-      g(`今天我們只用一個很小的場景。${scn.setup}`),
+      g("嗨，我是小譯，很高興你來。"),
+      g("我平常做的事，是陪兩個很在乎彼此、卻常常聽不懂對方的人，把話翻譯給對方聽。"),
+      g("今天想陪你慢慢走一小段路。不趕時間，也沒有標準答案，照你自己的感覺回就好。"),
+      g(`我們從一個很日常的小場景開始。${scn.setup}`),
       { from: "scene" },
-      g("先別想太多。如果聽到這句話的人是你，你最可能怎麼回？"),
+      g("如果聽到這句話的人是你，你大概會怎麼回？選最像你平常會說的那一句就好。"),
     ]);
   }, [scn]);
 
@@ -1873,12 +1875,12 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
           send(
             line,
             [
-              g("收到，你的回應先放在我這裡，等一下會用到。"),
-              g("其實同一句話，至少有五種回應。我把它們排在一條線上，叫做溝通光譜。這條線量的是：一個人回話的時候，注意力放在哪裡。"),
+              g("謝謝你告訴我。這一句我先幫你收著，等一下會再提到它。"),
+              g("同一句話，其實每個人接的方式都不一樣。我把常見的五種排成一條線，叫它「溝通光譜」。"),
               { from: "map" },
-              g("越往左，越只看得到事情；越往右，越只剩下感受；正中間是兩樣都顧到的地方。"),
-              g("我們從最左邊開始，往中間走一步；再跳到最右邊，往中間走一步；最後在中間會合。"),
-              g("每一站我會先說它在光譜的哪裡，讓你看一小段對話，再告訴你三件事：回應的人心裡在想什麼、開口的人聽到了什麼、兩邊可以怎麼做。"),
+              g("線的左邊，是習慣先看「事情」的人；右邊，是習慣先看「感受」的人；中間是兩樣都顧到的地方。"),
+              g("沒有哪一邊比較好，也沒有哪一種人比較差。每個位置的人，都是用自己會的方式在乎對方。"),
+              g("我們先在左邊走兩站，再到右邊走兩站，最後在中間會合。每一站我會先告訴你它在哪裡，再陪你看一小段對話。那我們出發囉。"),
               ...stationIntro(0, id),
             ],
             { kind: "feel", stop: 0, step: 0 }
