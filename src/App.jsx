@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 
 /* ============================================================================
- * 《溝通光譜：在終焉之前》 The Communication Spectrum: Before the End
+ * 《溝通光譜　劇場版》 The Communication Spectrum
  * 單檔 React 元件：資料層（劇本／量表）→ 計分引擎 → 視覺隱喻引擎 → 五個視圖
  * ========================================================================== */
 
@@ -231,7 +231,7 @@ const SCRIPT = {
     },
     {
       act: "第三幕",
-      title: "終焉邊緣的高壓逼問",
+      title: "臨界點上的高壓逼問",
       focus: "控制型質詢 vs. 守住邊界並打開對話",
       scene: [
         { who: "narr", text: "又過了兩個月。你們原本說好租約到期後一起搬家。" },
@@ -353,7 +353,7 @@ const SCRIPT = {
     },
     {
       act: "第三幕",
-      title: "終焉邊緣的高壓逼問",
+      title: "臨界點上的高壓逼問",
       focus: "被逼到牆角時：關機、反擊，還是守住自己",
       scene: [
         { who: "narr", text: "又過了兩個月。你一個人去看了房，簽下一間單人套房的租約。你還沒想好要怎麼開口。" },
@@ -897,7 +897,7 @@ function RelationshipDashboard({ perspective, state, xray, animKey }) {
         <div className="flex items-center gap-3 rounded-xl border border-sand-800 bg-sand-950/70 px-4 py-2">
           {xray ? <HourglassMeter quiet={state.quiet} /> : <div className="flex h-16 w-12 items-center justify-center"><Lock className="h-6 w-6 text-sand-600" /></div>}
           <div className="text-xs">
-            <div className="flex items-center gap-1.5 text-sand-300"><Hourglass className="h-3.5 w-3.5 text-amber-300" />終焉沙漏</div>
+            <div className="flex items-center gap-1.5 text-sand-300"><Hourglass className="h-3.5 w-3.5 text-amber-300" />倒數沙漏</div>
             <div className="mt-1 text-lg font-semibold tabular-nums text-sand-100">{xray ? `${Math.round(state.quiet)}%` : "？"}</div>
             <div className="text-sand-500">{xray ? "安靜離職進度" : "結算時揭曉"}</div>
           </div>
@@ -1106,7 +1106,7 @@ function Landing({ onStart, onChat }) {
         <div className="mt-4 text-xs tracking-[0.35em] text-sand-400">THE COMMUNICATION SPECTRUM</div>
         <h1 className="font-display mt-5 text-4xl font-semibold leading-tight text-sand-50 sm:text-6xl">
           溝通光譜
-          <span className="mt-2 block bg-gradient-to-r from-cyan-300 via-violet-300 to-amber-300 bg-clip-text text-2xl text-transparent sm:text-4xl">在終焉之前</span>
+          <span className="mt-2 block bg-gradient-to-r from-cyan-300 via-violet-300 to-amber-300 bg-clip-text text-2xl text-transparent sm:text-4xl">劇場版</span>
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-sand-300">
           <span className="font-display text-lg text-sand-100">嗨，先坐一下，喝口熱的。</span><br />
@@ -1211,7 +1211,7 @@ function Setup({ mode, setMode, perspective, setPerspective, xray, setXray, onBe
         <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
           <div className={`rounded-xl border p-4 ${xray ? "border-amber-400/40 bg-amber-400/5 text-sand-200" : "border-sand-800 text-sand-500"}`}>
             <div className="font-medium">開啟</div>
-            <p className="mt-1 leading-relaxed">即時看見對方的內心 OS、訊號粒子的真實形狀、心電圖振幅與終焉沙漏。適合想「學會看」的你。</p>
+            <p className="mt-1 leading-relaxed">即時看見對方的內心 OS、訊號粒子的真實形狀、心電圖振幅與倒數沙漏。適合想「學會看」的你。</p>
           </div>
           <div className={`rounded-xl border p-4 ${!xray ? "border-sand-400/50 bg-sand-400/5 text-sand-200" : "border-sand-800 text-sand-500"}`}>
             <div className="font-medium">關閉</div>
@@ -1380,11 +1380,11 @@ function RadarChart({ dims, dims2 }) {
 
 function RiskGauge({ risk, level }) {
   const color = { low: "#2F7A54", mid: "#B4610F", high: "#B8404F" }[level];
-  const label = { low: "暖流暢通", mid: "訊號衰減中", high: "終焉臨界" }[level];
+  const label = { low: "暖流暢通", mid: "訊號衰減中", high: "瀕臨斷線" }[level];
   const r = 70, circ = Math.PI * r;
   return (
     <div className="flex flex-col items-center">
-      <svg viewBox="0 0 180 104" className="w-56" role="img" aria-label={`感情終焉風險指數 ${risk}，${label}`}>
+      <svg viewBox="0 0 180 104" className="w-56" role="img" aria-label={`關係疏離風險指數 ${risk}，${label}`}>
         <path d="M 20 94 A 70 70 0 0 1 160 94" fill="none" stroke="#EADFCB" strokeWidth="12" strokeLinecap="round" />
         <path d="M 20 94 A 70 70 0 0 1 160 94" fill="none" stroke={color} strokeWidth="12" strokeLinecap="round" strokeDasharray={`${(risk / 100) * circ} ${circ}`} style={{ transition: "stroke-dasharray 1.2s ease" }} />
         <text x="90" y="80" textAnchor="middle" fill="#33291F" fontSize="38" fontWeight="700">{risk}</text>
@@ -1518,7 +1518,7 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
           <RadarChart dims={state.dims} />
         </div>
         <div className="flex flex-col rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
-          <h2 className="flex items-center gap-2 text-sm font-semibold text-sand-200"><ShieldAlert className="h-4 w-4 text-rose-300" />感情終焉風險指數</h2>
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-sand-200"><ShieldAlert className="h-4 w-4 text-rose-300" />關係疏離風險指數</h2>
           <div className="mt-4"><RiskGauge risk={state.risk} level={state.level} /></div>
           <div className="mt-5 text-center">
             <div className="text-xs text-sand-500">你的溝通樣貌</div>
@@ -1527,7 +1527,7 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
           <p className="mt-3 text-sm leading-relaxed text-sand-300">{verdict.text}</p>
           <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
             <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{missedCount}／{acts.length}</div><div className="text-sand-500">漏接的訊號</div></div>
-            <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{Math.round(state.quiet)}%</div><div className="text-sand-500">終焉沙漏</div></div>
+            <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{Math.round(state.quiet)}%</div><div className="text-sand-500">倒數沙漏</div></div>
             <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{state.vit <= 10 ? "死線" : Math.round(state.vit)}</div><div className="text-sand-500">關係生命力</div></div>
           </div>
         </div>
@@ -1604,7 +1604,7 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
         <div className="rounded-3xl border border-amber-400/40 bg-amber-400/10 shadow-warm p-6 sm:p-8">
           <div className="flex items-center gap-2 text-sm font-semibold text-amber-300"><Mail className="h-4 w-4" />給你的一封短信</div>
           <p className="font-display mt-4 text-[17px] leading-loose text-sand-100">{LETTERS[perspective][state.level]}</p>
-          <p className="font-display mt-4 text-right text-sm text-sand-400">——寫在終焉之前</p>
+          <p className="font-display mt-4 text-right text-sm text-sand-400">——寫給還在路上的你</p>
         </div>
         <div className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6 sm:p-8">
           <div className="flex items-center gap-2 text-sm font-semibold text-rose-300"><Heart className="h-4 w-4" />這週可以試的三件小事</div>
@@ -1683,7 +1683,7 @@ function PairReport({ results, xray, onRestart, onHome }) {
                   <div className={`text-xs font-medium ${c.text}`}>走{c.name}視角的人</div>
                   <div className="font-display mt-1 text-xl font-semibold text-sand-50">{v.title}</div>
                   <p className="mt-2 text-sm leading-relaxed text-sand-300">{v.text}</p>
-                  <div className="mt-3 text-xs text-sand-500">終焉風險 {st[k].risk}／100・漏接 {SCRIPT[k].filter((a, i) => a.options[results[k][i]].missed).length}／{SCRIPT[k].length}</div>
+                  <div className="mt-3 text-xs text-sand-500">疏離風險 {st[k].risk}／100・漏接 {SCRIPT[k].filter((a, i) => a.options[results[k][i]].missed).length}／{SCRIPT[k].length}</div>
                 </div>
               );
             })}
