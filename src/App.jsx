@@ -699,6 +699,13 @@ const TWO_SIDES = [
   },
 ];
 
+const FAQ = [
+  ["這是心理測驗嗎？", "不是。這裡不會幫你分類，也不會打分數。五種說話的方式只是一張地圖：同一個人在不同時候、面對不同的人，會站到不同的位置。"],
+  ["一定要兩個人一起嗎？", "不用，一個人就可以走完對話和劇場。如果想跟伴侶或朋友一起，劇場裡有輪流用同一支手機的雙人模式，走完可以一起看對照。"],
+  ["我的回答會被記錄嗎？", "不會。所有內容都只在你的瀏覽器裡進行，關掉頁面就沒有了，不會傳送到任何地方。"],
+  ["看完之後可以做什麼？", "挑一件最小的事試試看就好。例如下次想說「都可以」的時候，先說出一個自己的想法；或是對方說「沒事」的時候，多問一句。"],
+];
+
 function Ornament() {
   return (
     <svg viewBox="0 0 120 12" className="mx-auto h-3 w-28" aria-hidden="true">
@@ -862,7 +869,7 @@ function Landing({ onStart, onChat }) {
   ];
   if (!chatFirst) ways.reverse();
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6 sm:pt-16">
+    <div className="mx-auto max-w-5xl px-4 pb-16 pt-4 sm:px-6 sm:pt-8">
       <header className="fade-up text-center">
         <HeroArt />
         <div className="mt-4 text-[11px] tracking-[0.4em] text-sand-500">THE COMMUNICATION SPECTRUM</div>
@@ -920,11 +927,25 @@ function Landing({ onStart, onChat }) {
         </div>
       </section>
 
+      <section className="mt-24 sm:mt-32">
+        <LandingHeading kicker="QUESTIONS" title="你可能想問">開始之前，先回答幾個常被問到的問題。</LandingHeading>
+        <div className="mx-auto max-w-2xl space-y-3">
+          {FAQ.map(([q, a]) => (
+            <details key={q} className="group rounded-3xl border border-sand-800 bg-sand-900/70 px-6 py-4 shadow-warm">
+              <summary className="font-display flex cursor-pointer list-none items-center justify-between gap-4 text-[17px] text-sand-100 [&::-webkit-details-marker]:hidden">
+                {q}
+                <ChevronRight className="h-4 w-4 shrink-0 text-sand-500 transition group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-[15px] leading-loose text-sand-400">{a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       <section className="mt-24 text-center sm:mt-32">
         <Ornament />
         <p className="font-display mx-auto mt-8 max-w-2xl text-2xl leading-loose text-sand-100 sm:text-3xl" style={{ textWrap: "balance" }}>理解不等於同意。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。</p>
         <PrimaryButton onClick={chatFirst ? onChat : onStart} className="mt-9">{chatFirst ? "開始一段對話" : "進入互動劇場"}</PrimaryButton>
-        <p className="mt-10 text-xs leading-relaxed text-sand-500">這是心理教育用途的互動內容，不是臨床診斷工具。</p>
       </section>
     </div>
   );
@@ -1546,7 +1567,7 @@ const STOPS = [
     id: "outsource", name: "只談分工", color: "#3B8C8C", x: 10, side: "任務端的盡頭（最左邊）", motto: "用「做事」代替「在場」",
     where: ["這一站在光譜的最左邊，任務端的盡頭。", "站在這裡的人，聽到任何一句話都會先把它當成一件「事情」：要做什麼、誰來做、怎樣最有效率。對方的心情不是不重要，而是根本沒有出現在他的畫面裡。"],
     heart: "我把事情做好，就是在乎你。",
-    strength: "這個位置也有它的好：事情真的很多、需要有人扛起來的時候，他最可靠。",
+    strength: "不過別誤會，這種人也有很可靠的地方。事情真的很多、需要有人扛的時候，找他就對了。",
     recap: "只談分工的人不是不在乎，是用做事在說在乎。",
     step: "下一次，在處理事情之前，先看一眼對方的心情。",
     learned: "下次再遇到只談分工的回應，也許可以先聽見裡面的心意，再告訴他，你要的是一起。",
@@ -1555,7 +1576,7 @@ const STOPS = [
     id: "drift", name: "都聽你的", color: "#6E9FB0", x: 30, side: "任務端，往中間一步", motto: "用「配合」代替「自己」",
     where: ["這一站還在左半邊，但比上一站往中間靠了一步。", "往中間靠，是因為他開始在意對方的感受了：怕對方不開心、怕起衝突。還沒到中間，是因為他顧慮感受的方法，是把自己拿掉。他回應的仍然是「誰來決定」這件事，只是答案變成了「不是我」。"],
     heart: "我不添麻煩，就是在乎你。",
-    strength: "這個位置也有它的好：他很少讓人難堪，跟他相處幾乎沒有火藥味。",
+    strength: "其實跟這種人相處很舒服。他很少讓人難堪，幾乎沒有火藥味。",
     recap: "都聽你的人不是沒有心，是怕自己的想法變成別人的麻煩。",
     step: "下一次，先說出一個自己的想法，再小都好。",
     learned: "下次再聽到「都聽你的」，也許可以多等他三秒，讓他知道他的想法不是麻煩。",
@@ -1564,7 +1585,7 @@ const STOPS = [
     id: "quiet", name: "不再開口", color: "#C2697B", x: 90, side: "情感端的盡頭（最右邊）", motto: "把感受「收起來」",
     where: ["現在跳到光譜的另一頭，最右邊，情感端的盡頭。", "站在這裡的人，心裡裝滿了感受：失望、孤單、不想再期待。但這些感受，一個字都沒有說出口。表面上他很平靜、很客氣，其實他已經不再讓對方進來了。"],
     heart: "我不再期待，就不會痛。",
-    strength: "這個位置也有它的好：他很能自己消化，從不把情緒倒在別人身上。",
+    strength: "也要替他說句話：他很能自己消化，從不把情緒倒在別人身上。",
     recap: "不再開口的人不是沒事，是不想再失望一次。",
     step: "下一次，試著多說一句心裡的話。",
     learned: "下次再聽到「沒事，我自己來」，也許可以先不要鬆一口氣，而是走過去看看。",
@@ -1573,7 +1594,7 @@ const STOPS = [
     id: "interrogate", name: "急著逼問", color: "#D9414F", x: 70, side: "情感端，往中間一步", motto: "把感受「丟出去」",
     where: ["這一站也在右半邊，比上一站往中間靠了一步。", "往中間靠，是因為他還沒放棄：他還想要一個答案，還想把事情弄清楚。還沒到中間，是因為推著他開口的全是情緒。上一站把感受全部收起來，這一站把感受全部丟出去。"],
     heart: "我抓緊一點，才不會失去你。",
-    strength: "這個位置也有它的好：他不逃避。問題來了，他是最想面對的那一個。",
+    strength: "他也有讓人佩服的地方：他不逃避。問題來了，他是最想面對的那一個。",
     recap: "急著逼問的人不是想控制，是太怕失去。",
     step: "下一次，先說出那句「我有點怕」，再問問題。",
     learned: "下次再被逼問，也許可以看見那句話底下的害怕，給他一個確定的時間。",
@@ -1593,7 +1614,7 @@ const STOPS = [
  * line 是第一句回應，push 是開口的人追問的一句，back 是對方的第二句回應。 */
 const SCENARIOS = [
   {
-    id: "trip",
+    id: "trip", label: "規劃旅行",
     setup: "連假快到了，有人開口問另一半：",
     opener: "連假快到了，我們來排一下行程好不好？",
     stops: {
@@ -1655,7 +1676,7 @@ const SCENARIOS = [
     },
   },
   {
-    id: "badday",
+    id: "badday", label: "不順的一天",
     setup: "下班回到家，有人一進門就對另一半說：",
     opener: "我今天在公司被主管當眾唸了，心情好差。",
     stops: {
@@ -1717,7 +1738,7 @@ const SCENARIOS = [
     },
   },
   {
-    id: "money",
+    id: "money", label: "談錢",
     setup: "月底了，有人看著記帳 App，對另一半說：",
     opener: "這個月的開銷有點超過，我們要不要坐下來看一下？",
     stops: {
@@ -1780,14 +1801,46 @@ const SCENARIOS = [
   },
 ];
 
-/* 每一站固定的三個提問，照順序出現。 */
-const CHAT_STEPS = [
-  { key: "why", label: "他心裡在想什麼？" },
-  { key: "heard", label: "那開口的人聽到了什麼？" },
-  { key: "todo", label: "那兩邊可以怎麼做？" },
-];
-
 const g = (text) => ({ from: "guide", text });
+
+/* 每一站的流程相同，但小譯的說法、你可以問的問題，每一站都不一樣。索引對應 STOPS 的走訪順序。 */
+const STEP_KEYS = ["why", "heard", "todo"];
+const STEP_LABELS = [
+  ["他心裡在想什麼？", "那開口的人聽到了什麼？", "那兩邊可以怎麼做？"],
+  ["他為什麼什麼都說好？", "對方聽起來是什麼感覺？", "那怎麼辦比較好？"],
+  ["他怎麼會變成這樣？", "對方有發現嗎？", "還來得及做什麼嗎？"],
+  ["他為什麼這麼急？", "被問的人是什麼感覺？", "要怎麼讓場面緩下來？"],
+  ["他是怎麼想的？", "對方聽到了什麼？", "我也可以這樣說嗎？"],
+];
+const LEAD_IN = [
+  "同樣那句話，這一站的人會這樣回。你看看接下來怎麼發展：",
+  "換這一站的人來接同一句話，會變成這樣：",
+  "同一句話到了這裡，對話會很短。你看：",
+  "這一站的對話，火藥味會重一點：",
+  "最後，看看中間的人怎麼接：",
+];
+const FEEL_ASK = [
+  "如果你是先開口的那個人，聽完會有什麼感覺？",
+  "換成是你開的口，聽到這樣的回應，你會怎麼想？",
+  "老實說，如果是你，聽完是鬆一口氣，還是覺得哪裡怪怪的？",
+  "被這樣回的話，你第一個反應會是什麼？",
+  "聽完這一段，你的感覺呢？",
+];
+const RECAP_LEAD = ["這一站，我想留一句話給你：", "如果只記得一件事，記這個：", "這一站最想讓你知道的是：", "所以下次遇到，可以這樣想：", "最後這一句，送給你："];
+const NEXT_LABEL = ["去下一站", "換到另一邊看看", "下一站", "那中間長什麼樣子？", "五站都走完了"];
+
+const ASKER_TAG = "如果你是開口的人：";
+const ANSWERER_TAG = "如果你是回應的人：";
+
+/* 把一站的解析轉成訊息：心聲變成心聲卡，兩邊的做法變成一張對照卡，其餘是小譯說的話。 */
+function stepMessages(key, lines) {
+  if (key === "why") return [{ from: "inner", text: lines[0].replace(/^他心裡想的是：/, "") }, ...lines.slice(1).map(g)];
+  if (key === "todo" && lines[0].startsWith(ASKER_TAG) && lines[1].startsWith(ANSWERER_TAG)) {
+    return [{ from: "todo", asker: lines[0].slice(ASKER_TAG.length), answerer: lines[1].slice(ANSWERER_TAG.length) }];
+  }
+  return lines.map(g);
+}
+
 
 const shuffled = (list) => {
   const a = [...list];
@@ -1830,9 +1883,10 @@ function stationIntro(i, home) {
   return [
     { from: "station", stop: i },
     ...st.where.map(g),
-    g("同樣那句話，這一站的人會這樣回。你看看接下來怎麼發展："),
+    g(LEAD_IN[i]),
     { from: "quote", stop: i },
-    g(home === st.id ? "這一站的第一句，就是你剛剛選的那句。這次換你當先開口的人，聽完會有什麼感覺？" : "如果你是先開口的那個人，聽完會有什麼感覺？"),
+    ...(home === st.id ? [g("這一站的第一句，就是你剛剛選的那句。這次換你站到對面，當先開口的人。")] : []),
+    g(FEEL_ASK[i]),
   ];
 }
 
@@ -1843,6 +1897,7 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
   const [queue, setQueue] = useState([]);
   const [stage, setStage] = useState({ kind: "intro", stop: -1, step: 0 });
   const [home, setHome] = useState(null);
+  const [finalPick, setFinalPick] = useState(null);
   const started = useRef(false);
   const endRef = useRef(null);
 
@@ -1912,20 +1967,21 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
   } else if (ready && stage.kind === "feel") {
     options = talk.feel.map((f) => ({ label: f.label, run: () => send(f.label, [g(f.reply)], { kind: "ask", stop: stage.stop, step: 0 }) }));
   } else if (ready && stage.kind === "ask") {
-    const q = CHAT_STEPS[stage.step];
-    const lastStep = stage.step === CHAT_STEPS.length - 1;
-    const closing = lastStep ? [...(st.strength ? [g(st.strength)] : []), g(`這一站想留給你的一句話：${st.recap}`)] : [];
+    const key = STEP_KEYS[stage.step];
+    const label = STEP_LABELS[stage.stop][stage.step];
+    const lastStep = stage.step === STEP_KEYS.length - 1;
+    const closing = lastStep ? [...(st.strength ? [g(st.strength)] : []), g(`${RECAP_LEAD[stage.stop]}${st.recap}`)] : [];
     options = [
       {
-        label: q.label,
-        run: () => send(q.label, [...talk[q.key].map(g), ...closing], lastStep ? { kind: "next", stop: stage.stop, step: 0 } : { kind: "ask", stop: stage.stop, step: stage.step + 1 }),
+        label,
+        run: () => send(label, [...stepMessages(key, talk[key]), ...closing], lastStep ? { kind: "next", stop: stage.stop, step: 0 } : { kind: "ask", stop: stage.stop, step: stage.step + 1 }),
       },
     ];
   } else if (ready && stage.kind === "next") {
     const mine = STOPS.find((x) => x.id === home);
     options = [
       {
-        label: isLastStop ? "五站都走完了" : "去下一站",
+        label: NEXT_LABEL[stage.stop],
         next: true,
         run: () =>
           isLastStop
@@ -1940,18 +1996,20 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
                 ],
                 { kind: "final", stop: stage.stop, step: 0 }
               )
-            : send("去下一站", stationIntro(stage.stop + 1, home), { kind: "feel", stop: stage.stop + 1, step: 0 }),
+            : send(NEXT_LABEL[stage.stop], stationIntro(stage.stop + 1, home), { kind: "feel", stop: stage.stop + 1, step: 0 }),
       },
     ];
   } else if (ready && stage.kind === "final") {
     options = STOPS.map((o) => ({
       label: o.name,
-      run: () =>
+      run: () => {
+        setFinalPick(o.id);
         send(
           o.name,
           [g(o.learned), g("理解不等於同意，也不代表要照單全收。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。"), g("還有，人不會永遠待在同一個位置。累的時候、慌的時候、被好好愛著的時候，我們都會移動。"), g("今天就到這裡。謝謝你願意花時間，去懂跟你不一樣的人。下次進來，會換一個不同的場景。")],
           { kind: "done", stop: stage.stop, step: 0 }
-        ),
+        );
+      },
     }));
   }
 
@@ -1961,7 +2019,7 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
     <div className="mx-auto flex max-w-xl flex-col px-4 pb-16 sm:px-6">
       <div className="sticky top-0 z-10 -mx-4 border-b border-sand-800 bg-sand-950/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex items-center justify-between text-xs text-sand-500">
-          <button type="button" onClick={onHome} className="hover:text-sand-300">← 首頁</button>
+          <span>場景：{scn.label}</span>
           <span>{current < 0 ? "一句話，五種回應" : `第 ${current + 1} 站／共 ${STOPS.length} 站`}</span>
         </div>
         <div className="mt-1 flex justify-between text-[10px] text-sand-500"><span>任務端・看事情</span><span>看感受・情感端</span></div>
@@ -2032,9 +2090,29 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
                 {rows.map(([who, text, mine], r) => (
                   <div key={r} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                     <div className={`max-w-[88%] rounded-2xl px-3 py-2 ${mine ? "rounded-br-sm" : "rounded-bl-sm bg-sand-800/70"}`} style={mine ? { background: `${o.color}2e` } : undefined}>
-                      <div className="text-[11px] text-sand-500">{mine ? `${o.name}的人` : "開口的人"}</div>
+                      <div className="text-[11px] text-sand-500">{mine ? "這一站的人" : "先開口的人"}</div>
                       <p className={`font-display leading-relaxed text-sand-50 ${mine ? "text-[16px]" : "text-[15px]"}`}>{text}</p>
                     </div>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+          if (m.from === "inner") {
+            return (
+              <div key={i} className="fade-up ml-10 max-w-[86%] rounded-3xl border border-dashed border-amber-400/60 bg-amber-400/10 px-4 py-3">
+                <div className="flex items-center gap-1.5 text-xs font-medium text-amber-300"><Brain className="h-3.5 w-3.5" />他心裡的聲音</div>
+                <p className="font-display mt-1 text-[16px] leading-relaxed text-sand-100">{m.text}</p>
+              </div>
+            );
+          }
+          if (m.from === "todo") {
+            return (
+              <div key={i} className="fade-up ml-10 space-y-3 rounded-3xl border border-sand-800 bg-sand-900 p-4 shadow-warm">
+                {[["先開口的人可以", m.asker, "text-cyan-300"], ["回應的人可以", m.answerer, "text-rose-300"]].map(([label, text, tone]) => (
+                  <div key={label}>
+                    <div className={`text-xs font-medium ${tone}`}>{label}</div>
+                    <p className="mt-1 text-[15px] leading-relaxed text-sand-100">{text}</p>
                   </div>
                 ))}
               </div>
@@ -2081,19 +2159,90 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
         </div>
       )}
 
-      {ready && stage.kind === "done" && (
-        <div className="fade-up mt-8 rounded-3xl border border-sand-800 bg-sand-900/80 p-6 text-center shadow-warm">
-          <p className="text-sm leading-relaxed text-sand-400">想換一個場景再走一次，或親自站進其中一個位置演一遍？</p>
-          <PrimaryButton onClick={onRestart} className="mt-4">換一個場景再走一次</PrimaryButton>
-          <div><button type="button" onClick={onTheater} className="mt-3 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">進入互動劇場</button></div>
-        </div>
-      )}
+      {ready && stage.kind === "done" && (() => {
+        const mine = STOPS.find((x) => x.id === home);
+        const picked = STOPS.find((x) => x.id === finalPick) || mine;
+        return (
+          <div className="fade-up mt-8">
+            <div className="rounded-[2rem] border border-amber-400/50 bg-gradient-to-br from-amber-400/15 via-sand-900 to-rose-400/10 p-6 shadow-warm">
+              <div className="text-center text-[11px] tracking-[0.35em] text-sand-500">TODAY'S NOTE</div>
+              <h2 className="font-display mt-2 text-center text-2xl font-semibold text-sand-50">今天帶走的小卡</h2>
+              <div className="mt-5"><MiniSpectrum active={home} /></div>
+              <dl className="mt-5 space-y-4">
+                <div>
+                  <dt className="text-xs text-sand-500">今天的場景</dt>
+                  <dd className="font-display mt-1 text-[16px] leading-relaxed text-sand-100">「{scn.opener}」</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-sand-500">你的回應落在</dt>
+                  <dd className="mt-1"><span className="font-display text-xl font-semibold" style={{ color: mine.color }}>{mine.name}</span><span className="ml-2 text-sm text-sand-400">{mine.side}</span></dd>
+                  <dd className="mt-1 text-[15px] leading-relaxed text-sand-200">{mine.step}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-sand-500">你說比較懂了的是</dt>
+                  <dd className="mt-1"><span className="font-display text-xl font-semibold" style={{ color: picked.color }}>{picked.name}</span></dd>
+                  <dd className="mt-1 text-[15px] leading-relaxed text-sand-200">{picked.recap}</dd>
+                </div>
+              </dl>
+            </div>
+            <div className="mt-6 text-center">
+              <PrimaryButton onClick={onRestart}>換一個場景再走一次</PrimaryButton>
+              <div><button type="button" onClick={onTheater} className="mt-3 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">進入互動劇場</button></div>
+            </div>
+          </div>
+        );
+      })()}
       <div ref={endRef} className="h-6" />
     </div>
   );
 }
 
 /* ---------------------------------- 主元件 --------------------------------- */
+
+function LogoMark({ className = "h-7 w-7" }) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
+      <circle cx="12" cy="16" r="9" fill="#3B8C8C" opacity=".85" />
+      <circle cx="20" cy="16" r="9" fill="#D9596A" opacity=".8" />
+      <path d="M16 8.9 a9 9 0 0 1 0 14.2 a9 9 0 0 1 0 -14.2 z" fill="#E8973A" />
+    </svg>
+  );
+}
+
+const NAV = [["landing", "首頁"], ["chat", "對話"], ["setup", "劇場"]];
+const navOf = (view) => (view === "landing" || view === "chat" ? view : "setup");
+
+function AppHeader({ view, go }) {
+  const active = navOf(view);
+  return (
+    <header className="relative z-20 mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
+      <button type="button" onClick={() => go("landing")} className="flex items-center gap-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="溝通光譜，回到首頁">
+        <LogoMark />
+        <span className="font-display text-lg font-semibold tracking-[0.12em] text-sand-50">溝通光譜</span>
+        <span className="hidden rounded-full border border-sand-700 px-2 py-0.5 text-[11px] tracking-[0.2em] text-sand-400 sm:inline">{EDITION.name}</span>
+      </button>
+      <nav aria-label="主要導覽" className="flex items-center gap-0.5 rounded-full border border-sand-800 bg-sand-900/70 p-1 text-sm shadow-warm">
+        {NAV.map(([id, label]) => (
+          <button key={id} type="button" onClick={() => go(id)} aria-current={active === id ? "page" : undefined} className={`rounded-full px-3.5 py-1.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${active === id ? "bg-sand-800 font-medium text-sand-50" : "text-sand-400 hover:text-sand-200"}`}>{label}</button>
+        ))}
+      </nav>
+    </header>
+  );
+}
+
+function AppFooter({ go }) {
+  return (
+    <footer className="relative mx-auto max-w-5xl px-4 pb-10 sm:px-6">
+      <div className="border-t border-sand-800 pt-8 text-center">
+        <div className="flex items-center justify-center gap-2"><LogoMark className="h-6 w-6" /><span className="font-display text-base tracking-[0.12em] text-sand-200">溝通光譜</span></div>
+        <p className="mx-auto mt-3 max-w-md text-xs leading-relaxed text-sand-500">陪你看懂不同的人怎麼說話、怎麼在乎。這是心理教育用途的互動內容，不是臨床診斷工具。你的回答只留在這個頁面裡，不會被傳送或儲存。</p>
+        <div className="mt-4 flex justify-center gap-6 text-xs text-sand-400">
+          {NAV.map(([id, label]) => <button key={id} type="button" onClick={() => go(id)} className="underline decoration-sand-700 underline-offset-4 hover:text-sand-200">{label}</button>)}
+        </div>
+      </div>
+    </footer>
+  );
+}
 
 export default function App() {
   const [chatRun, setChatRun] = useState(0); // 每次重玩對話就加一，讓對話重新開始並換一個場景
@@ -2134,7 +2283,8 @@ export default function App() {
     <div className="relative min-h-screen bg-sand-950 text-sand-100 antialiased">
       <style>{GLOBAL_CSS}</style>
       <Backdrop />
-      <main className="relative">
+      <AppHeader view={view} go={go} />
+      <main key={view} className="fade-up relative">
         {view === "landing" && <Landing onStart={() => go("setup")} onChat={() => go("chat")} />}
         {view === "chat" && <SpectrumChat key={chatRun} onTheater={() => go("setup")} onHome={() => go("landing")} onRestart={() => { setChatRun((n) => n + 1); window.scrollTo({ top: 0 }); }} />}
         {view === "setup" && <Setup mode={mode} setMode={setMode} perspective={perspective} setPerspective={setPerspective} xray={xray} setXray={setXray} onBegin={() => begin()} onBack={() => go("landing")} />}
@@ -2147,6 +2297,7 @@ export default function App() {
         )}
         {view === "pairReport" && <PairReport results={results} xray={xray} onRestart={() => go("setup")} onHome={() => go("landing")} />}
       </main>
+      {!["chat", "theater", "handoff"].includes(view) && <AppFooter go={go} />}
     </div>
   );
 }
