@@ -872,7 +872,7 @@ function Landing({ onStart, onChat }) {
           這裡沒有測驗，也沒有對錯。只想陪你慢慢認識五種說話的方式。也許你會在裡面看見自己，也看見你在乎的那個人。
         </p>
         <div className="mx-auto mt-8 h-1.5 max-w-md rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-rose-400 opacity-80" />
-        <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-sand-500"><span>理性任務</span><span>情感共鳴</span></div>
+        <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-sand-500"><span>任務端・先看事情</span><span>先看感受・情感端</span></div>
         <PrimaryButton onClick={onChat} className="mt-9">開始一段對話，走一趟光譜</PrimaryButton>
         <p className="mt-3 text-xs text-sand-500">一句話、五種回應，大約十分鐘。每次進來，遇到的場景可能不一樣。</p>
       </header>
