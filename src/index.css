@@ -1,1 +1,44 @@
 @import "tailwindcss";
+
+/* 暖色紙感主題
+ * sand：由「紙」到「墨」的色階。950 是最淺的頁面底色，50 是最深的文字色。
+ * 其餘強調色重新定義為在米色紙面上可讀的暖調版本：
+ * 300 以下用於文字（深）、400 用於邊框與淡底、500 用於光暈。 */
+@theme {
+  --color-sand-950: #faf3e7;
+  --color-sand-900: #fffbf4;
+  --color-sand-800: #eadfcb;
+  --color-sand-700: #d9c8ad;
+  --color-sand-600: #b9a68a;
+  --color-sand-500: #7d6b58;
+  --color-sand-400: #6b5b4b;
+  --color-sand-300: #54463a;
+  --color-sand-200: #43372d;
+  --color-sand-100: #33291f;
+  --color-sand-50: #261d15;
+
+  --color-cyan-100: #245559;
+  --color-cyan-200: #245559;
+  --color-cyan-300: #2f6f73;
+  --color-cyan-400: #4a9a9a;
+  --color-cyan-500: #7cc2bd;
+
+  --color-amber-50: #5a3a12;
+  --color-amber-100: #7a4310;
+  --color-amber-200: #7a4310;
+  --color-amber-300: #b4610f;
+  --color-amber-400: #e8973a;
+  --color-amber-500: #f5b25e;
+
+  --color-rose-200: #8f2c3a;
+  --color-rose-300: #b8404f;
+  --color-rose-400: #e0707c;
+  --color-rose-500: #e86a78;
+
+  --color-emerald-300: #2f7a54;
+  --color-emerald-400: #5fae85;
+  --color-emerald-500: #5fae85;
+
+  --color-violet-300: #7a5ba8;
+  --color-violet-400: #b79ad6;
+}

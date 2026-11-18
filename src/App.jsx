@@ -1,6 +1,15 @@
 import React, { useMemo, useState } from "react";
 import {
   ArrowRight,
+  Coffee,
+  Heart,
+  KeyRound,
+  Luggage,
+  Mail,
+  Moon,
+  Timer,
+  VolumeX,
+  Wind,
   Brain,
   Check,
   ChevronRight,
@@ -26,7 +35,10 @@ import {
 /* ------------------------------- 全域樣式 -------------------------------- */
 
 const GLOBAL_CSS = `
-.font-display { font-family: "Noto Serif TC", "Songti TC", "PMingLiU", "Source Han Serif TC", serif; }
+.shadow-warm { box-shadow: 0 10px 34px -16px rgba(120,72,20,.28); }
+@keyframes threadFlow { to { stroke-dashoffset: -44; } }
+.thread { animation: threadFlow 2.4s linear infinite; }
+.font-display { font-family: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", "PMingLiU", "Source Han Serif TC", serif; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .fade-up { animation: fadeUp .55s ease both; }
 @keyframes drift { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px,-24px) scale(1.08); } }
@@ -57,8 +69,8 @@ const GLOBAL_CSS = `
 /* ------------------------------- 資料：角色 ------------------------------- */
 
 const CAST = {
-  linear: { name: "柏翰", tag: "直線思考／配合型", stroke: "#22d3ee", fill: "rgba(34,211,238,.14)", text: "text-cyan-300" },
-  sensitive: { name: "語安", tag: "深度連結／高敏型", stroke: "#fbbf24", fill: "rgba(251,191,36,.14)", text: "text-amber-300" },
+  linear: { name: "柏翰", tag: "直線思考／配合型", stroke: "#3B8C8C", fill: "rgba(59,140,140,.16)", text: "text-cyan-300" },
+  sensitive: { name: "語安", tag: "深度連結／高敏型", stroke: "#E8973A", fill: "rgba(232,151,58,.2)", text: "text-amber-300" },
 };
 
 const PERSPECTIVES = {
@@ -110,19 +122,19 @@ const PRISM_LINES = [
 ];
 
 const LENSES = [
-  { key: "intent", label: "發訊者自認的意思", color: "text-cyan-300", ring: "border-cyan-400/60 bg-cyan-400/10", beam: "#22d3ee" },
-  { key: "received", label: "對方實際收到的訊號", color: "text-rose-300", ring: "border-rose-400/60 bg-rose-400/10", beam: "#fb7185" },
-  { key: "psych", label: "底層心理學解析", color: "text-amber-300", ring: "border-amber-400/60 bg-amber-400/10", beam: "#fbbf24" },
+  { key: "intent", label: "發訊者自認的意思", color: "text-cyan-300", ring: "border-cyan-400/60 bg-cyan-400/10", beam: "#3B8C8C" },
+  { key: "received", label: "對方實際收到的訊號", color: "text-rose-300", ring: "border-rose-400/60 bg-rose-400/10", beam: "#D9596A" },
+  { key: "psych", label: "底層心理學解析", color: "text-amber-300", ring: "border-amber-400/60 bg-amber-400/10", beam: "#E8973A" },
 ];
 
 /* --------------------------- 資料：雙軸光譜落點 --------------------------- */
 
 const SPECTRUM_POINTS = [
-  { id: "outsource", x: 0.2, y: 0.2, label: "任務外包", color: "#22d3ee", desc: "「你排就好，錢我出。」把愛翻譯成分工與效率。自我是清楚的，但人不在過程裡——對方得到資源，卻得不到同伴。" },
-  { id: "drift", x: 0.3, y: 0.86, label: "隨波逐流", color: "#67e8f9", desc: "「都可以、看你、你決定。」看似配合度滿分，實則把所有決策的重量與孤獨都留給對方。久了，伴侶會發現身邊這個人『少了自己』。" },
-  { id: "interrogate", x: 0.47, y: 0.7, label: "高壓逼問", color: "#f43f5e", desc: "「我現在就要答案！」看起來很強勢，其實是被焦慮淹沒、無法安放自己情緒的狀態。越用力抓，對方的牆升得越高。" },
-  { id: "quiet", x: 0.82, y: 0.8, label: "安靜離職", color: "#fda4af", desc: "「沒事，我自己來。」情感需求很高，卻把自己的聲音關掉。表面風平浪靜，內心已在倒數。" },
-  { id: "cocreate", x: 0.66, y: 0.18, label: "過程共謀", color: "#fbbf24", desc: "光譜的交會區：有自己的想法（自我清晰），也願意走進對方的過程（情感在場）。不是誰配合誰，而是兩個完整的人一起決定一件事。" },
+  { id: "outsource", x: 0.2, y: 0.2, label: "任務外包", color: "#3B8C8C", desc: "「你排就好，錢我出。」把愛翻譯成分工與效率。自我是清楚的，但人不在過程裡——對方得到資源，卻得不到同伴。" },
+  { id: "drift", x: 0.3, y: 0.86, label: "隨波逐流", color: "#2F6F73", desc: "「都可以、看你、你決定。」看似配合度滿分，實則把所有決策的重量與孤獨都留給對方。久了，伴侶會發現身邊這個人『少了自己』。" },
+  { id: "interrogate", x: 0.47, y: 0.7, label: "高壓逼問", color: "#D9414F", desc: "「我現在就要答案！」看起來很強勢，其實是被焦慮淹沒、無法安放自己情緒的狀態。越用力抓，對方的牆升得越高。" },
+  { id: "quiet", x: 0.82, y: 0.8, label: "安靜離職", color: "#B8404F", desc: "「沒事，我自己來。」情感需求很高，卻把自己的聲音關掉。表面風平浪靜，內心已在倒數。" },
+  { id: "cocreate", x: 0.66, y: 0.18, label: "過程共謀", color: "#E8973A", desc: "光譜的交會區：有自己的想法（自我清晰），也願意走進對方的過程（情感在場）。不是誰配合誰，而是兩個完整的人一起決定一件事。" },
 ];
 
 /* ------------------------------- 資料：劇本 ------------------------------- */
@@ -438,6 +450,45 @@ const CONVERTER = [
   { vague: "「我覺得我們之間少了什麼。」", why: "太抽象。他會焦慮地開始找『故障的零件』，卻找不到。", hires: "「我想念我們一起做一件事的感覺。這個週末一起煮一頓飯，菜單一人決定一半，好嗎？」" },
 ];
 
+const MECHANISMS = [
+  { icon: Luggage, title: "任務外包 vs. 過程共謀", he: "「你擅長你排，我出錢出力，這是信任。」", she: "「我要的不是有人買單，是有人跟我一起期待。」", note: "愛不只在結果裡，也在一起準備的過程裡。" },
+  { icon: Wind, title: "隨波逐流的「都可以」", he: "「我配合度很高，她想怎樣都好。」", she: "「所有決定都是我做的。他這個人，到底在哪裡？」", note: "有自己的想法不是自私，是讓對方有一個人可以相遇。" },
+  { icon: VolumeX, title: "訊號盲區與安靜離職", he: "「最近都沒吵架，我們很穩定。」", she: "「我不吵了，因為我已經不期待了。」", note: "還願意抱怨，是還在投資。安靜，才是需要靠近的時候。" },
+  { icon: Timer, title: "高壓逼問與峰終定律", he: "「我只是想把話講清楚，知道問題在哪。」", she: "「我被審問了。原來最後是這個樣子。」", note: "一段感情怎麼結尾，會決定它怎麼被記得。" },
+];
+
+const ACT_META = [
+  { icon: Luggage, when: "週四 晚上十一點", where: "客廳沙發" },
+  { icon: Moon, when: "三個月後 隔天中午", where: "訊息對話框" },
+  { icon: KeyRound, when: "又過了兩個月 深夜", where: "書桌前" },
+];
+
+const LETTERS = {
+  A: {
+    low: "你不需要變成另一個人。你只是在這三個晚上，多留了一點自己在現場。請記得這種感覺——被需要的從來不是你的效率，而是你這個人。",
+    mid: "你其實一直都在乎，只是在乎的方式，有時候沒有抵達。這不是缺陷，是一種沒有人教過你的語言。你已經聽懂一半了，剩下的，慢慢來。",
+    high: "先別急著責怪自己。你用你被教會的方式去愛了：負責、不添麻煩、把事情做好。只是沒有人告訴過你，她要的是你這個人走進來。現在你知道了，而知道，永遠不算太晚。",
+  },
+  B: {
+    low: "你沒有委屈自己，也沒有把對方推開。把需要說清楚，是一件很勇敢的事。謝謝你願意再相信一次：話，是可以被聽見的。",
+    mid: "你的敏感不是負擔，是你愛人的天線。只是這支天線收得太多、發得太少。下一次想說『算了』的時候，試著多說一句就好。",
+    high: "你不是太難懂，也不是要得太多。你只是一個人撐了太久，久到忘了可以開口。不管這段關係最後去哪裡，請先把那個一直說『沒事』的自己，接回來。",
+  },
+};
+
+const PRACTICES = {
+  A: [
+    "今晚問一個不求解答的問題：「今天有沒有哪一刻，你希望我在？」",
+    "下一次想說「都可以」之前，先說出一個自己的偏好，再小都好。",
+    "當她說「沒事」，回一句：「好，那我陪你坐一下。」然後真的坐下。",
+  ],
+  B: [
+    "這週挑一件小事，用「情境＋感受＋一個動作＋時間」完整說一次。",
+    "想說「算了」的時候，改成：「我有事，但我需要一點時間整理。」",
+    "當他做對一件小事，告訴他：「剛剛那樣，我有被接住。」讓他知道地圖是對的。",
+  ],
+};
+
 /* -------------------------------- 計分引擎 -------------------------------- */
 
 const clamp = (n, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, n));
@@ -476,8 +527,8 @@ function Figure({ cx, role, opacity = 1, blur = 0, label, sub }) {
         <circle cx={cx} cy={66} r={20} fill={c.fill} stroke={c.stroke} strokeWidth={2} />
         <path d={`M ${cx - 36},146 Q ${cx - 36},98 ${cx},98 Q ${cx + 36},98 ${cx + 36},146 Z`} fill={c.fill} stroke={c.stroke} strokeWidth={2} />
       </g>
-      <text x={cx} y={170} textAnchor="middle" fill="#e2e8f0" fontSize="13" fontWeight="600">{label}</text>
-      <text x={cx} y={187} textAnchor="middle" fill="#94a3b8" fontSize="10.5">{sub}</text>
+      <text x={cx} y={170} textAnchor="middle" fill="#33291F" fontSize="13" fontWeight="600">{label}</text>
+      <text x={cx} y={187} textAnchor="middle" fill="#7D6B58" fontSize="10.5">{sub}</text>
     </g>
   );
 }
@@ -485,10 +536,10 @@ function Figure({ cx, role, opacity = 1, blur = 0, label, sub }) {
 function SignalParticles({ tone, animKey }) {
   if (!tone) return null;
   const shape = {
-    warm: <circle r={5.5} fill="#fbbf24" filter="url(#glow)" />,
-    neutral: <circle r={3.5} fill="#cbd5e1" />,
-    cold: <polygon points="0,-7 5,0 0,7 -5,0" fill="#64748b" stroke="#94a3b8" strokeWidth={1} />,
-    spike: <polygon points="-12,-5 12,0 -12,5 -7,0" fill="#f43f5e" filter="url(#glowRed)" />,
+    warm: <circle r={5.5} fill="#E8973A" filter="url(#glow)" />,
+    neutral: <circle r={3.5} fill="#54463A" />,
+    cold: <polygon points="0,-7 5,0 0,7 -5,0" fill="#8C7A66" stroke="#7D6B58" strokeWidth={1} />,
+    spike: <polygon points="-12,-5 12,0 -12,5 -7,0" fill="#D9414F" filter="url(#glowRed)" />,
   }[tone];
   const gap = tone === "spike" ? 0.14 : 0.42;
   return (
@@ -506,13 +557,13 @@ function Firewall({ up }) {
   const bricks = [];
   for (let r = 0; r < 9; r++) {
     for (let c = 0; c < 2; c++) {
-      bricks.push(<rect key={`${r}-${c}`} x={426 + c * 12 + (r % 2 ? 0 : -4)} y={40 + r * 13} width={11} height={11} rx={1.5} fill="rgba(244,63,94,.25)" stroke="#fb7185" strokeWidth={1} />);
+      bricks.push(<rect key={`${r}-${c}`} x={426 + c * 12 + (r % 2 ? 0 : -4)} y={40 + r * 13} width={11} height={11} rx={1.5} fill="rgba(244,63,94,.25)" stroke="#D9596A" strokeWidth={1} />);
     }
   }
   return (
     <g className="wall" style={{ transform: up ? "scaleY(1)" : "scaleY(0)", opacity: up ? 1 : 0 }}>
       {bricks}
-      <text x={434} y={32} textAnchor="middle" fill="#fda4af" fontSize="10" fontWeight="600">防衛高牆</text>
+      <text x={434} y={32} textAnchor="middle" fill="#B8404F" fontSize="10" fontWeight="600">防衛高牆</text>
     </g>
   );
 }
@@ -520,7 +571,7 @@ function Firewall({ up }) {
 function EcgStrip({ amp, color, flat }) {
   return (
     <svg viewBox="0 0 600 80" className="h-16 w-full" preserveAspectRatio="none" aria-hidden="true">
-      <line x1="0" y1="40" x2="600" y2="40" stroke="#1e293b" strokeWidth="1" />
+      <line x1="0" y1="40" x2="600" y2="40" stroke="#EADFCB" strokeWidth="1" />
       <g className="amp" style={{ transform: `scaleY(${flat ? 0.001 : amp})`, transformOrigin: "0px 40px" }}>
         <g className="ecg-scroll">
           <polyline points={ECG_PATH} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
@@ -541,13 +592,13 @@ function HourglassMeter({ quiet }) {
         </clipPath>
       </defs>
       <g clipPath="url(#hgClip)">
-        <rect className="sand" x="8" y="10" width="44" height="30" fill="#fbbf24" opacity=".85" style={{ transform: `scaleY(${1 - q})`, transformOrigin: "30px 40px" }} />
-        <rect className="sand" x="8" y="40" width="44" height="30" fill="#64748b" style={{ transform: `scaleY(${q})`, transformOrigin: "30px 70px" }} />
-        {q > 0.02 && q < 0.98 && <line x1="30" y1="38" x2="30" y2="70" stroke="#fbbf24" strokeWidth="1.2" strokeDasharray="2 3" />}
+        <rect className="sand" x="8" y="10" width="44" height="30" fill="#E8973A" opacity=".85" style={{ transform: `scaleY(${1 - q})`, transformOrigin: "30px 40px" }} />
+        <rect className="sand" x="8" y="40" width="44" height="30" fill="#8C7A66" style={{ transform: `scaleY(${q})`, transformOrigin: "30px 70px" }} />
+        {q > 0.02 && q < 0.98 && <line x1="30" y1="38" x2="30" y2="70" stroke="#E8973A" strokeWidth="1.2" strokeDasharray="2 3" />}
       </g>
-      <path d="M10,10 C10,30 27,36 27,40 C27,44 10,50 10,70 H50 C50,50 33,44 33,40 C33,36 50,30 50,10 Z" fill="none" stroke="#94a3b8" strokeWidth="1.8" />
-      <line x1="7" y1="8" x2="53" y2="8" stroke="#94a3b8" strokeWidth="3" strokeLinecap="round" />
-      <line x1="7" y1="72" x2="53" y2="72" stroke="#94a3b8" strokeWidth="3" strokeLinecap="round" />
+      <path d="M10,10 C10,30 27,36 27,40 C27,44 10,50 10,70 H50 C50,50 33,44 33,40 C33,36 50,30 50,10 Z" fill="none" stroke="#7D6B58" strokeWidth="1.8" />
+      <line x1="7" y1="8" x2="53" y2="8" stroke="#7D6B58" strokeWidth="3" strokeLinecap="round" />
+      <line x1="7" y1="72" x2="53" y2="72" stroke="#7D6B58" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
@@ -560,15 +611,15 @@ function RelationshipDashboard({ perspective, state, xray, animKey }) {
   const clarity = xray ? state.clarity : 100;
   const flat = xray && state.vit <= 10;
   const amp = xray ? 0.15 + (state.vit / 100) * 0.95 : 0.8;
-  const ecgColor = !xray ? "#94a3b8" : state.vit > 55 ? "#34d399" : state.vit > 25 ? "#fbbf24" : "#fb7185";
+  const ecgColor = !xray ? "#7D6B58" : state.vit > 55 ? "#2F7A54" : state.vit > 25 ? "#B4610F" : "#B8404F";
   const vitLabel = !xray ? "表面看起來：平穩" : flat ? "死線 Flatline" : state.vit > 55 ? "活躍" : state.vit > 25 ? "振幅衰減中" : "幾乎沒有波動";
   const toneLabel = { warm: "暖光粒子：訊號抵達", cold: "下沉冰晶：訊號半途墜落", spike: "紅色尖刺：對方升起防衛高牆", neutral: "你以為：訊號正常送達" }[tone] || "等待你發出訊號";
 
   return (
-    <section aria-label="關係動態視覺儀表板" className="rounded-2xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur sm:p-5">
-      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
-        <span className="flex items-center gap-1.5 font-medium text-slate-300"><Waypoints className="h-4 w-4 text-cyan-300" />關係動態視覺儀表板</span>
-        <span className={xray ? "text-amber-300" : "text-slate-500"}>{xray ? "X 光透視中：你看得見真實狀態" : "X 光已關閉：你只看得見表面"}</span>
+    <section aria-label="關係動態視覺儀表板" className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-4 backdrop-blur sm:p-5">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-sand-400">
+        <span className="flex items-center gap-1.5 font-medium text-sand-300"><Waypoints className="h-4 w-4 text-cyan-300" />關係動態視覺儀表板</span>
+        <span className={xray ? "text-amber-300" : "text-sand-500"}>{xray ? "X 光透視中：你看得見真實狀態" : "X 光已關閉：你只看得見表面"}</span>
       </div>
 
       <svg viewBox="0 0 600 196" className="w-full" role="img" aria-label={`訊號狀態：${toneLabel}`}>
@@ -576,29 +627,29 @@ function RelationshipDashboard({ perspective, state, xray, animKey }) {
           <filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="3.5" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
           <filter id="glowRed" x="-100%" y="-200%" width="300%" height="500%"><feGaussianBlur stdDeviation="2.5" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
         </defs>
-        <line x1="140" y1="104" x2="460" y2="104" stroke="#1e293b" strokeWidth="1" strokeDasharray="3 6" />
-        {tone === "warm" && <circle className="halo" cx={505} cy={100} r={58} fill="none" stroke="#fbbf24" strokeWidth={2} />}
+        <line x1="140" y1="104" x2="460" y2="104" stroke="#EADFCB" strokeWidth="1" strokeDasharray="3 6" />
+        {tone === "warm" && <circle className="halo" cx={505} cy={100} r={58} fill="none" stroke="#E8973A" strokeWidth={2} />}
         <Figure cx={95} role={p.you} opacity={0.2 + (clarity / 100) * 0.8} blur={(100 - clarity) / 22} label={`你｜${you.name}`} sub={xray ? `自我清晰度 ${Math.round(clarity)}%` : you.tag} />
         <Figure cx={505} role={p.partner} label={`伴侶｜${partner.name}`} sub={partner.tag} />
         <SignalParticles tone={tone} animKey={animKey} />
         <Firewall up={tone === "spike"} />
-        <text x={300} y={30} textAnchor="middle" fill="#94a3b8" fontSize="11.5">{toneLabel}</text>
+        <text x={300} y={30} textAnchor="middle" fill="#7D6B58" fontSize="11.5">{toneLabel}</text>
       </svg>
 
       <div className="mt-2 grid gap-3 sm:grid-cols-[1fr_auto]">
-        <div className="rounded-xl border border-slate-800 bg-slate-950/70 px-3 py-2">
+        <div className="rounded-xl border border-sand-800 bg-sand-950/70 px-3 py-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="flex items-center gap-1.5 text-slate-300"><HeartPulse className="h-3.5 w-3.5" style={{ color: ecgColor }} />關係心電圖</span>
+            <span className="flex items-center gap-1.5 text-sand-300"><HeartPulse className="h-3.5 w-3.5" style={{ color: ecgColor }} />關係心電圖</span>
             <span style={{ color: ecgColor }}>{vitLabel}</span>
           </div>
           <EcgStrip amp={amp} color={ecgColor} flat={flat} />
         </div>
-        <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-2">
-          {xray ? <HourglassMeter quiet={state.quiet} /> : <div className="flex h-16 w-12 items-center justify-center"><Lock className="h-6 w-6 text-slate-600" /></div>}
+        <div className="flex items-center gap-3 rounded-xl border border-sand-800 bg-sand-950/70 px-4 py-2">
+          {xray ? <HourglassMeter quiet={state.quiet} /> : <div className="flex h-16 w-12 items-center justify-center"><Lock className="h-6 w-6 text-sand-600" /></div>}
           <div className="text-xs">
-            <div className="flex items-center gap-1.5 text-slate-300"><Hourglass className="h-3.5 w-3.5 text-amber-300" />終焉沙漏</div>
-            <div className="mt-1 text-lg font-semibold tabular-nums text-slate-100">{xray ? `${Math.round(state.quiet)}%` : "？"}</div>
-            <div className="text-slate-500">{xray ? "安靜離職進度" : "結算時揭曉"}</div>
+            <div className="flex items-center gap-1.5 text-sand-300"><Hourglass className="h-3.5 w-3.5 text-amber-300" />終焉沙漏</div>
+            <div className="mt-1 text-lg font-semibold tabular-nums text-sand-100">{xray ? `${Math.round(state.quiet)}%` : "？"}</div>
+            <div className="text-sand-500">{xray ? "安靜離職進度" : "結算時揭曉"}</div>
           </div>
         </div>
       </div>
@@ -611,9 +662,9 @@ function RelationshipDashboard({ perspective, state, xray, animKey }) {
 function Backdrop() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 overflow-hidden">
-      <div className="orb absolute -left-32 top-10 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
-      <div className="orb absolute -right-32 top-1/3 h-[28rem] w-[28rem] rounded-full bg-amber-500/10 blur-3xl" style={{ animationDelay: "-6s" }} />
-      <div className="orb absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-rose-500/10 blur-3xl" style={{ animationDelay: "-11s" }} />
+      <div className="orb absolute -left-32 top-10 h-96 w-96 rounded-full bg-amber-500/30 blur-3xl" />
+      <div className="orb absolute -right-32 top-1/3 h-[28rem] w-[28rem] rounded-full bg-rose-500/20 blur-3xl" style={{ animationDelay: "-6s" }} />
+      <div className="orb absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-cyan-500/20 blur-3xl" style={{ animationDelay: "-11s" }} />
     </div>
   );
 }
@@ -625,7 +676,7 @@ function XrayToggle({ xray, setXray, compact }) {
       role="switch"
       aria-checked={xray}
       onClick={() => setXray(!xray)}
-      className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${xray ? "border-amber-400/60 bg-amber-400/10 text-amber-200" : "border-slate-700 bg-slate-900 text-slate-400 hover:text-slate-200"}`}
+      className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${xray ? "border-amber-400/60 bg-amber-400/10 text-amber-200" : "border-sand-700 bg-sand-900 text-sand-400 hover:text-sand-200"}`}
     >
       {xray ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
       {compact ? (xray ? "X 光：開" : "X 光：關") : xray ? "伴侶腦內 X 光透視：開啟" : "伴侶腦內 X 光透視：關閉"}
@@ -638,10 +689,10 @@ function PrimaryButton({ children, onClick, className = "" }) {
     <button
       type="button"
       onClick={onClick}
-      className={`group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-violet-500/20 transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${className}`}
+      className={`group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#A8432F] to-[#B85C1C] px-6 py-3 text-sm font-semibold text-[#FFF8EC] shadow-lg shadow-orange-900/20 transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${className}`}
     >
       {children}
-      <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+      <ArrowRight className="h-4 w-4 transition group-hover:transand-x-0.5" />
     </button>
   );
 }
@@ -650,8 +701,8 @@ function SectionTitle({ kicker, title, children }) {
   return (
     <div className="mb-6">
       <div className="text-xs font-medium tracking-[0.25em] text-cyan-300/80">{kicker}</div>
-      <h2 className="font-display mt-2 text-2xl font-semibold text-slate-50 sm:text-3xl">{title}</h2>
-      {children && <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400">{children}</p>}
+      <h2 className="font-display mt-2 text-2xl font-semibold text-sand-50 sm:text-3xl">{title}</h2>
+      {children && <p className="mt-3 max-w-2xl text-sm leading-relaxed text-sand-400">{children}</p>}
     </div>
   );
 }
@@ -666,19 +717,19 @@ function SpectrumMap() {
   const py = (y) => pad + y * (H - pad * 2);
   return (
     <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-3">
+      <div className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-3">
         <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="雙軸溝通光譜：橫軸為任務導向到情感導向，縱軸為自我清晰到自我模糊">
           <defs>
-            <linearGradient id="specX" x1="0" x2="1"><stop offset="0" stopColor="#22d3ee" /><stop offset=".5" stopColor="#a78bfa" /><stop offset="1" stopColor="#fb7185" /></linearGradient>
-            <radialGradient id="sweet"><stop offset="0" stopColor="#fbbf24" stopOpacity=".28" /><stop offset="1" stopColor="#fbbf24" stopOpacity="0" /></radialGradient>
+            <linearGradient id="specX" x1="0" x2="1"><stop offset="0" stopColor="#3B8C8C" /><stop offset=".5" stopColor="#9A7BC8" /><stop offset="1" stopColor="#D9596A" /></linearGradient>
+            <radialGradient id="sweet"><stop offset="0" stopColor="#E8973A" stopOpacity=".28" /><stop offset="1" stopColor="#E8973A" stopOpacity="0" /></radialGradient>
           </defs>
           <circle cx={px(0.62)} cy={py(0.2)} r={95} fill="url(#sweet)" />
           <line x1={pad} y1={H / 2} x2={W - pad} y2={H / 2} stroke="url(#specX)" strokeWidth="3" strokeLinecap="round" />
-          <line x1={W / 2} y1={pad - 14} x2={W / 2} y2={H - pad + 14} stroke="#334155" strokeWidth="1.5" strokeDasharray="4 5" />
-          <text x={pad} y={H / 2 - 10} fill="#67e8f9" fontSize="12">任務．功能．解題</text>
-          <text x={W - pad} y={H / 2 - 10} fill="#fda4af" fontSize="12" textAnchor="end">情感．過程．共鳴</text>
-          <text x={W / 2 + 8} y={pad - 4} fill="#cbd5e1" fontSize="12">自我清晰</text>
-          <text x={W / 2 + 8} y={H - pad + 14} fill="#64748b" fontSize="12">自我模糊</text>
+          <line x1={W / 2} y1={pad - 14} x2={W / 2} y2={H - pad + 14} stroke="#D9C8AD" strokeWidth="1.5" strokeDasharray="4 5" />
+          <text x={pad} y={H / 2 - 10} fill="#2F6F73" fontSize="12">任務．功能．解題</text>
+          <text x={W - pad} y={H / 2 - 10} fill="#B8404F" fontSize="12" textAnchor="end">情感．過程．共鳴</text>
+          <text x={W / 2 + 8} y={pad - 4} fill="#54463A" fontSize="12">自我清晰</text>
+          <text x={W / 2 + 8} y={H - pad + 14} fill="#8C7A66" fontSize="12">自我模糊</text>
           {SPECTRUM_POINTS.map((p) => {
             const on = p.id === sel;
             return (
@@ -686,18 +737,18 @@ function SpectrumMap() {
                 <circle cx={px(p.x)} cy={py(p.y)} r={22} fill="transparent" />
                 {on && <circle className="halo" cx={px(p.x)} cy={py(p.y)} r={15} fill="none" stroke={p.color} strokeWidth="1.5" />}
                 <circle cx={px(p.x)} cy={py(p.y)} r={on ? 8 : 6} fill={p.color} opacity={on ? 1 : 0.7} />
-                <text x={px(p.x)} y={py(p.y) + 26} textAnchor="middle" fill={on ? "#f8fafc" : "#94a3b8"} fontSize="12.5" fontWeight={on ? 700 : 400}>{p.label}</text>
+                <text x={px(p.x)} y={py(p.y) + 26} textAnchor="middle" fill={on ? "#33291F" : "#7D6B58"} fontSize="12.5" fontWeight={on ? 700 : 400}>{p.label}</text>
               </g>
             );
           })}
         </svg>
       </div>
-      <div key={pt.id} className="fade-up flex flex-col justify-center rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+      <div key={pt.id} className="fade-up flex flex-col justify-center rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
         <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: pt.color }}>
           <span className="h-2.5 w-2.5 rounded-full" style={{ background: pt.color }} />{pt.label}
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-slate-300">{pt.desc}</p>
-        <p className="mt-4 text-xs text-slate-500">點選光譜上的光點，看看每種溝通姿態落在哪裡。</p>
+        <p className="mt-3 text-sm leading-relaxed text-sand-300">{pt.desc}</p>
+        <p className="mt-4 text-xs text-sand-500">點選光譜上的光點，看看每種溝通姿態落在哪裡。</p>
       </div>
     </div>
   );
@@ -709,7 +760,7 @@ function PrismLab() {
   const item = PRISM_LINES[lineIdx];
   const lensMeta = LENSES.find((l) => l.key === lens);
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 sm:p-7">
+    <div className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-5 sm:p-7">
       <div className="flex flex-col gap-2">
         {PRISM_LINES.map((l, i) => (
           <button
@@ -717,25 +768,25 @@ function PrismLab() {
             type="button"
             onClick={() => setLineIdx(i)}
             aria-pressed={i === lineIdx}
-            className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${i === lineIdx ? "border-slate-500 bg-slate-800 text-slate-50" : "border-slate-800 bg-slate-950/50 text-slate-400 hover:border-slate-700 hover:text-slate-200"}`}
+            className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${i === lineIdx ? "border-sand-500 bg-sand-800 text-sand-50" : "border-sand-800 bg-sand-950/50 text-sand-400 hover:border-sand-700 hover:text-sand-200"}`}
           >
-            <Quote className="h-4 w-4 shrink-0 text-slate-500" />
-            <span className="shrink-0 text-xs text-slate-500">{l.speaker}</span>
+            <Quote className="h-4 w-4 shrink-0 text-sand-500" />
+            <span className="shrink-0 text-xs text-sand-500">{l.speaker}</span>
             <span className="font-display">「{l.line}」</span>
           </button>
         ))}
       </div>
 
       <svg viewBox="0 0 600 150" className="mt-5 w-full" aria-hidden="true">
-        <line x1="20" y1="75" x2="262" y2="75" stroke="#f8fafc" strokeWidth="3" strokeLinecap="round" opacity=".85" />
-        <polygon points="300,22 352,128 248,128" fill="rgba(148,163,184,.1)" stroke="#94a3b8" strokeWidth="1.5" />
+        <line x1="20" y1="75" x2="262" y2="75" stroke="#33291F" strokeWidth="3" strokeLinecap="round" opacity=".85" />
+        <polygon points="300,22 352,128 248,128" fill="rgba(148,163,184,.1)" stroke="#7D6B58" strokeWidth="1.5" />
         {LENSES.map((l, i) => {
           const y = 30 + i * 45;
           const on = l.key === lens;
           return <line key={l.key} x1="330" y1="78" x2="580" y2={y} stroke={l.beam} strokeWidth={on ? 5 : 2} strokeLinecap="round" opacity={on ? 1 : 0.3} style={{ transition: "all .4s" }} />;
         })}
-        <text x="20" y="62" fill="#94a3b8" fontSize="11">一句話</text>
-        <text x="300" y="146" fill="#64748b" fontSize="11" textAnchor="middle">溝通稜鏡</text>
+        <text x="20" y="62" fill="#7D6B58" fontSize="11">一句話</text>
+        <text x="300" y="146" fill="#8C7A66" fontSize="11" textAnchor="middle">溝通稜鏡</text>
       </svg>
 
       <div role="tablist" aria-label="解碼視角" className="mt-3 grid gap-2 sm:grid-cols-3">
@@ -746,16 +797,54 @@ function PrismLab() {
             type="button"
             aria-selected={l.key === lens}
             onClick={() => setLens(l.key)}
-            className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${l.key === lens ? `${l.ring} ${l.color}` : "border-slate-800 text-slate-400 hover:text-slate-200"}`}
+            className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${l.key === lens ? `${l.ring} ${l.color}` : "border-sand-800 text-sand-400 hover:text-sand-200"}`}
           >
             {l.label}
           </button>
         ))}
       </div>
-      <div key={`${lineIdx}-${lens}`} role="tabpanel" className="fade-up mt-4 min-h-28 rounded-xl border border-slate-800 bg-slate-950/70 p-5">
+      <div key={`${lineIdx}-${lens}`} role="tabpanel" className="fade-up mt-4 min-h-28 rounded-xl border border-sand-800 bg-sand-950/70 p-5">
         <div className={`text-xs font-medium ${lensMeta.color}`}>{lensMeta.label}</div>
-        <p className="mt-2 text-[15px] leading-relaxed text-slate-200">{item[lens]}</p>
+        <p className="mt-2 text-[15px] leading-relaxed text-sand-200">{item[lens]}</p>
       </div>
+    </div>
+  );
+}
+
+function HeroArt() {
+  const l = CAST.linear, r = CAST.sensitive;
+  return (
+    <svg viewBox="0 0 420 150" className="mx-auto w-full max-w-md" role="img" aria-label="兩個人之間，有一條正在流動的暖色絲線">
+      <defs><linearGradient id="thread" x1="0" x2="1"><stop offset="0" stopColor={l.stroke} /><stop offset="1" stopColor={r.stroke} /></linearGradient></defs>
+      <circle cx="210" cy="70" r="62" fill="#E8973A" opacity=".12" />
+      <path className="thread" d="M 96,84 C 150,30 180,120 210,74 S 280,30 324,84" fill="none" stroke="url(#thread)" strokeWidth="3" strokeLinecap="round" strokeDasharray="14 8" />
+      <path d="M210 62 c -5 -9 -18 -4 -14 6 c 2 6 9 10 14 14 c 5 -4 12 -8 14 -14 c 4 -10 -9 -15 -14 -6 z" fill="#D9596A" opacity=".85" />
+      {[[70, l], [350, r]].map(([cx, c]) => (
+        <g key={cx}>
+          <circle cx={cx} cy={58} r={17} fill={c.fill} stroke={c.stroke} strokeWidth="2.5" />
+          <path d={`M ${cx - 30},128 Q ${cx - 30},86 ${cx},86 Q ${cx + 30},86 ${cx + 30},128 Z`} fill={c.fill} stroke={c.stroke} strokeWidth="2.5" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function Mechanisms() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      {MECHANISMS.map((m) => (
+        <div key={m.title} className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-400/20 text-amber-300"><m.icon className="h-5 w-5" /></span>
+            <h3 className="font-display text-lg font-semibold text-sand-50">{m.title}</h3>
+          </div>
+          <div className="mt-4 space-y-2 text-sm leading-relaxed">
+            <p className="rounded-2xl rounded-bl-sm bg-cyan-400/10 px-3 py-2 text-sand-200"><span className="mr-1 text-xs font-medium text-cyan-300">他以為</span>{m.he}</p>
+            <p className="rounded-2xl rounded-br-sm bg-amber-400/15 px-3 py-2 text-sand-200"><span className="mr-1 text-xs font-medium text-amber-300">她感受</span>{m.she}</p>
+          </div>
+          <p className="mt-3 flex items-start gap-1.5 text-sm text-sand-400"><Heart className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-300" />{m.note}</p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -764,21 +853,30 @@ function Landing({ onStart }) {
   return (
     <div className="mx-auto max-w-5xl px-4 pb-24 pt-16 sm:px-6 sm:pt-24">
       <header className="fade-up text-center">
-        <div className="text-xs tracking-[0.35em] text-slate-400">THE COMMUNICATION SPECTRUM</div>
-        <h1 className="font-display mt-5 text-4xl font-semibold leading-tight text-slate-50 sm:text-6xl">
+        <HeroArt />
+        <div className="mt-4 text-xs tracking-[0.35em] text-sand-400">THE COMMUNICATION SPECTRUM</div>
+        <h1 className="font-display mt-5 text-4xl font-semibold leading-tight text-sand-50 sm:text-6xl">
           溝通光譜
           <span className="mt-2 block bg-gradient-to-r from-cyan-300 via-violet-300 to-amber-300 bg-clip-text text-2xl text-transparent sm:text-4xl">在終焉之前</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-slate-300">
+        <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-sand-300">
+          <span className="font-display text-lg text-sand-100">嗨，先坐一下，喝口熱的。</span><br />
           沒有人是木頭，也沒有人無理取鬧。<br className="hidden sm:block" />
           大多數感情不是死於一場大吵，而是死於一百次沒被接住的小訊號。<br className="hidden sm:block" />
-          這裡不分對錯，只讓你看見：同一句話，在兩個人心裡折射成什麼顏色。
+          這裡不分對錯，也不找戰犯。只想陪你看見：同一句話，在兩個人心裡折射成什麼顏色。
         </p>
         <div className="mx-auto mt-8 h-1.5 max-w-md rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-rose-400 opacity-80" />
-        <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-slate-500"><span>理性任務</span><span>情感共鳴</span></div>
+        <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-sand-500"><span>理性任務</span><span>情感共鳴</span></div>
         <PrimaryButton onClick={onStart} className="mt-9">進入雙視角互動劇場（開始潛藏量表測驗）</PrimaryButton>
-        <p className="mt-3 text-xs text-slate-500">三幕劇、約 5 分鐘。量表藏在你的每一個選擇裡。</p>
+        <p className="mt-3 text-xs text-sand-500">三幕劇、約 5 分鐘。量表藏在你的每一個選擇裡。</p>
       </header>
+
+      <section className="mt-24">
+        <SectionTitle kicker="00 ／ FOUR QUIET DRIFTS" title="四個讓感情悄悄變冷的地方">
+          它們都不是誰的錯，只是兩種愛人的方式，中間少了一個翻譯。你可能在其中看見自己，也可能看見你愛的那個人。
+        </SectionTitle>
+        <Mechanisms />
+      </section>
 
       <section className="mt-24">
         <SectionTitle kicker="01 ／ SPECTRUM" title="雙軸光譜：你們站在哪裡？">
@@ -794,9 +892,10 @@ function Landing({ onStart }) {
         <PrismLab />
       </section>
 
-      <section className="mt-24 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950 p-8 text-center">
-        <h2 className="font-display text-2xl font-semibold text-slate-50">看懂折射之後，親自走一遍</h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-400">你會走進同一段感情的三個夜晚。你可以選擇成為他，也可以選擇成為她。</p>
+      <section className="mt-24 rounded-2xl border border-sand-800 bg-gradient-to-br from-sand-900 to-sand-950 p-8 text-center">
+        <Coffee className="mx-auto mb-3 h-7 w-7 text-amber-300" />
+        <h2 className="font-display text-2xl font-semibold text-sand-50">看懂折射之後，親自走一遍</h2>
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-sand-400">你會走進同一段感情的三個夜晚。你可以選擇成為他，也可以選擇成為她。慢慢來，這裡沒有人會評分你。</p>
         <PrimaryButton onClick={onStart} className="mt-6">進入雙視角互動劇場</PrimaryButton>
       </section>
     </div>
@@ -808,8 +907,8 @@ function Landing({ onStart }) {
 function Setup({ perspective, setPerspective, xray, setXray, onBegin, onBack }) {
   return (
     <div className="mx-auto max-w-4xl px-4 pb-24 pt-14 sm:px-6">
-      <button type="button" onClick={onBack} className="mb-6 text-xs text-slate-500 hover:text-slate-300">← 回到首頁</button>
-      <SectionTitle kicker="SETUP" title="選擇你要走進誰的心裡">同一段感情，兩個人經歷的是兩個故事。選一個視角開始；結束後，很推薦換另一邊再走一次。</SectionTitle>
+      <button type="button" onClick={onBack} className="mb-6 text-xs text-sand-500 hover:text-sand-300">← 回到首頁</button>
+      <SectionTitle kicker="SETUP" title="選擇你要走進誰的心裡">同一段感情，兩個人經歷的是兩個故事。選一個視角開始；結束後，很推薦換另一邊再走一次——理解，常常是從「原來你那時候是這樣想的」開始的。</SectionTitle>
 
       <div role="radiogroup" aria-label="體驗視角" className="grid gap-4 sm:grid-cols-2">
         {Object.values(PERSPECTIVES).map((p) => {
@@ -822,7 +921,7 @@ function Setup({ perspective, setPerspective, xray, setXray, onBegin, onBack }) 
               role="radio"
               aria-checked={on}
               onClick={() => setPerspective(p.id)}
-              className={`relative rounded-2xl border p-6 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${on ? (p.id === "A" ? "border-cyan-400/70 bg-cyan-400/5" : "border-amber-400/70 bg-amber-400/5") : "border-slate-800 bg-slate-900/60 hover:border-slate-600"}`}
+              className={`relative rounded-2xl border p-6 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${on ? (p.id === "A" ? "border-cyan-400/70 bg-cyan-400/5" : "border-amber-400/70 bg-amber-400/5") : "border-sand-800 bg-sand-900/60 hover:border-sand-600"}`}
             >
               {p.recommended && <span className="absolute right-4 top-4 rounded-full bg-cyan-400/15 px-2 py-0.5 text-[11px] font-medium text-cyan-300">預設推薦</span>}
               <svg viewBox="0 0 80 80" className="h-14 w-14" aria-hidden="true">
@@ -830,9 +929,9 @@ function Setup({ perspective, setPerspective, xray, setXray, onBegin, onBack }) 
                 <path d="M 14,74 Q 14,44 40,44 Q 66,44 66,74 Z" fill={c.fill} stroke={c.stroke} strokeWidth="2" />
               </svg>
               <div className={`mt-3 text-base font-semibold ${c.text}`}>{p.title}</div>
-              <p className="mt-2 text-sm leading-relaxed text-slate-400">{p.blurb}</p>
-              <div className={`mt-4 flex items-center gap-1.5 text-xs ${on ? "text-slate-200" : "text-slate-600"}`}>
-                <span className={`flex h-4 w-4 items-center justify-center rounded-full border ${on ? "border-slate-200 bg-slate-200" : "border-slate-600"}`}>{on && <Check className="h-3 w-3 text-slate-900" />}</span>
+              <p className="mt-2 text-sm leading-relaxed text-sand-400">{p.blurb}</p>
+              <div className={`mt-4 flex items-center gap-1.5 text-xs ${on ? "text-sand-200" : "text-sand-600"}`}>
+                <span className={`flex h-4 w-4 items-center justify-center rounded-full border ${on ? "border-sand-200 bg-sand-200" : "border-sand-600"}`}>{on && <Check className="h-3 w-3 text-sand-900" />}</span>
                 {on ? "已選擇" : "選擇這個視角"}
               </div>
             </button>
@@ -840,17 +939,17 @@ function Setup({ perspective, setPerspective, xray, setXray, onBegin, onBack }) 
         })}
       </div>
 
-      <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+      <div className="mt-6 rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-100"><Brain className="h-4 w-4 text-amber-300" />伴侶腦內 X 光透視（上帝視角）</div>
+          <div className="flex items-center gap-2 text-sm font-semibold text-sand-100"><Brain className="h-4 w-4 text-amber-300" />伴侶腦內 X 光透視（上帝視角）</div>
           <XrayToggle xray={xray} setXray={setXray} />
         </div>
         <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-          <div className={`rounded-xl border p-4 ${xray ? "border-amber-400/40 bg-amber-400/5 text-slate-200" : "border-slate-800 text-slate-500"}`}>
+          <div className={`rounded-xl border p-4 ${xray ? "border-amber-400/40 bg-amber-400/5 text-sand-200" : "border-sand-800 text-sand-500"}`}>
             <div className="font-medium">開啟</div>
             <p className="mt-1 leading-relaxed">即時看見對方的內心 OS、訊號粒子的真實形狀、心電圖振幅與終焉沙漏。適合想「學會看」的你。</p>
           </div>
-          <div className={`rounded-xl border p-4 ${!xray ? "border-slate-400/50 bg-slate-400/5 text-slate-200" : "border-slate-800 text-slate-500"}`}>
+          <div className={`rounded-xl border p-4 ${!xray ? "border-sand-400/50 bg-sand-400/5 text-sand-200" : "border-sand-800 text-sand-500"}`}>
             <div className="font-medium">關閉</div>
             <p className="mt-1 leading-relaxed">只看得見對方表面的回應——就像真實的戀愛。所有漏接的訊號，到結算頁才一次揭曉。適合想體驗「斷崖感」的你。</p>
           </div>
@@ -866,20 +965,20 @@ function Setup({ perspective, setPerspective, xray, setXray, onBegin, onBack }) 
 
 const TONE_STYLE = {
   warm: { chip: "bg-amber-400/15 text-amber-300", border: "border-amber-400/50" },
-  cold: { chip: "bg-slate-500/20 text-slate-300", border: "border-slate-500/60" },
+  cold: { chip: "bg-sand-500/20 text-sand-300", border: "border-sand-500/60" },
   spike: { chip: "bg-rose-500/15 text-rose-300", border: "border-rose-400/50" },
 };
 
 function Bubble({ who, text, perspective, delay = 0 }) {
   const p = PERSPECTIVES[perspective];
   if (who === "narr") {
-    return <p className="fade-up text-sm leading-relaxed text-slate-400" style={{ animationDelay: `${delay}s` }}>{text}</p>;
+    return <p className="fade-up text-sm leading-relaxed text-sand-400" style={{ animationDelay: `${delay}s` }}>{text}</p>;
   }
   const mine = who === "you";
   const c = CAST[mine ? p.you : p.partner];
   return (
     <div className={`fade-up flex ${mine ? "justify-end" : "justify-start"}`} style={{ animationDelay: `${delay}s` }}>
-      <div className={`max-w-[85%] rounded-2xl border px-4 py-3 text-[15px] leading-relaxed text-slate-100 ${mine ? "rounded-br-sm" : "rounded-bl-sm"}`} style={{ borderColor: `${c.stroke}66`, background: c.fill }}>
+      <div className={`max-w-[85%] rounded-2xl border px-4 py-3 text-[15px] leading-relaxed text-sand-100 ${mine ? "rounded-br-sm" : "rounded-bl-sm"}`} style={{ borderColor: `${c.stroke}66`, background: c.fill }}>
         <div className={`mb-1 text-xs font-medium ${c.text}`}>{mine ? `你（${c.name}）` : c.name}</div>
         {text}
       </div>
@@ -894,31 +993,42 @@ function Theater({ perspective, xray, setXray, choices, shownIdx, answered, onCh
   const state = useMemo(() => computeState(perspective, choices), [perspective, choices]);
   const partner = CAST[PERSPECTIVES[perspective].partner];
   const isLast = shownIdx === acts.length - 1;
+  const meta = ACT_META[shownIdx];
+  const ActIcon = meta.icon;
 
   return (
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-8 sm:px-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <ol className="flex items-center gap-2" aria-label="劇幕進度">
           {acts.map((a, i) => (
-            <li key={a.act} aria-current={i === shownIdx ? "step" : undefined} className={`flex items-center gap-2 text-xs ${i === shownIdx ? "text-slate-100" : i < shownIdx ? "text-slate-400" : "text-slate-600"}`}>
-              <span className={`flex h-6 w-6 items-center justify-center rounded-full border text-[11px] ${i === shownIdx ? "border-amber-300 text-amber-300" : i < shownIdx ? "border-slate-500 bg-slate-700" : "border-slate-700"}`}>{i < shownIdx ? <Check className="h-3 w-3" /> : i + 1}</span>
+            <li key={a.act} aria-current={i === shownIdx ? "step" : undefined} className={`flex items-center gap-2 text-xs ${i === shownIdx ? "text-sand-100" : i < shownIdx ? "text-sand-400" : "text-sand-600"}`}>
+              <span className={`flex h-6 w-6 items-center justify-center rounded-full border text-[11px] ${i === shownIdx ? "border-amber-300 text-amber-300" : i < shownIdx ? "border-sand-500 bg-sand-700" : "border-sand-700"}`}>{i < shownIdx ? <Check className="h-3 w-3" /> : i + 1}</span>
               <span className="hidden sm:inline">{a.act}</span>
-              {i < acts.length - 1 && <span className="h-px w-4 bg-slate-700 sm:w-8" />}
+              {i < acts.length - 1 && <span className="h-px w-4 bg-sand-700 sm:w-8" />}
             </li>
           ))}
         </ol>
         <div className="flex items-center gap-2">
           <XrayToggle xray={xray} setXray={setXray} compact />
-          <button type="button" onClick={onQuit} className="rounded-full border border-slate-800 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-300">離開</button>
+          <button type="button" onClick={onQuit} className="rounded-full border border-sand-800 px-3 py-1.5 text-xs text-sand-500 hover:text-sand-300">離開</button>
         </div>
       </div>
 
       <RelationshipDashboard perspective={perspective} state={state} xray={xray} animKey={choices.length} />
 
-      <article key={shownIdx} className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/60 p-5 sm:p-7">
-        <div className="text-xs tracking-[0.2em] text-amber-300/80">{act.act}</div>
-        <h2 className="font-display mt-1 text-2xl font-semibold text-slate-50">《{act.title}》</h2>
-        <div className="mt-1 text-xs text-slate-500">聚焦：{act.focus}</div>
+      <article key={shownIdx} className="mt-6 rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-5 sm:p-7">
+        <div className="flex items-start gap-4">
+          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber-400/20 text-amber-300"><ActIcon className="h-7 w-7" /></span>
+          <div>
+            <div className="text-xs tracking-[0.2em] text-amber-300">{act.act}</div>
+            <h2 className="font-display mt-0.5 text-2xl font-semibold text-sand-50">《{act.title}》</h2>
+            <div className="mt-2 flex flex-wrap gap-1.5 text-xs text-sand-400">
+              <span className="rounded-full bg-sand-800/70 px-2.5 py-0.5">{meta.when}</span>
+              <span className="rounded-full bg-sand-800/70 px-2.5 py-0.5">{meta.where}</span>
+              <span className="rounded-full bg-sand-800/70 px-2.5 py-0.5">{act.focus}</span>
+            </div>
+          </div>
+        </div>
 
         <div className="mt-5 space-y-3">
           {act.scene.map((l, i) => <Bubble key={i} who={l.who} text={l.text} perspective={perspective} delay={answered ? 0 : i * 0.35} />)}
@@ -926,16 +1036,16 @@ function Theater({ perspective, xray, setXray, choices, shownIdx, answered, onCh
 
         {!answered && (
           <div className="fade-up mt-7" style={{ animationDelay: `${act.scene.length * 0.35}s` }}>
-            <div className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-300"><MessageCircle className="h-4 w-4 text-cyan-300" />你會怎麼回？</div>
+            <div className="mb-3 flex items-center gap-2 text-sm font-medium text-sand-300"><MessageCircle className="h-4 w-4 text-cyan-300" />你會怎麼回？<span className="text-xs font-normal text-sand-500">沒有標準答案，選你最可能說出口的那一句。</span></div>
             <div className="space-y-3">
               {act.options.map((o, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => onChoose(i)}
-                  className="group flex w-full items-start gap-3 rounded-xl border border-slate-700 bg-slate-950/60 px-4 py-3.5 text-left text-[15px] leading-relaxed text-slate-200 transition hover:border-slate-400 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+                  className="group flex w-full items-start gap-3 rounded-xl border border-sand-700 bg-sand-950/60 px-4 py-3.5 text-left text-[15px] leading-relaxed text-sand-200 transition hover:border-sand-400 hover:bg-sand-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
                 >
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-slate-600 text-xs text-slate-400 group-hover:border-slate-300 group-hover:text-slate-100">{"ABC"[i]}</span>
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-sand-600 text-xs text-sand-400 group-hover:border-sand-300 group-hover:text-sand-100">{"ABC"[i]}</span>
                   <span>「{o.say}」</span>
                 </button>
               ))}
@@ -954,13 +1064,13 @@ function Theater({ perspective, xray, setXray, choices, shownIdx, answered, onCh
                   <div className="mb-1 flex items-center gap-1.5 text-xs font-medium text-amber-300"><Brain className="h-3.5 w-3.5" />{partner.name}的內心 OS</div>
                   <p className="text-[15px] italic leading-relaxed text-amber-50/90">{chosen.inner}</p>
                 </div>
-                <div className={`rounded-xl border bg-slate-950/60 px-4 py-3 ${TONE_STYLE[chosen.tone].border}`}>
+                <div className={`rounded-xl border bg-sand-950/60 px-4 py-3 ${TONE_STYLE[chosen.tone].border}`}>
                   <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${TONE_STYLE[chosen.tone].chip}`}>{chosen.tag}</span>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-300">{chosen.review}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-sand-300">{chosen.review}</p>
                 </div>
               </div>
             ) : (
-              <p className="fade-up flex items-center gap-2 pt-1 text-xs text-slate-500" style={{ animationDelay: "1.1s" }}>
+              <p className="fade-up flex items-center gap-2 pt-1 text-xs text-sand-500" style={{ animationDelay: "1.1s" }}>
                 <EyeOff className="h-3.5 w-3.5" />你只聽得見對方說出口的話。這句回應背後是什麼？結算時揭曉。
               </p>
             )}
@@ -987,16 +1097,16 @@ function RadarChart({ dims }) {
   return (
     <svg viewBox="-60 0 440 320" className="w-full max-w-md" role="img" aria-label={`四維度溝通雷達圖：${DIMS.map((d, i) => `${d.label} ${Math.round(dims[i])} 分`).join("、")}`}>
       <defs>
-        <linearGradient id="radarFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#22d3ee" stopOpacity=".45" /><stop offset="1" stopColor="#fbbf24" stopOpacity=".45" /></linearGradient>
+        <linearGradient id="radarFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#3B8C8C" stopOpacity=".45" /><stop offset="1" stopColor="#E8973A" stopOpacity=".45" /></linearGradient>
       </defs>
-      {[0.25, 0.5, 0.75, 1].map((s) => <polygon key={s} points={poly(s)} fill="none" stroke="#334155" strokeWidth="1" />)}
-      {axes.map(([x, y], i) => <line key={i} x1={C} y1={C} x2={C + x * R} y2={C + y * R} stroke="#334155" strokeWidth="1" />)}
-      <polygon points={data} fill="url(#radarFill)" stroke="#e2e8f0" strokeWidth="2" strokeLinejoin="round" />
-      {axes.map(([x, y], i) => <circle key={i} cx={C + x * R * (dims[i] / 100)} cy={C + y * R * (dims[i] / 100)} r="4" fill="#f8fafc" />)}
+      {[0.25, 0.5, 0.75, 1].map((s) => <polygon key={s} points={poly(s)} fill="none" stroke="#D9C8AD" strokeWidth="1" />)}
+      {axes.map(([x, y], i) => <line key={i} x1={C} y1={C} x2={C + x * R} y2={C + y * R} stroke="#D9C8AD" strokeWidth="1" />)}
+      <polygon points={data} fill="url(#radarFill)" stroke="#33291F" strokeWidth="2" strokeLinejoin="round" />
+      {axes.map(([x, y], i) => <circle key={i} cx={C + x * R * (dims[i] / 100)} cy={C + y * R * (dims[i] / 100)} r="4" fill="#33291F" />)}
       {DIMS.map((d, i) => (
         <g key={d.key}>
-          <text x={labelPos[i][0]} y={labelPos[i][1]} textAnchor={anchors[i]} fill="#e2e8f0" fontSize="13" fontWeight="600">{d.label}</text>
-          <text x={labelPos[i][0]} y={labelPos[i][1] + 16} textAnchor={anchors[i]} fill="#fbbf24" fontSize="13" fontWeight="700">{Math.round(dims[i])}</text>
+          <text x={labelPos[i][0]} y={labelPos[i][1]} textAnchor={anchors[i]} fill="#33291F" fontSize="13" fontWeight="600">{d.label}</text>
+          <text x={labelPos[i][0]} y={labelPos[i][1] + 16} textAnchor={anchors[i]} fill="#B4610F" fontSize="13" fontWeight="700">{Math.round(dims[i])}</text>
         </g>
       ))}
     </svg>
@@ -1004,16 +1114,16 @@ function RadarChart({ dims }) {
 }
 
 function RiskGauge({ risk, level }) {
-  const color = { low: "#34d399", mid: "#fbbf24", high: "#fb7185" }[level];
-  const label = { low: "頻道暢通", mid: "訊號衰減中", high: "終焉臨界" }[level];
+  const color = { low: "#2F7A54", mid: "#B4610F", high: "#B8404F" }[level];
+  const label = { low: "暖流暢通", mid: "訊號衰減中", high: "終焉臨界" }[level];
   const r = 70, circ = Math.PI * r;
   return (
     <div className="flex flex-col items-center">
       <svg viewBox="0 0 180 104" className="w-56" role="img" aria-label={`感情終焉風險指數 ${risk}，${label}`}>
-        <path d="M 20 94 A 70 70 0 0 1 160 94" fill="none" stroke="#1e293b" strokeWidth="12" strokeLinecap="round" />
+        <path d="M 20 94 A 70 70 0 0 1 160 94" fill="none" stroke="#EADFCB" strokeWidth="12" strokeLinecap="round" />
         <path d="M 20 94 A 70 70 0 0 1 160 94" fill="none" stroke={color} strokeWidth="12" strokeLinecap="round" strokeDasharray={`${(risk / 100) * circ} ${circ}`} style={{ transition: "stroke-dasharray 1.2s ease" }} />
-        <text x="90" y="80" textAnchor="middle" fill="#f8fafc" fontSize="38" fontWeight="700">{risk}</text>
-        <text x="90" y="98" textAnchor="middle" fill="#64748b" fontSize="10">／100</text>
+        <text x="90" y="80" textAnchor="middle" fill="#33291F" fontSize="38" fontWeight="700">{risk}</text>
+        <text x="90" y="98" textAnchor="middle" fill="#8C7A66" fontSize="10">／100</text>
       </svg>
       <div className="mt-1 rounded-full px-3 py-1 text-sm font-semibold" style={{ color, background: `${color}1f` }}>{label}</div>
     </div>
@@ -1029,10 +1139,10 @@ function Translator({ defaultTab }) {
     { id: "converter", label: "給高敏伴侶的高解析度指令轉換器", on: "border-amber-400/60 bg-amber-400/10 text-amber-200" },
   ];
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 sm:p-7">
+    <div className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-5 sm:p-7">
       <div role="tablist" aria-label="跨光譜雙向翻譯機" className="grid gap-2 sm:grid-cols-2">
         {tabs.map((t) => (
-          <button key={t.id} role="tab" type="button" aria-selected={tab === t.id} onClick={() => setTab(t.id)} className={`rounded-xl border px-4 py-3 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${tab === t.id ? t.on : "border-slate-800 text-slate-400 hover:text-slate-200"}`}>
+          <button key={t.id} role="tab" type="button" aria-selected={tab === t.id} onClick={() => setTab(t.id)} className={`rounded-xl border px-4 py-3 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${tab === t.id ? t.on : "border-sand-800 text-sand-400 hover:text-sand-200"}`}>
             {t.label}
           </button>
         ))}
@@ -1043,34 +1153,34 @@ function Translator({ defaultTab }) {
           <h4 className="text-sm font-semibold text-cyan-300">一、看懂隱形求救：她說的 → 其實是</h4>
           <div className="mt-3 flex flex-wrap gap-2">
             {DECODER.map((d, i) => (
-              <button key={d.heard} type="button" aria-pressed={i === dIdx} onClick={() => setDIdx(i)} className={`rounded-full border px-3 py-1.5 text-left text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${i === dIdx ? "border-cyan-400/60 bg-cyan-400/10 text-cyan-100" : "border-slate-700 text-slate-400 hover:text-slate-200"}`}>{d.heard}</button>
+              <button key={d.heard} type="button" aria-pressed={i === dIdx} onClick={() => setDIdx(i)} className={`rounded-full border px-3 py-1.5 text-left text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${i === dIdx ? "border-cyan-400/60 bg-cyan-400/10 text-cyan-100" : "border-sand-700 text-sand-400 hover:text-sand-200"}`}>{d.heard}</button>
             ))}
           </div>
           <div key={dIdx} className="fade-up mt-4 grid gap-3 sm:grid-cols-2">
             <div className="rounded-xl border border-rose-400/30 bg-rose-400/5 p-4">
               <div className="text-xs font-medium text-rose-300">真正的訊號</div>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-200">{DECODER[dIdx].decoded}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-sand-200">{DECODER[dIdx].decoded}</p>
             </div>
             <div className="rounded-xl border border-emerald-400/30 bg-emerald-400/5 p-4">
               <div className="text-xs font-medium text-emerald-300">你可以這樣接</div>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-200">{DECODER[dIdx].reply}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-sand-200">{DECODER[dIdx].reply}</p>
             </div>
           </div>
 
           <h4 className="mt-8 text-sm font-semibold text-cyan-300">二、戒斷清單：把舊句型換掉</h4>
           <ul className="mt-3 space-y-3">
             {DETOX.map((d) => (
-              <li key={d.bad} className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+              <li key={d.bad} className="rounded-xl border border-sand-800 bg-sand-950/60 p-4">
                 <div className="flex flex-col gap-2 text-sm sm:flex-row sm:items-center">
-                  <span className="text-slate-500 line-through decoration-rose-400/60">{d.bad}</span>
-                  <ChevronRight className="hidden h-4 w-4 shrink-0 text-slate-600 sm:block" />
-                  <span className="font-medium text-slate-100">{d.good}</span>
+                  <span className="text-sand-500 line-through decoration-rose-400/60">{d.bad}</span>
+                  <ChevronRight className="hidden h-4 w-4 shrink-0 text-sand-600 sm:block" />
+                  <span className="font-medium text-sand-100">{d.good}</span>
                 </div>
-                <p className="mt-2 text-xs leading-relaxed text-slate-400">{d.why}</p>
+                <p className="mt-2 text-xs leading-relaxed text-sand-400">{d.why}</p>
               </li>
             ))}
           </ul>
-          <p className="mt-5 rounded-xl border border-slate-800 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-300">
+          <p className="mt-5 rounded-xl border border-sand-800 bg-sand-950/60 p-4 text-sm leading-relaxed text-sand-300">
             <span className="font-semibold text-cyan-300">一個判準：</span>當她變得「很好相處」——不吵、不問、不要求——請不要鬆一口氣，請主動去找她。安靜不是和平，是倒數。
           </p>
         </div>
@@ -1081,31 +1191,31 @@ function Translator({ defaultTab }) {
           <h4 className="text-sm font-semibold text-amber-300">選一句你常說（或常吞下去）的話，轉成對方能執行的邀請</h4>
           <div className="mt-3 flex flex-wrap gap-2">
             {CONVERTER.map((c, i) => (
-              <button key={c.vague} type="button" aria-pressed={i === cIdx} onClick={() => setCIdx(i)} className={`rounded-full border px-3 py-1.5 text-left text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${i === cIdx ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-slate-700 text-slate-400 hover:text-slate-200"}`}>{c.vague}</button>
+              <button key={c.vague} type="button" aria-pressed={i === cIdx} onClick={() => setCIdx(i)} className={`rounded-full border px-3 py-1.5 text-left text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${i === cIdx ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-sand-700 text-sand-400 hover:text-sand-200"}`}>{c.vague}</button>
             ))}
           </div>
           <div key={cIdx} className="fade-up mt-4 space-y-3">
-            <div className="rounded-xl border border-slate-700 bg-slate-950/60 p-4">
-              <div className="text-xs font-medium text-slate-400">為什麼他接不住</div>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-300">{CONVERTER[cIdx].why}</p>
+            <div className="rounded-xl border border-sand-700 bg-sand-950/60 p-4">
+              <div className="text-xs font-medium text-sand-400">為什麼他接不住</div>
+              <p className="mt-1.5 text-sm leading-relaxed text-sand-300">{CONVERTER[cIdx].why}</p>
             </div>
             <div className="rounded-xl border border-amber-400/40 bg-amber-400/5 p-4">
               <div className="flex items-center gap-1.5 text-xs font-medium text-amber-300"><Sparkles className="h-3.5 w-3.5" />高解析度版本</div>
-              <p className="mt-1.5 text-[15px] leading-relaxed text-slate-100">{CONVERTER[cIdx].hires}</p>
+              <p className="mt-1.5 text-[15px] leading-relaxed text-sand-100">{CONVERTER[cIdx].hires}</p>
             </div>
           </div>
 
           <h4 className="mt-8 text-sm font-semibold text-amber-300">轉換公式</h4>
           <div className="mt-3 grid gap-2 text-sm sm:grid-cols-4">
             {[["情境", "哪一個具體的時刻"], ["感受", "我當時／現在的感覺"], ["一個動作", "看得見、做得到的事"], ["時間框", "什麼時候、做多久"]].map(([t, s], i) => (
-              <div key={t} className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
-                <div className="text-xs text-slate-500">{i + 1}</div>
-                <div className="font-semibold text-slate-100">{t}</div>
-                <div className="mt-0.5 text-xs text-slate-400">{s}</div>
+              <div key={t} className="rounded-xl border border-sand-800 bg-sand-950/60 p-3">
+                <div className="text-xs text-sand-500">{i + 1}</div>
+                <div className="font-semibold text-sand-100">{t}</div>
+                <div className="mt-0.5 text-xs text-sand-400">{s}</div>
               </div>
             ))}
           </div>
-          <p className="mt-5 rounded-xl border border-slate-800 bg-slate-950/60 p-4 text-sm leading-relaxed text-slate-300">
+          <p className="mt-5 rounded-xl border border-sand-800 bg-sand-950/60 p-4 text-sm leading-relaxed text-sand-300">
             <span className="font-semibold text-amber-300">這不是「為什麼都要我教」。</span>說清楚不代表你的需要比較廉價，而是給對方一次真正做到的機會。如果清楚說了、對方仍一再不接——那也是一個很重要的答案。
           </p>
         </div>
@@ -1127,46 +1237,46 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome }) {
   return (
     <div className="mx-auto max-w-4xl px-4 pb-24 pt-14 sm:px-6">
       <header className="fade-up text-center">
-        <div className="text-xs tracking-[0.3em] text-slate-400">DIAGNOSTIC REPORT</div>
-        <h1 className="font-display mt-3 text-3xl font-semibold text-slate-50 sm:text-4xl">你的溝通光譜診斷</h1>
+        <div className="text-xs tracking-[0.3em] text-sand-400">DIAGNOSTIC REPORT</div>
+        <h1 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-4xl">你的溝通光譜診斷</h1>
         {!xray && <p className="mt-3 text-sm text-amber-300/90">你全程關閉了 X 光。以下，是你當時看不見的一切。</p>}
       </header>
 
-      <section className="fade-up mt-10 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8" style={{ animationDelay: ".15s" }}>
-        <div className="text-xs font-medium tracking-widest text-slate-500">尾聲</div>
-        <p className="font-display mt-2 text-[17px] leading-loose text-slate-200">{EPILOGUES[perspective][state.level]}</p>
+      <section className="fade-up mt-10 rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6 sm:p-8" style={{ animationDelay: ".15s" }}>
+        <div className="text-xs font-medium tracking-widest text-sand-500">尾聲</div>
+        <p className="font-display mt-2 text-[17px] leading-loose text-sand-200">{EPILOGUES[perspective][state.level]}</p>
       </section>
 
       <section className="mt-6 grid gap-6 md:grid-cols-2">
-        <div className="flex flex-col items-center rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-          <h2 className="mb-2 self-start text-sm font-semibold text-slate-200">四維度溝通雷達圖</h2>
+        <div className="flex flex-col items-center rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
+          <h2 className="mb-2 self-start text-sm font-semibold text-sand-200">四維度溝通雷達圖</h2>
           <RadarChart dims={state.dims} />
         </div>
-        <div className="flex flex-col rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
-          <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-200"><ShieldAlert className="h-4 w-4 text-rose-300" />感情終焉風險指數</h2>
+        <div className="flex flex-col rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-sand-200"><ShieldAlert className="h-4 w-4 text-rose-300" />感情終焉風險指數</h2>
           <div className="mt-4"><RiskGauge risk={state.risk} level={state.level} /></div>
           <div className="mt-5 text-center">
-            <div className="text-xs text-slate-500">你的溝通樣貌</div>
-            <div className="font-display mt-1 text-xl font-semibold text-slate-50">{verdict.title}</div>
+            <div className="text-xs text-sand-500">你的溝通樣貌</div>
+            <div className="font-display mt-1 text-xl font-semibold text-sand-50">{verdict.title}</div>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-slate-300">{verdict.text}</p>
+          <p className="mt-3 text-sm leading-relaxed text-sand-300">{verdict.text}</p>
           <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-            <div className="rounded-lg bg-slate-950/70 p-2"><div className="text-lg font-semibold text-slate-100">{missedCount}／3</div><div className="text-slate-500">漏接的訊號</div></div>
-            <div className="rounded-lg bg-slate-950/70 p-2"><div className="text-lg font-semibold text-slate-100">{Math.round(state.quiet)}%</div><div className="text-slate-500">終焉沙漏</div></div>
-            <div className="rounded-lg bg-slate-950/70 p-2"><div className="text-lg font-semibold text-slate-100">{state.vit <= 10 ? "死線" : Math.round(state.vit)}</div><div className="text-slate-500">關係生命力</div></div>
+            <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{missedCount}／3</div><div className="text-sand-500">漏接的訊號</div></div>
+            <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{Math.round(state.quiet)}%</div><div className="text-sand-500">終焉沙漏</div></div>
+            <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{state.vit <= 10 ? "死線" : Math.round(state.vit)}</div><div className="text-sand-500">關係生命力</div></div>
           </div>
         </div>
       </section>
 
       <section className="mt-6 grid gap-3 sm:grid-cols-2">
         {DIMS.map((d, i) => (
-          <div key={d.key} className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+          <div key={d.key} className="rounded-xl border border-sand-800 bg-sand-900/60 p-4">
             <div className="flex items-baseline justify-between">
-              <div className="text-sm font-semibold text-slate-100">{d.label} <span className="ml-1 text-xs font-normal text-slate-500">{d.en}</span></div>
+              <div className="text-sm font-semibold text-sand-100">{d.label} <span className="ml-1 text-xs font-normal text-sand-500">{d.en}</span></div>
               <div className="text-sm font-semibold tabular-nums text-amber-300">{Math.round(state.dims[i])}</div>
             </div>
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-800"><div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-amber-400" style={{ width: `${state.dims[i]}%` }} /></div>
-            <p className="mt-2 text-xs leading-relaxed text-slate-400">{d[perspective]}</p>
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sand-800"><div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-amber-400" style={{ width: `${state.dims[i]}%` }} /></div>
+            <p className="mt-2 text-xs leading-relaxed text-sand-400">{d[perspective]}</p>
           </div>
         ))}
       </section>
@@ -1178,21 +1288,21 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome }) {
             const o = picked[i];
             const best = a.options.find((x) => x.tone === "warm");
             return (
-              <li key={a.act} className={`rounded-2xl border bg-slate-900/60 p-5 sm:p-6 ${TONE_STYLE[o.tone].border}`}>
+              <li key={a.act} className={`rounded-2xl border bg-sand-900/60 p-5 sm:p-6 ${TONE_STYLE[o.tone].border}`}>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs tracking-widest text-slate-500">{a.act}</span>
-                  <h3 className="font-display text-lg font-semibold text-slate-50">《{a.title}》</h3>
+                  <span className="text-xs tracking-widest text-sand-500">{a.act}</span>
+                  <h3 className="font-display text-lg font-semibold text-sand-50">《{a.title}》</h3>
                   <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${TONE_STYLE[o.tone].chip}`}>{o.tag}</span>
                   {o.missed ? <span className="rounded-full bg-rose-500/15 px-2 py-0.5 text-xs font-medium text-rose-300">訊號漏接</span> : <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-300">訊號接住</span>}
                   {o.overwrite && <span className="rounded-full bg-rose-500/25 px-2 py-0.5 text-xs font-semibold text-rose-200">觸發記憶覆寫</span>}
                 </div>
                 <dl className="mt-4 space-y-3 text-sm">
-                  <div><dt className="text-xs text-slate-500">你說</dt><dd className="mt-0.5 leading-relaxed text-slate-200">「{o.say}」</dd></div>
-                  <div><dt className="text-xs text-slate-500">{partner.name}表面回應</dt><dd className="mt-0.5 leading-relaxed text-slate-200">「{o.surface}」</dd></div>
+                  <div><dt className="text-xs text-sand-500">你說</dt><dd className="mt-0.5 leading-relaxed text-sand-200">「{o.say}」</dd></div>
+                  <div><dt className="text-xs text-sand-500">{partner.name}表面回應</dt><dd className="mt-0.5 leading-relaxed text-sand-200">「{o.surface}」</dd></div>
                   <div className="rounded-xl border border-dashed border-amber-400/40 bg-amber-400/5 p-3"><dt className="flex items-center gap-1.5 text-xs font-medium text-amber-300"><Brain className="h-3.5 w-3.5" />{partner.name}真實的內心 OS</dt><dd className="mt-1 italic leading-relaxed text-amber-50/90">{o.inner}</dd></div>
-                  <div><dt className="text-xs text-slate-500">解析</dt><dd className="mt-0.5 leading-relaxed text-slate-300">{o.review}</dd></div>
+                  <div><dt className="text-xs text-sand-500">解析</dt><dd className="mt-0.5 leading-relaxed text-sand-300">{o.review}</dd></div>
                   {o.tone !== "warm" && (
-                    <div className="rounded-xl bg-slate-950/70 p-3"><dt className="text-xs font-medium text-emerald-300">另一種可能</dt><dd className="mt-1 leading-relaxed text-slate-300">「{best.say}」</dd></div>
+                    <div className="rounded-xl bg-sand-950/70 p-3"><dt className="text-xs font-medium text-emerald-300">另一種可能</dt><dd className="mt-1 leading-relaxed text-sand-300">「{best.say}」</dd></div>
                   )}
                 </dl>
               </li>
@@ -1202,14 +1312,14 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome }) {
 
         <div className={`mt-5 rounded-2xl border p-5 sm:p-6 ${overwrite ? "border-rose-400/50 bg-rose-500/5" : "border-emerald-400/30 bg-emerald-500/5"}`}>
           <h3 className={`text-sm font-semibold ${overwrite ? "text-rose-300" : "text-emerald-300"}`}>峰終定律：這段感情最後會被怎麼記得？</h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-300">
+          <p className="mt-2 text-sm leading-relaxed text-sand-300">
             {overwrite
               ? "第三幕的那個夜晚成了這段關係的『終』。人的記憶不是平均值——最後的難堪，會回頭替所有回憶重新上色："
               : "你守住了『終』。無論最後是否走下去，這些回憶都還保有原本的顏色："}
           </p>
           <ul className="mt-4 grid gap-2 sm:grid-cols-2">
             {MEMORIES.map((m) => (
-              <li key={m} className={`rounded-lg border px-3 py-2 text-sm ${overwrite ? "border-rose-400/20 bg-slate-950/70 text-slate-500" : "border-amber-400/30 bg-amber-400/5 text-amber-100"}`}>
+              <li key={m} className={`rounded-lg border px-3 py-2 text-sm ${overwrite ? "border-rose-400/20 bg-sand-950/70 text-sand-500" : "border-amber-400/30 bg-amber-400/5 text-amber-100"}`}>
                 <span className={overwrite ? "line-through decoration-rose-400/70" : ""}>{m}</span>
                 {overwrite && <span className="ml-2 text-xs text-rose-300">→「原來他／她一直是這樣的人」</span>}
               </li>
@@ -1225,12 +1335,30 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome }) {
         <Translator defaultTab={perspective === "A" ? "decoder" : "converter"} />
       </section>
 
+      <section className="mt-16 grid gap-6 md:grid-cols-[1.2fr_1fr]">
+        <div className="rounded-3xl border border-amber-400/40 bg-amber-400/10 shadow-warm p-6 sm:p-8">
+          <div className="flex items-center gap-2 text-sm font-semibold text-amber-300"><Mail className="h-4 w-4" />給你的一封短信</div>
+          <p className="font-display mt-4 text-[17px] leading-loose text-sand-100">{LETTERS[perspective][state.level]}</p>
+          <p className="font-display mt-4 text-right text-sm text-sand-400">——寫在終焉之前</p>
+        </div>
+        <div className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6 sm:p-8">
+          <div className="flex items-center gap-2 text-sm font-semibold text-rose-300"><Heart className="h-4 w-4" />這週可以試的三件小事</div>
+          <ol className="mt-4 space-y-3">
+            {PRACTICES[perspective].map((t, i) => (
+              <li key={i} className="flex gap-3 text-sm leading-relaxed text-sand-200">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-400/20 text-xs font-semibold text-rose-300">{i + 1}</span>{t}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
         <PrimaryButton onClick={onSwitch}>換成{CAST[PERSPECTIVES[other].you].name}的視角再走一次</PrimaryButton>
-        <button type="button" onClick={onRestart} className="inline-flex items-center gap-2 rounded-full border border-slate-700 px-5 py-3 text-sm text-slate-300 transition hover:border-slate-500 hover:text-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"><RotateCcw className="h-4 w-4" />同視角重來</button>
-        <button type="button" onClick={onHome} className="rounded-full px-4 py-3 text-sm text-slate-500 hover:text-slate-300">回到首頁</button>
+        <button type="button" onClick={onRestart} className="inline-flex items-center gap-2 rounded-full border border-sand-700 px-5 py-3 text-sm text-sand-300 transition hover:border-sand-500 hover:text-sand-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"><RotateCcw className="h-4 w-4" />同視角重來</button>
+        <button type="button" onClick={onHome} className="rounded-full px-4 py-3 text-sm text-sand-500 hover:text-sand-300">回到首頁</button>
       </div>
-      <p className="mt-8 text-center text-xs leading-relaxed text-slate-600">本體驗為心理教育用途的互動敘事，非臨床診斷工具。<br />如果你正處在讓你不安全的關係裡，請優先尋求專業協助。</p>
+      <p className="mt-8 text-center text-xs leading-relaxed text-sand-600">本體驗為心理教育用途的互動敘事，非臨床診斷工具。<br />如果你正處在讓你不安全的關係裡，請優先尋求專業協助。</p>
     </div>
   );
 }
@@ -1265,7 +1393,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <div className="relative min-h-screen bg-sand-950 text-sand-100 antialiased">
       <style>{GLOBAL_CSS}</style>
       <Backdrop />
       <main className="relative">
