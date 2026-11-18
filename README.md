@@ -1,31 +1,24 @@
-# MHI 市場熱度儀表板
+# 溝通光譜：在終焉之前（The Communication Spectrum: Before the End）
 
-## 📦 解壓縮後如何使用
+一個以親密關係心理學為底的互動敘事網頁：透過雙軸光譜、訊號稜鏡、雙視角三幕劇、動態視覺隱喻與隱藏量表，讓人看見一段感情如何從日常的「訊號漏接」滑向「安靜離職」。
 
-### 需求
-- Windows 10/11
-- **Python 3.10 以上**（[下載網址](https://www.python.org/downloads/)）
-  - ⚠️ 安裝時請勾選「**Add Python to PATH**」
+## 開發
 
----
+```bash
+npm install
+npm run dev      # 本機開發
+npm run build    # 產出 dist/
+```
 
-### 🚀 啟動步驟
+技術：React 18、Vite、Tailwind CSS v4、lucide-react。整個應用在 `src/App.jsx` 單一檔案內。
 
-1. 解壓縮 ZIP 到任意資料夾
-2. **雙擊** `一鍵啟動.bat`
-3. 首次啟動會自動安裝所有套件（約 1~3 分鐘）
-4. 瀏覽器會自動開啟 **http://localhost:8501**
+## 架構（`src/App.jsx`）
 
----
+| 區塊 | 內容 |
+| --- | --- |
+| 資料層 | `PRISM_LINES`、`SPECTRUM_POINTS`、`SCRIPT`（A／B 視角 × 三幕 × 三選項）、`DECODER`／`CONVERTER` |
+| 計分引擎 | `computeState(perspective, choices)`：四維度、關係生命力、終焉沙漏、風險指數 |
+| 視覺隱喻引擎 | `RelationshipDashboard`：角色輪廓清晰度、訊號粒子／防衛高牆、心電圖、沙漏 |
+| 視圖 | `Landing` → `Setup` → `Theater` → `Report`（含 `Translator`） |
 
-### ℹ️ 注意事項
-
-- 啟動後那個黑色視窗**不要關閉**，關掉就等於停止服務
-- 下次再開同樣雙擊 `一鍵啟動.bat` 即可（不用重新安裝）
-- 儀表板需要連線才能即時抓取行情與新聞資料
-
----
-
-### 🛑 停止服務
-
-關閉「一鍵啟動」的黑色命令提示字元視窗即可。
+本體驗為心理教育用途，非臨床診斷工具。
