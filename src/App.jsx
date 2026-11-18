@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
+  Send,
   User,
   Users,
   Coffee,
@@ -40,6 +41,11 @@ const GLOBAL_CSS = `
 .shadow-warm { box-shadow: 0 10px 34px -16px rgba(120,72,20,.28); }
 @keyframes threadFlow { to { stroke-dashoffset: -44; } }
 .thread { animation: threadFlow 2.4s linear infinite; }
+@keyframes twinkle { 0%,100% { opacity: .2; transform: scale(.7) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(20deg); } }
+.twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 3.4s ease-in-out infinite; }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.floaty { animation: floaty 3s ease-in-out infinite; }
+.grain { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .15  0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .1; mix-blend-mode: multiply; }
 .font-display { font-family: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", "PMingLiU", "Source Han Serif TC", serif; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .fade-up { animation: fadeUp .55s ease both; }
@@ -67,7 +73,7 @@ const GLOBAL_CSS = `
 @keyframes dotBounce { 0%,80%,100% { transform: translateY(0); opacity: .4; } 40% { transform: translateY(-4px); opacity: 1; } }
 .typing-dot { animation: dotBounce 1.1s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .orb, .ecg-scroll, .halo, .fade-up { animation: none; }
+  .orb, .ecg-scroll, .halo, .fade-up, .twinkle, .floaty { animation: none; }
   .sig { animation-duration: 6s; }
 }
 `;
@@ -97,51 +103,6 @@ const PERSPECTIVES = {
     recommended: false,
   },
 };
-
-/* ------------------------------- 資料：稜鏡 ------------------------------- */
-
-const PRISM_LINES = [
-  {
-    line: "行程你比較會排，交給你決定就好。",
-    speaker: "他說",
-    intent: "「我信任你的品味，而且這樣最有效率。你負責規劃、我負責出錢出力，這不就是很好的分工嗎？」",
-    received: "「這趟旅行是你的專案，不是我們的。」對方收到的不是信任，而是一張工單，以及一個人查資料到半夜的孤單。",
-    psych:
-      "只談分工 vs. 一起商量。直線思考把旅行看成『待完成的任務』，所以外包是合理的；但對重視連結的人來說，規劃過程本身就是親密——一起滑民宿、一起期待，才是這趟旅行真正的起點。被外包的不只是行程，還有『共同期待』。",
-  },
-  {
-    line: "沒事，我自己處理好了，你忙你的。",
-    speaker: "她說",
-    intent: "「我試過讓你知道我需要你，但每次都落空。與其再失望一次，不如自己來。這樣比較不痛。」",
-    received: "「太好了，好獨立、好懂事，我們之間沒有問題。」對方把這句話歸檔為『好消息』，然後安心地繼續忙。",
-    psych:
-      "訊號盲區與不再開口。抱怨其實是一種投資——還願意吵，代表還相信對方會改。當一個人開始客氣、不再提出需求，往往不是關係變穩定了，而是已經在心裡遞出辭呈。沒有爭吵，是最容易被誤讀的警訊。",
-  },
-  {
-    line: "我現在就要知道你的答案！",
-    speaker: "他說",
-    intent: "「我很慌，我快失去你了。我只是想把事情講清楚，知道問題在哪，我才有辦法修。」",
-    received: "「我被審問了。」對方的身體先於理智進入防衛：心跳加速、腦袋空白。此刻說出口的任何話，都不會是真心話。",
-    psych:
-      "急著逼問與峰終定律。人在被逼到牆角時會啟動戰、逃或凍結，對話功能直接下線。更殘酷的是峰終定律：我們對一段關係的整體記憶，由『最強烈的時刻』與『結尾』決定。最後那場難堪的逼問，會回頭覆寫過去所有的好。",
-  },
-];
-
-const LENSES = [
-  { key: "intent", label: "發訊者自認的意思", color: "text-cyan-300", ring: "border-cyan-400/60 bg-cyan-400/10", beam: "#3B8C8C" },
-  { key: "received", label: "對方實際收到的訊號", color: "text-rose-300", ring: "border-rose-400/60 bg-rose-400/10", beam: "#D9596A" },
-  { key: "psych", label: "底層心理學解析", color: "text-amber-300", ring: "border-amber-400/60 bg-amber-400/10", beam: "#E8973A" },
-];
-
-/* --------------------------- 資料：雙軸光譜落點 --------------------------- */
-
-const SPECTRUM_POINTS = [
-  { id: "outsource", x: 0.1, y: 0.2, label: "只談分工", color: "#3B8C8C", desc: "任務端的盡頭。「你排就好，錢我出。」把愛翻譯成分工與效率。自我是清楚的，但人不在過程裡：對方得到資源，卻得不到同伴。" },
-  { id: "drift", x: 0.3, y: 0.86, label: "都聽你的", color: "#6E9FB0", desc: "任務端，往中間一步。「都可以、看你、你決定。」看似配合度滿分，實則把所有決策的重量與孤獨都留給對方。久了，對方會發現身邊這個人「少了自己」。" },
-  { id: "cocreate", x: 0.5, y: 0.16, label: "一起商量", color: "#E8973A", desc: "正中間，兩端會合的地方：有自己的想法（自我清晰），也願意走進對方的過程（情感在場）。不是誰配合誰，而是兩個完整的人一起決定一件事。" },
-  { id: "interrogate", x: 0.7, y: 0.72, label: "急著逼問", color: "#D9414F", desc: "情感端，往中間一步。「我現在就要答案！」看起來很強勢，其實是被焦慮淹沒、把感受整個丟出去的狀態。平常再理性的人，慌起來也可能滑到這裡。越用力抓，對方的牆升得越高。" },
-  { id: "quiet", x: 0.9, y: 0.8, label: "不再開口", color: "#C2697B", desc: "情感端的盡頭。「沒事，我自己來。」感受很多，卻全部收了起來。表面風平浪靜，內心已在倒數。" },
-];
 
 /* ------------------------------- 資料：劇本 ------------------------------- */
 /* 劇本：兩個視角 × 三幕 × 上下兩個抉擇點 × 五種回應。
@@ -978,13 +939,6 @@ const CONVERTER = [
   { vague: "「我覺得我們之間少了什麼。」", why: "太抽象。他會焦慮地開始找『故障的零件』，卻找不到。", hires: "「我想念我們一起做一件事的感覺。這個週末一起煮一頓飯，菜單一人決定一半，好嗎？」" },
 ];
 
-const MECHANISMS = [
-  { icon: Luggage, title: "只談分工 vs. 一起商量", he: "「你擅長你排，我出錢出力，這是信任。」", she: "「我要的不是有人買單，是有人跟我一起期待。」", note: "愛不只在結果裡，也在一起準備的過程裡。" },
-  { icon: Wind, title: "都聽你的", he: "「我配合度很高，對方想怎樣都好。」", she: "「所有決定都是我做的。這個人自己，到底在哪裡？」", note: "有自己的想法不是自私，是讓對方有一個人可以相遇。" },
-  { icon: VolumeX, title: "訊號盲區與不再開口", he: "「最近都沒吵架，我們很穩定。」", she: "「我不吵了，因為我已經不期待了。」", note: "還願意抱怨，是還在投資。安靜，才是需要靠近的時候。" },
-  { icon: Timer, title: "急著逼問與峰終定律", he: "「我只是想把話講清楚，知道問題在哪。」", she: "「我被審問了。原來最後是這個樣子。」", note: "一段感情怎麼結尾，會決定它怎麼被記得。" },
-];
-
 const ACT_META = [
   { icon: Luggage, when: "週四 晚上十一點", where: "客廳沙發" },
   { icon: Moon, when: "三個月後 中午", where: "訊息對話框" },
@@ -1198,6 +1152,7 @@ function Backdrop() {
       <div className="orb absolute -left-32 top-10 h-96 w-96 rounded-full bg-amber-500/30 blur-3xl" />
       <div className="orb absolute -right-32 top-1/3 h-[28rem] w-[28rem] rounded-full bg-rose-500/20 blur-3xl" style={{ animationDelay: "-6s" }} />
       <div className="orb absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-cyan-500/20 blur-3xl" style={{ animationDelay: "-11s" }} />
+      <div className="grain absolute inset-0" />
     </div>
   );
 }
@@ -1242,195 +1197,260 @@ function SectionTitle({ kicker, title, children }) {
 
 /* --------------------------------- 視圖一：首頁 ----------------------------- */
 
-function SpectrumMap() {
-  const [sel, setSel] = useState("cocreate");
-  const W = 520, H = 340, pad = 44;
-  const pt = SPECTRUM_POINTS.find((p) => p.id === sel);
-  const px = (x) => pad + x * (W - pad * 2);
-  const py = (y) => pad + y * (H - pad * 2);
+/* 這個版本的名稱與首頁主要入口（兩個分支各自不同） */
+const EDITION = { name: "劇場版", primary: "theater", theaterMeta: ["約 15 分鐘", "三幕六個抉擇", "可雙人對照"] };
+
+/* 一句話的兩面：說的人心裡想的、聽的人收到的、中間發生了什麼 */
+const TWO_SIDES = [
+  {
+    short: "交給你決定就好",
+    line: "行程你比較會排，交給你決定就好。",
+    sent: "我信任你的眼光，而且這樣最有效率。你負責排、我負責出錢，這樣分工不是很好嗎？",
+    got: "這趟旅行是你的事，不是我們的事。排好再通知我就好。",
+    why: "說的人在回答「誰來做」，聽的人問的卻是「你要不要一起」。一個在談事情，一個在談感受，話就在中間走了樣。",
+  },
+  {
+    short: "沒事，你忙你的",
+    line: "沒事，我自己處理好了，你忙你的。",
+    sent: "我試過讓你知道我需要你，但每次都落空。與其再失望一次，不如自己來，比較不痛。",
+    got: "太好了，沒事了。這個人好獨立、好懂事，我們之間沒有問題。",
+    why: "說的人把失望收了起來，聽的人只收到字面上的「沒事」。沒有抱怨，很容易被當成沒有問題。",
+  },
+  {
+    short: "我現在就要答案",
+    line: "我現在就要知道你的答案！",
+    sent: "我很慌，我怕失去你。我只是想知道發生了什麼事，才知道該怎麼辦。",
+    got: "我被審問了。現在說什麼都會被抓住，還是什麼都別說比較安全。",
+    why: "說的人心裡是害怕，出口卻變成了逼問。聽的人只看得到那股壓力，看不到底下的害怕。",
+  },
+];
+
+function Ornament() {
   return (
-    <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
-      <div className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-3">
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="雙軸溝通光譜：橫軸為任務導向到情感導向，縱軸為自我清晰到自我模糊">
-          <defs>
-            <linearGradient id="specX" x1="0" x2="1"><stop offset="0" stopColor="#3B8C8C" /><stop offset=".5" stopColor="#9A7BC8" /><stop offset="1" stopColor="#D9596A" /></linearGradient>
-            <radialGradient id="sweet"><stop offset="0" stopColor="#E8973A" stopOpacity=".28" /><stop offset="1" stopColor="#E8973A" stopOpacity="0" /></radialGradient>
-          </defs>
-          <circle cx={px(0.5)} cy={py(0.16)} r={95} fill="url(#sweet)" />
-          <line x1={pad} y1={H / 2} x2={W - pad} y2={H / 2} stroke="url(#specX)" strokeWidth="3" strokeLinecap="round" />
-          <line x1={W / 2} y1={pad - 14} x2={W / 2} y2={H - pad + 14} stroke="#D9C8AD" strokeWidth="1.5" strokeDasharray="4 5" />
-          <text x={pad} y={H / 2 - 10} fill="#2F6F73" fontSize="12">任務端：注意力在事情</text>
-          <text x={W - pad} y={H / 2 - 10} fill="#B8404F" fontSize="12" textAnchor="end">情感端：注意力在感受</text>
-          <text x={W / 2 + 8} y={pad - 14} fill="#54463A" fontSize="12">自我清晰</text>
-          <text x={W / 2 + 8} y={H - pad + 14} fill="#8C7A66" fontSize="12">自我模糊</text>
-          {SPECTRUM_POINTS.map((p) => {
-            const on = p.id === sel;
-            return (
-              <g key={p.id} role="button" tabIndex={0} aria-label={p.label} aria-pressed={on} onClick={() => setSel(p.id)} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setSel(p.id)} className="cursor-pointer focus:outline-none">
-                <circle cx={px(p.x)} cy={py(p.y)} r={22} fill="transparent" />
-                {on && <circle className="halo" cx={px(p.x)} cy={py(p.y)} r={15} fill="none" stroke={p.color} strokeWidth="1.5" />}
-                <circle cx={px(p.x)} cy={py(p.y)} r={on ? 8 : 6} fill={p.color} opacity={on ? 1 : 0.7} />
-                <text x={px(p.x)} y={py(p.y) + 26} textAnchor="middle" fill={on ? "#33291F" : "#7D6B58"} fontSize="12.5" fontWeight={on ? 700 : 400}>{p.label}</text>
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-      <div key={pt.id} className="fade-up flex flex-col justify-center rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
-        <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: pt.color }}>
-          <span className="h-2.5 w-2.5 rounded-full" style={{ background: pt.color }} />{pt.label}
-        </div>
-        <p className="mt-3 text-sm leading-relaxed text-sand-300">{pt.desc}</p>
-        <p className="mt-4 text-xs text-sand-500">點選光譜上的光點，看看每種溝通姿態落在哪裡。</p>
-      </div>
+    <svg viewBox="0 0 120 12" className="mx-auto h-3 w-28" aria-hidden="true">
+      <path d="M2 6 H44 M76 6 H118" stroke="#D9C8AD" strokeWidth="1" strokeLinecap="round" />
+      <path d="M60 1 L65 6 L60 11 L55 6 Z" fill="#E8973A" opacity=".85" />
+      <circle cx="49" cy="6" r="1.3" fill="#D9C8AD" />
+      <circle cx="71" cy="6" r="1.3" fill="#D9C8AD" />
+    </svg>
+  );
+}
+
+function LandingHeading({ kicker, title, children }) {
+  return (
+    <div className="mx-auto mb-10 max-w-2xl text-center">
+      <div className="text-[11px] font-medium tracking-[0.35em] text-sand-500">{kicker}</div>
+      <h2 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-4xl" style={{ textWrap: "balance" }}>{title}</h2>
+      <div className="mt-4"><Ornament /></div>
+      {children && <p className="mt-4 text-[15px] leading-loose text-sand-400">{children}</p>}
     </div>
   );
 }
 
-function PrismLab() {
-  const [lineIdx, setLineIdx] = useState(0);
-  const [lens, setLens] = useState("intent");
-  const item = PRISM_LINES[lineIdx];
-  const lensMeta = LENSES.find((l) => l.key === lens);
-  return (
-    <div className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-5 sm:p-7">
-      <div className="flex flex-col gap-2">
-        {PRISM_LINES.map((l, i) => (
-          <button
-            key={l.line}
-            type="button"
-            onClick={() => setLineIdx(i)}
-            aria-pressed={i === lineIdx}
-            className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${i === lineIdx ? "border-sand-500 bg-sand-800 text-sand-50" : "border-sand-800 bg-sand-950/50 text-sand-400 hover:border-sand-700 hover:text-sand-200"}`}
-          >
-            <Quote className="h-4 w-4 shrink-0 text-sand-500" />
-            <span className="font-display">「{l.line}」</span>
-          </button>
-        ))}
-      </div>
-
-      <svg viewBox="0 0 600 150" className="mt-5 w-full" aria-hidden="true">
-        <line x1="20" y1="75" x2="262" y2="75" stroke="#33291F" strokeWidth="3" strokeLinecap="round" opacity=".85" />
-        <polygon points="300,22 352,128 248,128" fill="rgba(148,163,184,.1)" stroke="#7D6B58" strokeWidth="1.5" />
-        {LENSES.map((l, i) => {
-          const y = 30 + i * 45;
-          const on = l.key === lens;
-          return <line key={l.key} x1="330" y1="78" x2="580" y2={y} stroke={l.beam} strokeWidth={on ? 5 : 2} strokeLinecap="round" opacity={on ? 1 : 0.3} style={{ transition: "all .4s" }} />;
-        })}
-        <text x="20" y="62" fill="#7D6B58" fontSize="11">一句話</text>
-        <text x="300" y="146" fill="#8C7A66" fontSize="11" textAnchor="middle">溝通稜鏡</text>
-      </svg>
-
-      <div role="tablist" aria-label="解碼視角" className="mt-3 grid gap-2 sm:grid-cols-3">
-        {LENSES.map((l) => (
-          <button
-            key={l.key}
-            role="tab"
-            type="button"
-            aria-selected={l.key === lens}
-            onClick={() => setLens(l.key)}
-            className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${l.key === lens ? `${l.ring} ${l.color}` : "border-sand-800 text-sand-400 hover:text-sand-200"}`}
-          >
-            {l.label}
-          </button>
-        ))}
-      </div>
-      <div key={`${lineIdx}-${lens}`} role="tabpanel" className="fade-up mt-4 min-h-28 rounded-xl border border-sand-800 bg-sand-950/70 p-5">
-        <div className={`text-xs font-medium ${lensMeta.color}`}>{lensMeta.label}</div>
-        <p className="mt-2 text-[15px] leading-relaxed text-sand-200">{item[lens]}</p>
-      </div>
-    </div>
-  );
-}
+const HERO_BAND = "M 122,150 C 190,66 252,214 320,132 S 452,58 518,150";
+const HERO_STAR = "M0,-7 L1.6,-1.6 L7,0 L1.6,1.6 L0,7 L-1.6,1.6 L-7,0 L-1.6,-1.6 Z";
 
 function HeroArt() {
-  const l = CAST.linear, r = CAST.sensitive;
+  const sparkles = [[168, 96, 0, "#3B8C8C"], [236, 168, 0.9, "#7FA08A"], [320, 108, 1.7, "#E8973A"], [402, 78, 0.4, "#E58A5A"], [470, 140, 1.3, "#D9596A"], [286, 60, 2.1, "#E8973A"], [370, 180, 2.6, "#E58A5A"]];
   return (
-    <svg viewBox="0 0 420 150" className="mx-auto w-full max-w-md" role="img" aria-label="兩個人之間，有一條正在流動的暖色絲線">
-      <defs><linearGradient id="thread" x1="0" x2="1"><stop offset="0" stopColor={l.stroke} /><stop offset="1" stopColor={r.stroke} /></linearGradient></defs>
-      <circle cx="210" cy="70" r="62" fill="#E8973A" opacity=".12" />
-      <path className="thread" d="M 96,84 C 150,30 180,120 210,74 S 280,30 324,84" fill="none" stroke="url(#thread)" strokeWidth="3" strokeLinecap="round" strokeDasharray="14 8" />
-      <path d="M210 62 c -5 -9 -18 -4 -14 6 c 2 6 9 10 14 14 c 5 -4 12 -8 14 -14 c 4 -10 -9 -15 -14 -6 z" fill="#D9596A" opacity=".85" />
-      {[[70, l], [350, r]].map(([cx, c]) => (
+    <svg viewBox="0 0 640 290" className="mx-auto w-full max-w-2xl" role="img" aria-label="兩個人之間，有一條由青綠漸變到暖橘與玫瑰色的光帶緩緩流動">
+      <defs>
+        <linearGradient id="heroBand" x1="0" x2="1"><stop offset="0" stopColor="#3B8C8C" /><stop offset=".5" stopColor="#E8973A" /><stop offset="1" stopColor="#D9596A" /></linearGradient>
+        <radialGradient id="heroGlow"><stop offset="0" stopColor="#F5B25E" stopOpacity=".5" /><stop offset="1" stopColor="#F5B25E" stopOpacity="0" /></radialGradient>
+        <linearGradient id="figL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8CCBC4" /><stop offset="1" stopColor="#3B8C8C" /></linearGradient>
+        <linearGradient id="figR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F7C2A6" /><stop offset="1" stopColor="#D9596A" /></linearGradient>
+        <filter id="heroSoft" x="-20%" y="-120%" width="140%" height="340%"><feGaussianBlur stdDeviation="10" /></filter>
+      </defs>
+      <circle cx="320" cy="138" r="150" fill="url(#heroGlow)" />
+      <path d={HERO_BAND} fill="none" stroke="url(#heroBand)" strokeWidth="40" strokeLinecap="round" opacity=".3" filter="url(#heroSoft)" />
+      <path d={HERO_BAND} fill="none" stroke="url(#heroBand)" strokeWidth="13" strokeLinecap="round" opacity=".32" />
+      <path className="thread" d={HERO_BAND} fill="none" stroke="url(#heroBand)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="14 8" />
+      {sparkles.map(([x, y, d, c]) => (
+        <g key={`${x}-${y}`} transform={`translate(${x} ${y})`}><path className="twinkle" d={HERO_STAR} fill={c} style={{ animationDelay: `${d}s` }} /></g>
+      ))}
+      {[[84, "url(#figL)", "#3B8C8C"], [556, "url(#figR)", "#D9596A"]].map(([cx, fill, ink], i) => (
         <g key={cx}>
-          <circle cx={cx} cy={58} r={17} fill={c.fill} stroke={c.stroke} strokeWidth="2.5" />
-          <path d={`M ${cx - 30},128 Q ${cx - 30},86 ${cx},86 Q ${cx + 30},86 ${cx + 30},128 Z`} fill={c.fill} stroke={c.stroke} strokeWidth="2.5" />
+          <ellipse cx={cx} cy={246} rx="56" ry="7" fill="#33291F" opacity=".07" />
+          <circle cx={cx} cy={128} r="25" fill={fill} opacity=".92" />
+          <path d={`M ${cx - 46},244 Q ${cx - 46},166 ${cx},166 Q ${cx + 46},166 ${cx + 46},244 Z`} fill={fill} opacity=".92" />
+          <g transform={`translate(${i === 0 ? cx + 6 : cx - 62} 46)`}>
+            <rect width="56" height="34" rx="12" fill="#FFFBF4" stroke={ink} strokeOpacity=".35" />
+            <path d={i === 0 ? "M14 34 L10 43 L24 34 Z" : "M42 34 L46 43 L32 34 Z"} fill="#FFFBF4" stroke={ink} strokeOpacity=".35" />
+            {i === 0 ? (
+              <g stroke={ink} strokeWidth="2.4" strokeLinecap="round" opacity=".75"><path d="M14 12 H42" /><path d="M14 19 H36" /><path d="M14 26 H30" /></g>
+            ) : (
+              <path d="M28 14 c -4 -7 -14 -3 -11 5 c 1.5 4.5 7 8 11 11 c 4 -3 9.5 -6.5 11 -11 c 3 -8 -7 -12 -11 -5 z" fill={ink} opacity=".8" />
+            )}
+          </g>
         </g>
       ))}
     </svg>
   );
 }
 
-function Mechanisms() {
+function TwoSides() {
+  const [idx, setIdx] = useState(0);
+  const item = TWO_SIDES[idx];
+  const dash = "h-5 w-px border-l border-dashed border-sand-600 md:h-px md:w-7 md:border-l-0 md:border-t";
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      {MECHANISMS.map((m) => (
-        <div key={m.title} className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-400/20 text-amber-300"><m.icon className="h-5 w-5" /></span>
-            <h3 className="font-display text-lg font-semibold text-sand-50">{m.title}</h3>
+    <div>
+      <div role="tablist" aria-label="選一句話" className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
+        {TWO_SIDES.map((t, i) => (
+          <button
+            key={t.short}
+            role="tab"
+            type="button"
+            aria-selected={i === idx}
+            onClick={() => setIdx(i)}
+            className={`font-display rounded-full border px-5 py-2.5 text-[15px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${i === idx ? "border-amber-400 bg-amber-400/20 text-sand-50 shadow-warm" : "border-sand-800 bg-sand-900/70 text-sand-400 hover:text-sand-200"}`}
+          >
+            「{t.short}」
+          </button>
+        ))}
+      </div>
+
+      <div key={idx} role="tabpanel" className="fade-up mt-10">
+        <p className="font-display text-center text-2xl leading-relaxed text-sand-50 sm:text-3xl" style={{ textWrap: "balance" }}>「{item.line}」</p>
+        <div className="mt-8 grid items-stretch gap-3 md:grid-cols-[1fr_auto_1fr] md:gap-2">
+          <div className="rounded-[1.75rem] border border-cyan-400/40 bg-cyan-400/10 p-6 sm:p-7">
+            <div className="flex items-center gap-2 text-xs font-medium tracking-[0.2em] text-cyan-300"><MessageCircle className="h-4 w-4" />說的人，心裡想的是</div>
+            <p className="font-display mt-3 text-[17px] leading-loose text-sand-100">{item.sent}</p>
           </div>
-          <div className="mt-4 space-y-2 text-sm leading-relaxed">
-            <p className="rounded-2xl rounded-bl-sm bg-cyan-400/10 px-3 py-2 text-sand-200"><span className="mr-1 text-xs font-medium text-cyan-300">這一邊以為</span>{m.he}</p>
-            <p className="rounded-2xl rounded-br-sm bg-amber-400/15 px-3 py-2 text-sand-200"><span className="mr-1 text-xs font-medium text-amber-300">另一邊感受</span>{m.she}</p>
+          <div className="flex flex-col items-center justify-center md:flex-row" aria-hidden="true">
+            <span className={dash} />
+            <span className="floaty my-1 flex h-10 w-10 items-center justify-center rounded-full border border-sand-800 bg-sand-900 text-amber-300 shadow-warm md:mx-1 md:my-0"><Send className="h-4 w-4" /></span>
+            <span className={dash} />
           </div>
-          <p className="mt-3 flex items-start gap-1.5 text-sm text-sand-400"><Heart className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-300" />{m.note}</p>
+          <div className="rounded-[1.75rem] border border-rose-400/40 bg-rose-400/10 p-6 sm:p-7">
+            <div className="flex items-center gap-2 text-xs font-medium tracking-[0.2em] text-rose-300"><Heart className="h-4 w-4" />聽的人，收到的是</div>
+            <p className="font-display mt-3 text-[17px] leading-loose text-sand-100">{item.got}</p>
+          </div>
         </div>
-      ))}
+        <div className="mx-auto mt-4 max-w-2xl rounded-[1.75rem] border border-amber-400/40 bg-amber-400/10 p-6 sm:p-7">
+          <div className="flex items-center gap-2 text-xs font-medium tracking-[0.2em] text-amber-300"><Sparkles className="h-4 w-4" />話在中間，發生了什麼</div>
+          <p className="mt-3 text-[15px] leading-loose text-sand-200">{item.why}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SpectrumRibbon() {
+  const order = [...STOPS].sort((a, b) => a.x - b.x);
+  const [sel, setSel] = useState("cocreate");
+  const st = STOPS.find((o) => o.id === sel);
+  return (
+    <div className="rounded-[2rem] border border-sand-800 bg-sand-900/80 p-6 shadow-warm sm:p-10">
+      <div className="flex justify-between text-xs text-sand-500"><span>任務端・先看事情</span><span>先看感受・情感端</span></div>
+      <div className="relative mt-4 h-[4.75rem]" role="tablist" aria-label="光譜上的五個位置">
+        <span aria-hidden="true" className="absolute left-0 right-0 top-3 h-4 rounded-full bg-gradient-to-r from-cyan-400 via-amber-400 to-rose-400 opacity-40 blur-md" />
+        <span aria-hidden="true" className="absolute left-0 right-0 top-[17px] h-1.5 rounded-full bg-gradient-to-r from-cyan-400 via-amber-400 to-rose-400 opacity-80" />
+        {order.map((o) => {
+          const on = o.id === sel;
+          return (
+            <button key={o.id} role="tab" type="button" aria-selected={on} onClick={() => setSel(o.id)} className="absolute top-0 flex -translate-x-1/2 flex-col items-center gap-2 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" style={{ left: `${o.x}%` }}>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all duration-300" style={{ borderColor: o.color, background: on ? o.color : "#FAF3E7", boxShadow: on ? `0 0 0 6px ${o.color}33, 0 10px 18px -8px ${o.color}` : "none" }}>
+                <span className="h-2.5 w-2.5 rounded-full" style={{ background: on ? "#FFF8EC" : o.color }} />
+              </span>
+              <span className={`font-display whitespace-nowrap text-[13px] sm:text-sm ${on ? "font-semibold text-sand-50" : "text-sand-400"}`}>{o.name}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div key={sel} role="tabpanel" className="fade-up mt-8 grid gap-6 sm:grid-cols-[13rem_1fr] sm:items-center">
+        <div className="text-center sm:text-left">
+          <div className="font-display text-3xl font-semibold" style={{ color: st.color }}>{st.name}</div>
+          <div className="mt-2 text-sm text-sand-300">{st.side}</div>
+          <div className="mt-1 text-sm text-sand-500">{st.motto}</div>
+        </div>
+        <div className="space-y-3">
+          <div className="rounded-2xl rounded-bl-sm px-5 py-4" style={{ background: `${st.color}1f` }}>
+            <div className="text-xs text-sand-500">常說的話</div>
+            <p className="font-display mt-1 text-[17px] leading-relaxed text-sand-50">「{SCENARIOS[0].stops[sel].line}」</p>
+          </div>
+          <div className="rounded-2xl border border-dashed border-sand-700 px-5 py-4">
+            <div className="text-xs text-sand-500">沒說出口的話</div>
+            <p className="font-display mt-1 text-[17px] leading-relaxed text-sand-200">{st.heart}</p>
+          </div>
+        </div>
+      </div>
+      <p className="mt-7 text-center text-xs text-sand-500">點一下光譜上的位置看看。同一個人在不同時候，也會站到不同的地方。</p>
     </div>
   );
 }
 
 function Landing({ onStart, onChat }) {
+  const chatFirst = EDITION.primary === "chat";
+  const ways = [
+    { key: "chat", icon: MessageCircle, title: "跟小譯聊一段", text: "小譯會用一個日常場景，帶你一站一站看五種回應。每一站都會告訴你：他心裡在想什麼、對方聽到什麼、兩邊可以怎麼做。", meta: ["約 10 分鐘", "三個隨機場景", "一問一答"], cta: "開始對話", run: onChat },
+    { key: "theater", icon: Users, title: "親自演一遍", text: "走進一段感情的三幕故事，選你會說的話，看看對方表面怎麼回、心裡其實怎麼想。可以一個人，也可以兩個人輪流。", meta: EDITION.theaterMeta, cta: "走進劇場", run: onStart },
+  ];
+  if (!chatFirst) ways.reverse();
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-24 pt-16 sm:px-6 sm:pt-24">
+    <div className="mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6 sm:pt-16">
       <header className="fade-up text-center">
         <HeroArt />
-        <div className="mt-4 text-xs tracking-[0.35em] text-sand-400">THE COMMUNICATION SPECTRUM</div>
-        <h1 className="font-display mt-5 text-4xl font-semibold leading-tight text-sand-50 sm:text-6xl">
-          溝通光譜
-          <span className="mt-2 block bg-gradient-to-r from-cyan-300 via-violet-300 to-amber-300 bg-clip-text text-2xl text-transparent sm:text-4xl">劇場版</span>
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-sand-300">
-          <span className="font-display text-lg text-sand-100">明明很在乎，話一出口卻變了樣。</span><br />
-          你是不是也遇過？想關心對方，結果吵起來；對方說「沒事」，你卻越想越不對勁。<br />
-          很多時候沒有誰對誰錯，只是兩個人習慣的說話方式不一樣。<br />
-          花十分鐘，一起看看五種常見的說話方式吧。
-        </p>
-        <div className="mx-auto mt-8 h-1.5 max-w-md rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-rose-400 opacity-80" />
-        <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-sand-500"><span>任務端・先看事情</span><span>先看感受・情感端</span></div>
-        <PrimaryButton onClick={onStart} className="mt-9">進入雙視角互動劇場</PrimaryButton>
-        <div><button type="button" onClick={onChat} className="mt-4 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">或先用一段對話認識光譜</button></div>
-        <p className="mt-3 text-xs text-sand-500">三幕、六個抉擇，每個抉擇有五種回應，每人約十五分鐘。你的每個選擇，都會改變下一段的開場。</p>
+        <div className="mt-4 text-[11px] tracking-[0.4em] text-sand-500">THE COMMUNICATION SPECTRUM</div>
+        <h1 className="font-display mt-4 text-5xl font-semibold tracking-[0.14em] text-sand-50 sm:text-7xl">溝通光譜</h1>
+        <svg viewBox="0 0 220 14" className="mx-auto mt-2 h-3.5 w-52" aria-hidden="true"><path d="M4 9 C 40 2, 70 13, 110 7 S 180 3, 216 8" fill="none" stroke="url(#heroBand)" strokeWidth="3" strokeLinecap="round" opacity=".8" /></svg>
+        <div className="mt-5"><span className="font-display inline-block rounded-full border border-sand-700 bg-sand-900/70 px-5 py-1 text-sm tracking-[0.35em] text-sand-300">{EDITION.name}</span></div>
+        <p className="font-display mx-auto mt-9 max-w-xl text-2xl leading-relaxed text-sand-100 sm:text-[2rem]" >明明很在乎，<br className="sm:hidden" />話一出口卻變了樣。</p>
+        <p className="mx-auto mt-5 max-w-lg text-[15px] leading-loose text-sand-400">你是不是也遇過？想關心對方，結果吵起來；對方說「沒事」，你卻越想越不對勁。很多時候沒有誰對誰錯，只是兩個人習慣的說話方式不一樣。</p>
+        {chatFirst ? (
+          <>
+            <PrimaryButton onClick={onChat} className="mt-9">開始一段對話，走一趟光譜</PrimaryButton>
+            <div><button type="button" onClick={onStart} className="mt-4 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">或直接進入雙視角互動劇場</button></div>
+          </>
+        ) : (
+          <>
+            <PrimaryButton onClick={onStart} className="mt-9">進入雙視角互動劇場</PrimaryButton>
+            <div><button type="button" onClick={onChat} className="mt-4 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">或先用一段對話認識光譜</button></div>
+          </>
+        )}
+        <ul className="mx-auto mt-9 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-sand-500">
+          <li className="flex items-center gap-1.5"><Timer className="h-3.5 w-3.5 text-amber-300" />大約十分鐘</li>
+          <li className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-300" />沒有分數</li>
+          <li className="flex items-center gap-1.5"><Heart className="h-3.5 w-3.5 text-amber-300" />不分對錯</li>
+        </ul>
       </header>
 
-      <section className="mt-24">
-        <SectionTitle kicker="00 ／ FOUR QUIET DRIFTS" title="四個讓感情悄悄變冷的地方">
-          它們都不是誰的錯，只是兩種愛人的方式，中間少了一個翻譯。你可能在其中看見自己，也可能看見你愛的那個人。
-        </SectionTitle>
-        <Mechanisms />
+      <section className="mt-24 sm:mt-32">
+        <LandingHeading kicker="SAID ／ HEARD" title="一句話的兩面">同一句話，說的人心裡想的，和聽的人收到的，常常不是同一件事。選一句看看。</LandingHeading>
+        <TwoSides />
       </section>
 
-      <section className="mt-24">
-        <SectionTitle kicker="01 ／ SPECTRUM" title="雙軸光譜：你們站在哪裡？">
-          橫軸是「注意力放在哪裡」：越往左，越只看得到事情；越往右，越只剩下感受；中間是兩樣都顧到的地方。縱軸是「人在不在」：關係裡還有沒有一個清楚的自己。同一個人在不同時候，也會站到不同的位置。
-        </SectionTitle>
-        <SpectrumMap />
+      <section className="mt-24 sm:mt-32">
+        <LandingHeading kicker="FIVE WAYS OF ANSWERING" title="五種說話的方式">把常見的回話方式由左到右排開：左邊的人習慣先處理事情，右邊的人習慣先顧感受，中間是兩邊都顧到。沒有哪一種比較差。</LandingHeading>
+        <SpectrumRibbon />
       </section>
 
-      <section className="mt-24">
-        <SectionTitle kicker="02 ／ PRISM LAB" title="訊號折射實驗室">
-          選一句你一定聽過（或說過）的話，再切換三面稜鏡。說出口的、被聽到的、和真正發生的，是三件不同的事。
-        </SectionTitle>
-        <PrismLab />
+      <section className="mt-24 sm:mt-32">
+        <LandingHeading kicker="TWO WAYS IN" title="兩種走法">想輕鬆一點，就跟小譯聊；想親身體會，就自己演一遍。兩種都可以，順序隨你。</LandingHeading>
+        <div className="grid gap-5 md:grid-cols-2">
+          {ways.map((w, i) => (
+            <div key={w.key} className={`flex flex-col rounded-[2rem] border p-7 shadow-warm sm:p-8 ${i === 0 ? "border-amber-400/50 bg-gradient-to-br from-amber-400/15 to-sand-900" : "border-sand-800 bg-sand-900/80"}`}>
+              <div className="flex items-center gap-3">
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-sand-950 text-amber-300 shadow-warm"><w.icon className="h-5 w-5" /></span>
+                <h3 className="font-display text-2xl font-semibold text-sand-50">{w.title}</h3>
+              </div>
+              <p className="mt-4 flex-1 text-[15px] leading-loose text-sand-300">{w.text}</p>
+              <ul className="mt-5 flex flex-wrap gap-2 text-xs text-sand-400">
+                {w.meta.map((m) => <li key={m} className="rounded-full bg-sand-800/70 px-3 py-1">{m}</li>)}
+              </ul>
+              <button type="button" onClick={w.run} className={`mt-6 inline-flex items-center justify-center gap-2 self-start rounded-full px-5 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${i === 0 ? "bg-gradient-to-r from-[#A8432F] to-[#B85C1C] text-[#FFF8EC] hover:brightness-110" : "border border-sand-600 text-sand-100 hover:bg-sand-800"}`}>
+                {w.cta}<ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
       </section>
 
-      <section className="mt-24 rounded-2xl border border-sand-800 bg-gradient-to-br from-sand-900 to-sand-950 p-8 text-center">
-        <Coffee className="mx-auto mb-3 h-7 w-7 text-amber-300" />
-        <h2 className="font-display text-2xl font-semibold text-sand-50">看懂折射之後，親自走一遍</h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-sand-400">你會走進同一段感情的三個夜晚。你可以選擇成為他，也可以選擇成為她。慢慢來，這裡沒有人會評分你。</p>
-        <PrimaryButton onClick={onChat} className="mt-6">開始一段對話</PrimaryButton>
-        <div><button type="button" onClick={onStart} className="mt-4 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">或直接進入雙視角互動劇場</button></div>
+      <section className="mt-24 text-center sm:mt-32">
+        <Ornament />
+        <p className="font-display mx-auto mt-8 max-w-2xl text-2xl leading-loose text-sand-100 sm:text-3xl" style={{ textWrap: "balance" }}>理解不等於同意。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。</p>
+        <PrimaryButton onClick={chatFirst ? onChat : onStart} className="mt-9">{chatFirst ? "開始一段對話" : "進入互動劇場"}</PrimaryButton>
+        <p className="mt-10 text-xs leading-relaxed text-sand-500">這是心理教育用途的互動內容，不是臨床診斷工具。</p>
       </section>
     </div>
   );
