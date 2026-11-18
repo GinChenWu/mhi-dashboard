@@ -103,7 +103,7 @@ const PRISM_LINES = [
     line: "行程你比較會排，交給你決定就好。",
     speaker: "他說",
     intent: "「我信任你的品味，而且這樣最有效率。你負責規劃、我負責出錢出力，這不就是很好的分工嗎？」",
-    received: "「這趟旅行是你的專案，不是我們的。」她收到的不是信任，而是一張工單——以及一個人查資料到半夜的孤單。",
+    received: "「這趟旅行是你的專案，不是我們的。」對方收到的不是信任，而是一張工單，以及一個人查資料到半夜的孤單。",
     psych:
       "任務外包 vs. 過程共謀。直線思考把旅行看成『待完成的任務』，所以外包是合理的；但對重視連結的人來說，規劃過程本身就是親密——一起滑民宿、一起期待，才是這趟旅行真正的起點。被外包的不只是行程，還有『共同期待』。",
   },
@@ -111,15 +111,15 @@ const PRISM_LINES = [
     line: "沒事，我自己處理好了，你忙你的。",
     speaker: "她說",
     intent: "「我試過讓你知道我需要你，但每次都落空。與其再失望一次，不如自己來。這樣比較不痛。」",
-    received: "「太好了，她好獨立、好懂事，我們之間沒有問題。」他把這句話歸檔為『好消息』，然後安心地繼續忙。",
+    received: "「太好了，好獨立、好懂事，我們之間沒有問題。」對方把這句話歸檔為『好消息』，然後安心地繼續忙。",
     psych:
-      "訊號盲區與安靜離職。抱怨其實是一種投資——還願意吵，代表還相信對方會改。當一個人開始客氣、不再提出需求，往往不是關係變穩定了，而是她已經在心裡遞出辭呈。沒有爭吵，是最容易被誤讀的警訊。",
+      "訊號盲區與安靜離職。抱怨其實是一種投資——還願意吵，代表還相信對方會改。當一個人開始客氣、不再提出需求，往往不是關係變穩定了，而是已經在心裡遞出辭呈。沒有爭吵，是最容易被誤讀的警訊。",
   },
   {
     line: "我現在就要知道你的答案！",
     speaker: "他說",
     intent: "「我很慌，我快失去你了。我只是想把事情講清楚，知道問題在哪，我才有辦法修。」",
-    received: "「我被審問了。」她的身體先於理智進入防衛：心跳加速、腦袋空白。此刻說出口的任何話，都不會是真心話。",
+    received: "「我被審問了。」對方的身體先於理智進入防衛：心跳加速、腦袋空白。此刻說出口的任何話，都不會是真心話。",
     psych:
       "高壓逼問與峰終定律。人在被逼到牆角時會啟動戰、逃或凍結，對話功能直接下線。更殘酷的是峰終定律：我們對一段關係的整體記憶，由『最強烈的時刻』與『結尾』決定。最後那場難堪的逼問，會回頭覆寫過去所有的好。",
   },
@@ -134,11 +134,11 @@ const LENSES = [
 /* --------------------------- 資料：雙軸光譜落點 --------------------------- */
 
 const SPECTRUM_POINTS = [
-  { id: "outsource", x: 0.2, y: 0.2, label: "任務外包", color: "#3B8C8C", desc: "「你排就好，錢我出。」把愛翻譯成分工與效率。自我是清楚的，但人不在過程裡——對方得到資源，卻得不到同伴。" },
-  { id: "drift", x: 0.3, y: 0.86, label: "隨波逐流", color: "#2F6F73", desc: "「都可以、看你、你決定。」看似配合度滿分，實則把所有決策的重量與孤獨都留給對方。久了，伴侶會發現身邊這個人『少了自己』。" },
-  { id: "interrogate", x: 0.47, y: 0.7, label: "高壓逼問", color: "#D9414F", desc: "「我現在就要答案！」看起來很強勢，其實是被焦慮淹沒、無法安放自己情緒的狀態。越用力抓，對方的牆升得越高。" },
-  { id: "quiet", x: 0.82, y: 0.8, label: "安靜離職", color: "#B8404F", desc: "「沒事，我自己來。」情感需求很高，卻把自己的聲音關掉。表面風平浪靜，內心已在倒數。" },
-  { id: "cocreate", x: 0.66, y: 0.18, label: "過程共謀", color: "#E8973A", desc: "光譜的交會區：有自己的想法（自我清晰），也願意走進對方的過程（情感在場）。不是誰配合誰，而是兩個完整的人一起決定一件事。" },
+  { id: "outsource", x: 0.1, y: 0.34, label: "任務外包", color: "#3B8C8C", desc: "任務端。「你排就好，錢我出。」把愛翻譯成分工與效率。自我是清楚的，但人不在過程裡：對方得到資源，卻得不到同伴。" },
+  { id: "drift", x: 0.3, y: 0.86, label: "隨波逐流", color: "#6E9FB0", desc: "任務端。「都可以、看你、你決定。」看似配合度滿分，實則把所有決策的重量與孤獨都留給對方。久了，對方會發現身邊這個人「少了自己」。" },
+  { id: "cocreate", x: 0.5, y: 0.16, label: "過程共謀", color: "#E8973A", desc: "光譜中間的交會區：有自己的想法（自我清晰），也願意走進對方的過程（情感在場）。不是誰配合誰，而是兩個完整的人一起決定一件事。" },
+  { id: "interrogate", x: 0.7, y: 0.72, label: "高壓逼問", color: "#D9414F", desc: "情感端。「我現在就要答案！」看起來很強勢，其實是被焦慮淹沒、把感受整個丟出去的狀態。平常再理性的人，慌起來也可能滑到這裡。越用力抓，對方的牆升得越高。" },
+  { id: "quiet", x: 0.9, y: 0.8, label: "安靜離職", color: "#C2697B", desc: "情感端。「沒事，我自己來。」感受很多，卻全部收了起來。表面風平浪靜，內心已在倒數。" },
 ];
 
 /* ------------------------------- 資料：劇本 ------------------------------- */
@@ -456,7 +456,7 @@ const CONVERTER = [
 
 const MECHANISMS = [
   { icon: Luggage, title: "任務外包 vs. 過程共謀", he: "「你擅長你排，我出錢出力，這是信任。」", she: "「我要的不是有人買單，是有人跟我一起期待。」", note: "愛不只在結果裡，也在一起準備的過程裡。" },
-  { icon: Wind, title: "隨波逐流的「都可以」", he: "「我配合度很高，她想怎樣都好。」", she: "「所有決定都是我做的。他這個人，到底在哪裡？」", note: "有自己的想法不是自私，是讓對方有一個人可以相遇。" },
+  { icon: Wind, title: "隨波逐流的「都可以」", he: "「我配合度很高，對方想怎樣都好。」", she: "「所有決定都是我做的。這個人自己，到底在哪裡？」", note: "有自己的想法不是自私，是讓對方有一個人可以相遇。" },
   { icon: VolumeX, title: "訊號盲區與安靜離職", he: "「最近都沒吵架，我們很穩定。」", she: "「我不吵了，因為我已經不期待了。」", note: "還願意抱怨，是還在投資。安靜，才是需要靠近的時候。" },
   { icon: Timer, title: "高壓逼問與峰終定律", he: "「我只是想把話講清楚，知道問題在哪。」", she: "「我被審問了。原來最後是這個樣子。」", note: "一段感情怎麼結尾，會決定它怎麼被記得。" },
 ];
@@ -730,12 +730,12 @@ function SpectrumMap() {
             <linearGradient id="specX" x1="0" x2="1"><stop offset="0" stopColor="#3B8C8C" /><stop offset=".5" stopColor="#9A7BC8" /><stop offset="1" stopColor="#D9596A" /></linearGradient>
             <radialGradient id="sweet"><stop offset="0" stopColor="#E8973A" stopOpacity=".28" /><stop offset="1" stopColor="#E8973A" stopOpacity="0" /></radialGradient>
           </defs>
-          <circle cx={px(0.62)} cy={py(0.2)} r={95} fill="url(#sweet)" />
+          <circle cx={px(0.5)} cy={py(0.16)} r={95} fill="url(#sweet)" />
           <line x1={pad} y1={H / 2} x2={W - pad} y2={H / 2} stroke="url(#specX)" strokeWidth="3" strokeLinecap="round" />
           <line x1={W / 2} y1={pad - 14} x2={W / 2} y2={H - pad + 14} stroke="#D9C8AD" strokeWidth="1.5" strokeDasharray="4 5" />
-          <text x={pad} y={H / 2 - 10} fill="#2F6F73" fontSize="12">任務．功能．解題</text>
-          <text x={W - pad} y={H / 2 - 10} fill="#B8404F" fontSize="12" textAnchor="end">情感．過程．共鳴</text>
-          <text x={W / 2 + 8} y={pad - 4} fill="#54463A" fontSize="12">自我清晰</text>
+          <text x={pad} y={H / 2 - 10} fill="#2F6F73" fontSize="12">任務端：用做事表達</text>
+          <text x={W - pad} y={H / 2 - 10} fill="#B8404F" fontSize="12" textAnchor="end">情感端：用感受表達</text>
+          <text x={W / 2 + 8} y={pad - 14} fill="#54463A" fontSize="12">自我清晰</text>
           <text x={W / 2 + 8} y={H - pad + 14} fill="#8C7A66" fontSize="12">自我模糊</text>
           {SPECTRUM_POINTS.map((p) => {
             const on = p.id === sel;
@@ -778,7 +778,6 @@ function PrismLab() {
             className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${i === lineIdx ? "border-sand-500 bg-sand-800 text-sand-50" : "border-sand-800 bg-sand-950/50 text-sand-400 hover:border-sand-700 hover:text-sand-200"}`}
           >
             <Quote className="h-4 w-4 shrink-0 text-sand-500" />
-            <span className="shrink-0 text-xs text-sand-500">{l.speaker}</span>
             <span className="font-display">「{l.line}」</span>
           </button>
         ))}
@@ -846,8 +845,8 @@ function Mechanisms() {
             <h3 className="font-display text-lg font-semibold text-sand-50">{m.title}</h3>
           </div>
           <div className="mt-4 space-y-2 text-sm leading-relaxed">
-            <p className="rounded-2xl rounded-bl-sm bg-cyan-400/10 px-3 py-2 text-sand-200"><span className="mr-1 text-xs font-medium text-cyan-300">他以為</span>{m.he}</p>
-            <p className="rounded-2xl rounded-br-sm bg-amber-400/15 px-3 py-2 text-sand-200"><span className="mr-1 text-xs font-medium text-amber-300">她感受</span>{m.she}</p>
+            <p className="rounded-2xl rounded-bl-sm bg-cyan-400/10 px-3 py-2 text-sand-200"><span className="mr-1 text-xs font-medium text-cyan-300">這一邊以為</span>{m.he}</p>
+            <p className="rounded-2xl rounded-br-sm bg-amber-400/15 px-3 py-2 text-sand-200"><span className="mr-1 text-xs font-medium text-amber-300">另一邊感受</span>{m.she}</p>
           </div>
           <p className="mt-3 flex items-start gap-1.5 text-sm text-sand-400"><Heart className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-300" />{m.note}</p>
         </div>
@@ -887,7 +886,7 @@ function Landing({ onStart, onChat }) {
 
       <section className="mt-24">
         <SectionTitle kicker="01 ／ SPECTRUM" title="雙軸光譜：你們站在哪裡？">
-          橫軸是「愛怎麼表達」——用做事，還是用在場；縱軸是「人在不在」——關係裡還有沒有一個清楚的自己。問題往往不在某一端，而在兩端之間沒有翻譯。
+          橫軸是「在乎怎麼表達」：左邊的任務端習慣用做事，右邊的情感端習慣用感受，中間是兩邊會合的地方。縱軸是「人在不在」：關係裡還有沒有一個清楚的自己。同一個人在不同時候，也會站到不同的位置。
         </SectionTitle>
         <SpectrumMap />
       </section>
@@ -1517,61 +1516,63 @@ function PairReport({ results, xray, onRestart, onHome }) {
 /* ------------------------------ 光譜對話（主體驗） --------------------------- */
 /* 引導者「小譯」以一問一答，帶使用者依序走過光譜上的五個位置。內容為預先寫好的腳本。 */
 
+/* 走訪順序：任務端兩站 → 情感端兩站 → 回到中間。x 是該位置在光譜橫軸上的百分比。
+ * 文中的「他」泛指站在這個位置的人，不分性別；另一方一律稱「對方」。 */
 const STOPS = [
   {
-    id: "outsource", name: "任務外包", color: "#3B8C8C", motto: "把事情做好，就是愛",
+    id: "outsource", name: "任務外包", color: "#3B8C8C", x: 10, side: "任務端", motto: "用「做事」代替「在場」",
     line: "行程你比較會排，交給你決定就好，錢我出。",
     feel: [
       { label: "很體貼啊，哪裡有問題？", reply: "對說的人來說，這真的是體貼。問題不在心意，而在這份心意寄到的時候，包裝變了。" },
       { label: "有點被丟下的感覺", reply: "你抓到了。聽的人常常就是這個感覺：事情被交辦了，人卻沒有來。" },
       { label: "這句話我常說", reply: "那你一定是很可靠的人。接下來不是要糾正你，是想讓你看看這句話寄到對方手上的樣子。" },
     ],
-    why: ["他從小學到的是：愛一個人，就是把事情扛好、把錢賺夠、不給對方添麻煩。", "所以「你排，我出錢」在他的字典裡，是信任，也是最有效率的分工。他沒有在偷懶，他是真的覺得這樣對你最好。"],
-    heard: ["對面的人聽到的卻是：「這是你的專案，不是我們的。」", "她查了三個晚上的民宿，想要的不是有人買單，而是有人坐下來跟她一起期待。被外包的不只是行程，還有「一起」這兩個字。"],
+    why: ["站在這裡的人，從小學到的是：愛一個人，就是把事情扛好、把錢賺夠、不給對方添麻煩。", "所以「你排，我出錢」在他的字典裡是信任，也是最有效率的分工。他沒有在偷懶，他是真的覺得這樣對對方最好。"],
+    heard: ["對方聽到的卻是：「這是你的專案，不是我們的。」", "對方查了三個晚上的民宿，想要的不是有人買單，而是有人坐下來一起期待。被外包的不只是行程，還有「一起」這兩個字。"],
     near: ["想靠近他，別說「你都不參與」，那對他來說太模糊了。給他具體的一塊：「第二天早上交給你排，我想去一個你喜歡的地方。」", "如果你就站在這裡：不用全包，認領一小塊就好。「民宿傳給我看，早餐我來找。」"],
-    learned: "原來他的「你決定」裡面，裝的是信任。看得見這一點，就比較不會只聽到敷衍。",
+    learned: "原來那句「你決定就好」裡面，裝的是信任。看得見這一點，就比較不會只聽到敷衍。",
   },
   {
-    id: "drift", name: "隨波逐流", color: "#6E9FB0", motto: "不添麻煩，就是愛",
+    id: "drift", name: "隨波逐流", color: "#6E9FB0", x: 30, side: "任務端", motto: "用「配合」代替「自己」",
     line: "都可以啊，看你，你喜歡就好。",
     feel: [
       { label: "很好相處啊", reply: "一開始真的是。但想像一下，連續三年，每一餐、每一趟旅行、每一個決定，都是你一個人在選。" },
       { label: "久了會有點累", reply: "對，那種累有個名字，叫決策的孤獨。所有選擇的重量，都在一個人身上。" },
       { label: "我只是不想起衝突", reply: "我懂。很多說「都可以」的人不是沒有想法，而是很早就學會：有想法，會帶來麻煩。" },
     ],
-    why: ["他可能在一個「乖、不吵、配合」才會被喜歡的環境裡長大。", "久了，他不是在隱藏自己的喜好，而是真的不太確定自己喜歡什麼。說「都可以」的當下，他是真心想讓你開心。"],
-    heard: ["對面的人會開始想：「我到底在跟誰談戀愛？」", "當一個人永遠沒有意見，對方面對的就像一面鏡子，只照得見自己。她會覺得孤單，甚至好奇：如果沒有我，這個人自己想去哪裡？"],
+    why: ["站在這裡的人，可能在一個「乖、不吵、配合」才會被喜歡的環境裡長大。", "久了，他不是在隱藏自己的喜好，而是真的不太確定自己喜歡什麼。說「都可以」的當下，他是真心想讓對方開心。"],
+    heard: ["對方會開始想：「我到底在跟誰談戀愛？」", "當一個人永遠沒有意見，對方面對的就像一面鏡子，只照得見自己。久了會覺得孤單，甚至好奇：如果沒有我，這個人自己想去哪裡？"],
     near: ["想靠近他，別問開放題。給他小小的二選一，然後認真對待他的答案：「拉麵還是咖哩？你選的我都想試。」讓他慢慢發現，有想法是安全的。", "如果你就站在這裡：說「都可以」之前停三秒，找出一個再小都好的偏好，說出來。「我今天想吃熱的。」這樣就夠了。"],
     learned: "原來「都可以」的背後，常常是一個很怕添麻煩的人。",
   },
   {
-    id: "quiet", name: "安靜離職", color: "#C2697B", motto: "不再期待，就不會痛",
+    id: "quiet", name: "安靜離職", color: "#C2697B", x: 90, side: "情感端", motto: "把感受「收起來」",
     line: "沒事，我自己處理好了，你忙你的。",
     feel: [
       { label: "聽起來很獨立、很懂事", reply: "大部分人都這麼想，所以這是光譜上最容易被錯過的位置。" },
       { label: "感覺其實有事", reply: "你的天線很好。「處理好了」和「沒事」，其實是兩件不一樣的事。" },
       { label: "我也常這樣說", reply: "那你大概已經試過很多次了吧。先跟你說一聲：辛苦了。" },
     ],
-    why: ["她不是一開始就這樣的。她說過、暗示過，也吵過。", "每一次沒被接住，她就把期待調低一格。到最後，自己處理，比再失望一次不痛。這句話不是冷淡，是她保護自己的最後一道門。"],
-    heard: ["對面的人聽到的是好消息：「她沒事、她很獨立、我們很穩定。」於是安心地繼續忙。", "沒有爭吵被當成了感情好。但其實，還願意抱怨的人，才是還在投資的人。"],
-    near: ["想靠近她，不要追問「到底怎麼了」逼她解釋。出現就好：「不用現在講，我買宵夜過去，在旁邊陪你。」", "如果你就站在這裡：你的需要沒有消失，只是還沒被聽懂。再說一次，但這次附上說明書：「我不需要你解決，我需要你聽我講十分鐘。」"],
+    why: ["站在這裡的人，不是一開始就這樣的。他說過、暗示過，也吵過。", "每一次沒被接住，他就把期待調低一格。到最後，自己處理，比再失望一次不痛。這句話不是冷淡，是他保護自己的最後一道門。"],
+    heard: ["對方聽到的是好消息：「沒事、很獨立、我們很穩定。」於是安心地繼續忙。", "沒有爭吵被當成了感情好。但其實，還願意抱怨的人，才是還在投資的人。"],
+    near: ["想靠近他，不要追問「到底怎麼了」逼他解釋。出現就好：「不用現在講，我買宵夜過去，在旁邊陪你。」", "如果你就站在這裡：你的需要沒有消失，只是還沒被聽懂。再說一次，但這次附上說明書：「我不需要你解決，我需要你聽我講十分鐘。」"],
     learned: "原來「沒事」是一扇快要關上的門，不是一句報平安。",
   },
   {
-    id: "interrogate", name: "高壓逼問", color: "#D9414F", motto: "抓得越緊，越怕失去",
+    id: "interrogate", name: "高壓逼問", color: "#D9414F", x: 70, side: "情感端", motto: "把感受「丟出去」",
     line: "你現在就給我講清楚！我現在就要知道答案！",
     feel: [
       { label: "好有壓迫感", reply: "對，身體會比腦袋先反應：心跳加快、想逃，或整個人當機。這時候說出口的，都不會是真心話。" },
       { label: "但事情總要講清楚吧", reply: "要講清楚，這個需要完全合理。只是「要談」可以堅持，「現在」可以放手。" },
       { label: "我急起來也會這樣", reply: "謝謝你願意承認。這通常不是兇，是太害怕失去。" },
     ],
-    why: ["他看起來最強勢，其實是光譜上最慌的人。", "他感覺到對方在遠離，卻不知道為什麼，那種不確定讓他受不了。逼問是他唯一會的求救方式：「拜託告訴我發生什麼事，我才知道怎麼修。」"],
-    heard: ["對面的人聽到的是：「我被審問了。」牆會立刻升起來。", "更可惜的是，人對一段感情的記憶，常常由最後一幕決定。一場難堪的逼問，會回頭把之前所有的好，都重新上色。"],
+    why: ["站在這裡的人看起來最強勢，其實是光譜上最慌的人。平常再冷靜的人，慌起來也可能滑到這裡。", "他感覺到對方在遠離，卻不知道為什麼，那種不確定讓他受不了。逼問是他唯一會的求救方式：「拜託告訴我發生什麼事，我才知道怎麼修。」"],
+    heard: ["對方聽到的是：「我被審問了。」牆會立刻升起來。", "更可惜的是，人對一段感情的記憶，常常由最後一幕決定。一場難堪的逼問，會回頭把之前所有的好，都重新上色。"],
     near: ["想靠近他，他需要的是一個確定的時間，而不是立刻的答案：「我現在講不出來，但明天晚上，我一定跟你講完。」", "如果你就站在這裡：先說出底下那句真話：「我很慌，我怕失去你。」然後把時間還給對方：「你什麼時候可以談？」"],
     learned: "原來最兇的那一句話底下，是最害怕的那個人。",
   },
   {
-    id: "cocreate", name: "過程共謀", color: "#E8973A", motto: "有我，也有我們",
+    id: "cocreate", name: "過程共謀", color: "#E8973A", x: 50, side: "交會區", motto: "有我，也有我們",
     line: "民宿傳給我看看。第二天早上交給我，我想帶你去一個地方。",
     feel: [
       { label: "聽了會很開心", reply: "因為這句話裡同時有兩個東西：一個有想法的「我」，和一個想一起的「我們」。" },
@@ -1579,8 +1580,8 @@ const STOPS = [
       { label: "我想學這樣說", reply: "好消息是，它的配方很簡單。問我「可以怎麼靠近」就會告訴你。" },
     ],
     why: ["站在這裡的人不是比較會說話，而是同時守住了兩件事：知道自己要什麼，也好奇對方要什麼。", "他不把配合當成愛，也不把效率當成愛。"],
-    heard: ["對面的人聽到的是：「這是我們的事。」就這麼簡單。", "不用猜、不用一個人扛，也看得見眼前這個人是誰。"],
-    near: ["配方只有三步：說一個自己的想法，問一個對方的想法，認領一塊一起做。", "不必一次到位。從前面任何一個位置，往這裡挪一小步，就夠了。"],
+    heard: ["對方聽到的是：「這是我們的事。」就這麼簡單。", "不用猜、不用一個人扛，也看得見眼前這個人是誰。"],
+    near: ["配方只有三步：說一個自己的想法，問一個對方的想法，認領一塊一起做。", "不必一次到位。從兩端的任何一個位置，往中間挪一小步，就夠了。"],
     learned: "原來它不是天分，只是一個小小的、可以練習的動作。",
   },
 ];
@@ -1593,8 +1594,8 @@ const CHAT_HOME = [
 ];
 
 const CHAT_QUESTIONS = [
-  { key: "why", label: "他為什麼會這樣說？" },
-  { key: "heard", label: "對面的人聽到什麼？" },
+  { key: "why", label: "為什麼會這樣說？" },
+  { key: "heard", label: "對方聽到的是什麼？" },
   { key: "near", label: "可以怎麼靠近？" },
 ];
 
@@ -1604,7 +1605,7 @@ function stationIntro(i, home) {
   const st = STOPS[i];
   return [
     { from: "station", stop: i },
-    g(i === 0 ? "第一站。站在這裡的人，常常這樣說：" : i === STOPS.length - 1 ? "最後一站，也是光譜的交會區。站在這裡的人會說：" : "下一站。站在這裡的人，常常這樣說："),
+    g(["第一站，在任務端。站在這裡的人，常常這樣說：", "第二站，還在任務端，但往下走了一點。站在這裡的人，常常這樣說：", "現在換到光譜的另一頭，情感端。站在這裡的人，常常這樣說：", "第四站，同樣在情感端。站在這裡的人，慌起來會這樣說：", "最後一站，回到光譜的中間，兩端會合的地方。站在這裡的人會說："][i]),
     { from: "quote", stop: i },
     ...(home === st.id ? [g("這是你一開始選的位置。接下來的話，有一部分是說給你聽的。")] : []),
     g("聽到這句話，你的第一個感覺是？"),
@@ -1624,7 +1625,8 @@ function SpectrumChat({ onTheater, onHome }) {
     started.current = true;
     setQueue([
       g("嗨，我是小譯。我的工作，是幫站在不同位置的人翻譯彼此的話。"),
-      g("接下來我想陪你沿著一條「溝通光譜」走一趟。上面有五個位置，每個位置都住著一種人。沒有好人壞人，只有不同的習慣。"),
+      g("接下來我想陪你沿著一條「溝通光譜」走一趟。光譜的一端是任務端：習慣用做事來表達在乎。另一端是情感端：習慣用感受來表達在乎。"),
+      g("我們先在任務端走兩站，再到情感端走兩站，最後回到中間。沒有好人壞人，也不分男女，同一個人在不同時候，會站到不同的位置。"),
       g("出發前先問你一題：伴侶問「連假要去哪？」的時候，你最可能怎麼回？"),
     ]);
   }, []);
@@ -1684,17 +1686,16 @@ function SpectrumChat({ onTheater, onHome }) {
           <button type="button" onClick={onHome} className="hover:text-sand-300">← 首頁</button>
           <span>{current < 0 ? "溝通光譜之旅" : `第 ${current + 1} 站／共 ${STOPS.length} 站`}</span>
         </div>
-        <ol className="mt-2 flex items-start justify-between" aria-label="光譜路線">
+        <div className="mt-1 flex justify-between text-[10px] text-sand-500"><span>任務端</span><span>情感端</span></div>
+        <ol className="relative mt-1 h-9" aria-label="光譜上的五個位置">
+          <span aria-hidden="true" className="absolute left-0 right-0 top-[5px] h-1 rounded-full bg-gradient-to-r from-cyan-400 via-amber-400 to-rose-400 opacity-50" />
           {STOPS.map((st, i) => {
             const seen = i < current || stage.kind === "final" || stage.kind === "done";
             const on = i === current && !seen;
             return (
-              <li key={st.id} aria-current={on ? "step" : undefined} className="flex flex-1 flex-col items-center gap-1">
-                <span className="relative flex h-4 w-full items-center justify-center">
-                  {i > 0 && <span className="absolute right-1/2 h-0.5 w-full" style={{ background: i <= current || seen ? st.color : "#EADFCB" }} />}
-                  <span className="relative h-3.5 w-3.5 rounded-full border-2" style={{ borderColor: st.color, background: seen || on ? st.color : "#FAF3E7", boxShadow: on ? `0 0 0 4px ${st.color}33` : "none" }} />
-                </span>
-                <span className={`text-[11px] ${on ? "font-semibold text-sand-100" : "text-sand-500"}`}>{st.name}</span>
+              <li key={st.id} aria-current={on ? "step" : undefined} className="absolute top-0 flex -translate-x-1/2 flex-col items-center gap-1" style={{ left: `${st.x}%` }}>
+                <span className="h-3.5 w-3.5 rounded-full border-2" style={{ borderColor: st.color, background: seen || on ? st.color : "#FAF3E7", boxShadow: on ? `0 0 0 4px ${st.color}44` : "none" }} />
+                <span className={`whitespace-nowrap text-[11px] ${on ? "font-semibold text-sand-100" : seen ? "text-sand-300" : "text-sand-500"}`}>{st.name}</span>
               </li>
             );
           })}
@@ -1713,7 +1714,7 @@ function SpectrumChat({ onTheater, onHome }) {
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold text-[#FFF8EC]" style={{ background: st.color }}>{m.stop + 1}</span>
                 <div>
                   <div className="font-display text-xl font-semibold text-sand-50">{st.name}</div>
-                  <div className="text-sm text-sand-400">{st.motto}</div>
+                  <div className="text-sm text-sand-400">{st.side}・{st.motto}</div>
                 </div>
               </div>
             );
