@@ -394,6 +394,234 @@ const SCRIPT = {
   ],
 };
 
+/* 每一幕的下半場：同一幕裡的第二個抉擇點。bridge 依上半場的選擇語氣，接上不同的過場。 */
+const SCRIPT_PART2 = {
+  A: [
+    {
+      focus: "看見對方的付出 vs. 當個等導遊的團員",
+      meta: { when: "旅行第二天 下午", where: "台南的騎樓下" },
+      bridge: { warm: "牛肉湯那個早上，她笑得很開心。到了旅行的第二天下午——", cold: "行程最後是她一個人排完的。到了旅行的第二天下午——", spike: "出發前你們有點僵。到了旅行的第二天下午——" },
+      scene: [
+        { who: "narr", text: "突然下起大雨。她排的景點全是戶外的，整個下午的行程泡湯了。" },
+        { who: "narr", text: "她站在騎樓下滑手機找備案，眉頭皺得很緊。" },
+        { who: "partner", text: "怎麼辦，我排的地方都不能去了……對不起，我應該先查天氣的。" },
+      ],
+      options: [
+        {
+          tone: "cold", tag: "旁觀等待",
+          say: "沒關係啊，你慢慢找，不急，我都可以。",
+          surface: "……嗯，等我一下。",
+          inner: "又是我。連下雨都是我一個人的問題。他站在旁邊滑手機，像一個在等導遊的團員。",
+          review: "你想說的是「我不怪你」，但她聽到的是「這還是你的事」。在她自責的時候，她需要的不是寬容，而是隊友。",
+          d: [-12, -22, -10, 0], vit: -16, quiet: 20, clarity: -12, missed: true,
+        },
+        {
+          tone: "spike", tag: "效率檢討",
+          say: "所以我才說行程不要排太滿。下次記得先看氣象。現在先找個室內的吧，快點，雨越下越大了。",
+          surface: "好，我在找了。",
+          inner: "我排了一個月，他連一句謝謝都沒有，開口第一句是檢討。下次？沒有下次了，我不想再排了。",
+          review: "你在解決問題，而且建議可能都對。但她剛說了對不起，你回她的是一份改善報告。被檢討的隱形勞動，下次就不會再有人做了。",
+          d: [-14, -12, 2, -16], vit: -18, quiet: 22, clarity: 0, missed: true,
+        },
+        {
+          tone: "warm", tag: "接手與感謝",
+          say: "不用對不起，你排了這麼久，辛苦了。換我來，我查一下附近有沒有老戲院或咖啡店。雨天版本搞不好更好玩。",
+          surface: "……真的嗎？那我要喝熱的。",
+          inner: "他說辛苦了，然後他接手了。原來我可以不用一個人撐完整趟旅行。",
+          review: "兩個動作：看見她的付出，然後把擔子接過去。你不需要找到完美的備案，她要的只是在出狀況的時候，身邊有一個人一起想。",
+          d: [14, 26, 14, 8], vit: 14, quiet: -10, clarity: 6, missed: false,
+        },
+      ],
+    },
+    {
+      focus: "她最後一次主動敲門",
+      meta: { when: "幾週後 週日晚餐", where: "餐桌" },
+      bridge: { warm: "那晚的鹹酥雞之後，她的話又多了一點。幾週後的週日——", cold: "那天之後，她的訊息變得更短，也更有禮貌。幾週後的週日——", spike: "那天之後，她不再提工作上的事了。幾週後的週日——" },
+      scene: [
+        { who: "narr", text: "你們難得一起在家吃晚餐。你一邊吃，一邊回主管的訊息。" },
+        { who: "narr", text: "她放下筷子，看了你一會兒。" },
+        { who: "partner", text: "欸，我們是不是很久沒有好好聊天了？" },
+      ],
+      options: [
+        {
+          tone: "cold", tag: "字面回應",
+          say: "有嗎？我們不是每天都有講話？……等我一下，我先回個訊息。",
+          surface: "嗯，沒事，你忙。",
+          inner: "每天講的是「吃了沒」「幾點回來」。這是我最後一次主動提了。",
+          review: "她問的不是事實，是邀請。這句話是安靜離職之前，最容易接、也最不能錯過的一次敲門。你照字面回答了，門就關上了。",
+          d: [-26, -12, 0, -4], vit: -22, quiet: 28, clarity: 0, missed: true,
+        },
+        {
+          tone: "spike", tag: "防衛反擊",
+          say: "你是不是又在不滿什麼？我最近真的很累，可不可以不要現在講這個。",
+          surface: "好，當我沒說。",
+          inner: "我只是想靠近他，卻變成我在找麻煩。以後不說了。",
+          review: "你聽到的是指責，所以你防衛了。但她說的是「我想你」的另一種版本。當靠近被當成找碴，人就會學會不再靠近。",
+          d: [-18, -10, 0, -20], vit: -20, quiet: 26, clarity: 0, missed: true,
+        },
+        {
+          tone: "warm", tag: "放下手機",
+          say: "（把手機蓋起來）……好像是。我最近都在忙，連你在想什麼都不知道。現在可以嗎？我想聽。",
+          surface: "（愣了一下）……現在？好啊。其實我也不知道要從哪裡講起。",
+          inner: "他把手機蓋起來了。就這一個動作，我差點哭出來。",
+          review: "你沒有說什麼漂亮的話，只是把注意力完整地給了她。對一個快要放棄開口的人來說，這比任何承諾都有用。",
+          d: [28, 16, 6, 12], vit: 16, quiet: -14, clarity: 4, missed: false,
+        },
+      ],
+    },
+    {
+      focus: "當她終於說出口：辯護、討好，還是聽完",
+      meta: { when: "那之後", where: "客廳" },
+      bridge: { warm: "她說了「明天晚上」。隔天，她真的坐了下來——", cold: "你說完「都可以」之後，房間安靜了很久。最後是她先開口——", spike: "那一晚你們都沒睡。天快亮的時候，她終於開口——" },
+      scene: [
+        { who: "partner", text: "我不是突然決定的。我講過很多次，只是你沒有聽到。" },
+        { who: "partner", text: "跟你在一起，我常常覺得只有我一個人。" },
+        { who: "narr", text: "你的胸口很悶。你想起這兩年你做過的所有事。" },
+      ],
+      options: [
+        {
+          tone: "spike", tag: "列出功勞",
+          say: "我哪裡沒聽？我薪水都拿回家、從來沒兇過你、你要什麼我都說好，這樣還不夠嗎？你知道多少人羨慕你嗎？",
+          surface: "……對，你很好。是我的問題。",
+          inner: "我說我很孤單，他回我一張成績單。夠了，我不想再解釋了。",
+          review: "你說的每一項都是真的，也都是愛。但她講的是感受，你答的是功勞。這一刻成了這段關係的最後一幕，也會是她記得最清楚的一幕。",
+          d: [-16, -6, -8, -30], vit: -28, quiet: 32, clarity: -4, missed: true, overwrite: true,
+        },
+        {
+          tone: "cold", tag: "全面討好",
+          say: "好，我改，我全部都改。你說，你要我怎樣我就怎樣，你不要走就好。",
+          surface: "……你不用這樣。",
+          inner: "到了最後一刻，他還是在問我「要他怎樣」。我要的不是一個聽話的人，我要的是一個人。",
+          review: "你的害怕很真實。但「你要我怎樣都可以」把所有的決定又交回給她，這正是她累了兩年的原因。挽回需要的不是更多配合，而是你自己站出來。",
+          d: [-8, -8, -30, -12], vit: -20, quiet: 24, clarity: -36, missed: true,
+        },
+        {
+          tone: "warm", tag: "聽完，不辯解",
+          say: "……我想我真的沒有聽到。聽你這樣說我很難受，但我想聽完。你說的「只有你一個人」，是從什麼時候開始的？",
+          surface: "（沉默很久）……台南那次吧。",
+          inner: "他沒有辯解。他問了「什麼時候開始」。如果兩年前他就這樣問……不，至少現在他問了。",
+          review: "忍住辯解是很難的事，尤其當你真的付出了很多。你選擇先聽完，這讓她第一次覺得那些話有地方可以去。",
+          d: [20, 10, 20, 30], vit: 18, quiet: -16, clarity: 8, missed: false,
+        },
+      ],
+    },
+  ],
+  B: [
+    {
+      focus: "一個人扛 vs. 開口請對方接手",
+      meta: { when: "旅行第二天 下午", where: "台南的騎樓下" },
+      bridge: { warm: "那二十分鐘，你們真的一起選了民宿。到了旅行的第二天下午——", cold: "行程最後是你一個人排完的。到了旅行的第二天下午——", spike: "那一晚你們有點僵。到了旅行的第二天下午——" },
+      scene: [
+        { who: "narr", text: "突然下起大雨。你排的景點全是戶外的，整個下午的行程泡湯了。" },
+        { who: "you", text: "怎麼辦，我排的地方都不能去了……對不起，我應該先查天氣的。" },
+        { who: "partner", text: "沒關係啊，你慢慢找，不急，我都可以。" },
+        { who: "narr", text: "他說完，低頭繼續滑手機。" },
+      ],
+      options: [
+        {
+          tone: "cold", tag: "自己扛完",
+          say: "好，等我一下，我再找找。",
+          surface: "OK，不急。",
+          inner: "她在處理了，我不要吵她。我表現得不在意，她應該比較沒有壓力吧。",
+          review: "他把安靜當成體貼，完全不知道你希望他接手。你又一次獨自解決了問題，而他又一次確認了：交給你就沒問題。",
+          d: [-12, -20, -18, -2], vit: -16, quiet: 22, clarity: -22, missed: true,
+        },
+        {
+          tone: "spike", tag: "累積的爆發",
+          say: "你可不可以不要每次都「都可以」？你就不能幫忙想一下嗎？",
+          surface: "我……我是怕我找的你不喜歡啊。",
+          inner: "我開口也錯，不開口也錯。她到底要我怎樣？",
+          review: "你的疲憊是真的。但這句話他只收到「你又做錯了」，收不到「我需要你」。他下一次會更不敢出手。",
+          d: [-8, -8, 4, -20], vit: -14, quiet: 16, clarity: 0, missed: true,
+        },
+        {
+          tone: "warm", tag: "明確地請求",
+          say: "我現在有點慌，也有點自責。你可以幫我嗎？你負責找一間可以躲雨的咖啡店，我來看下午怎麼調。",
+          surface: "好，交給我。……欸，這間有老唱片，你一定喜歡。",
+          inner: "原來她需要我。她給了我一件明確的事，我做得到。而且我好像還滿會找的？",
+          review: "你說了感受，也給了一件他做得到的事。很多人不是不願意幫，是不知道從哪裡下手。他第一次發現，自己在這趟旅行裡是有用的。",
+          d: [16, 26, 14, 8], vit: 14, quiet: -10, clarity: 6, missed: false,
+        },
+      ],
+    },
+    {
+      focus: "那句在心裡轉了很久的話",
+      meta: { when: "幾週後 週日晚餐", where: "餐桌" },
+      bridge: { warm: "那通十分鐘的電話之後，你覺得輕了一點。幾週後的週日——", cold: "那個笑臉貼圖之後，你們的對話越來越短。幾週後的週日——", spike: "那次之後，他問你事情變得小心翼翼。幾週後的週日——" },
+      scene: [
+        { who: "narr", text: "你們難得一起在家吃晚餐。他一邊吃，一邊回主管的訊息。" },
+        { who: "narr", text: "你看著他。有一句話在你心裡轉了很久：我們是不是很久沒有好好聊天了。" },
+      ],
+      options: [
+        {
+          tone: "cold", tag: "把話吞回去",
+          say: "（你什麼都沒說，把飯吃完，收了碗。）",
+          surface: "欸，你吃好快。我回完這個就好喔。",
+          inner: "今天很平靜，真好。",
+          review: "你決定不說了，因為說了也沒用。他那邊看到的是一頓安靜、和平的晚餐。你們之間的距離，從他的角度完全看不見。",
+          d: [-18, -14, -22, -4], vit: -22, quiet: 28, clarity: -26, missed: true,
+        },
+        {
+          tone: "spike", tag: "酸一句",
+          say: "你乾脆跟手機交往好了。",
+          surface: "我在處理工作欸，不然誰賺錢？",
+          inner: "又來了。我工作也是為了我們，她為什麼不能體諒？",
+          review: "這句話底下是「我想你」，但他聽到的是「你做錯了」。他開始為工作辯護，你們吵的已經不是你真正在意的事了。",
+          d: [-8, -10, 4, -22], vit: -16, quiet: 18, clarity: 0, missed: true,
+        },
+        {
+          tone: "warm", tag: "把想念說出來",
+          say: "我想跟你說一件事，不是抱怨。我覺得我們很久沒有好好聊天了，我很想你。吃完飯，可以把手機放旁邊半小時嗎？",
+          surface: "（抬起頭）……有這麼久了嗎？好，我回完這一則就收起來。",
+          inner: "她說「我很想你」。我們明明住在一起……我是不是真的漏掉什麼了。",
+          review: "你先聲明這不是抱怨，再說出想念，最後給了一個半小時的具體請求。他沒有東西需要防衛，只剩下一件做得到的事。",
+          d: [24, 18, 16, 12], vit: 16, quiet: -14, clarity: 8, missed: false,
+        },
+      ],
+    },
+    {
+      focus: "當他拿出成績單：敷衍、反擊，還是說出真正要的",
+      meta: { when: "那之後", where: "客廳" },
+      bridge: { warm: "二十分鐘後你走進客廳，他真的在等。他一開口，還是很慌——", cold: "沉默了很久之後，他又開口了——", spike: "吵到兩個人都累了。他的聲音低了下來——" },
+      scene: [
+        { who: "partner", text: "你說啊，我到底哪裡做不好？" },
+        { who: "partner", text: "我薪水都拿回家、從來沒兇過你、你要什麼我都說好。這樣還不夠嗎？" },
+        { who: "narr", text: "他的眼眶是紅的。你知道他說的每一件都是真的。" },
+      ],
+      options: [
+        {
+          tone: "cold", tag: "客氣帶過",
+          say: "你很好，真的。是我的問題。",
+          surface: "那為什麼……我不懂。",
+          inner: "她說我很好，卻還是要走。我永遠不會知道原因了。",
+          review: "你不想再傷他，所以選了最客氣的說法。但「你很好」沒有給他任何可以理解的東西。他會帶著這個問號很多年。",
+          d: [-14, -8, -18, -14], vit: -22, quiet: 26, clarity: -22, missed: true,
+        },
+        {
+          tone: "spike", tag: "否定全部",
+          say: "你看，你到現在還在講你自己做了多少。你從頭到尾都沒有在聽我講話！",
+          surface: "我沒在聽？那你這兩年又講了什麼！",
+          inner: "我把我會的全都給了，她說那些都不算。",
+          review: "你指出的問題是對的，但「從頭到尾」把他兩年的付出一筆勾銷。兩個人都帶著「我的努力不被承認」離開，這會是你們共同的最後一幕。",
+          d: [-6, -6, 4, -30], vit: -26, quiet: 28, clarity: 0, missed: true, overwrite: true,
+        },
+        {
+          tone: "warm", tag: "先承認，再說真話",
+          say: "你做的那些我都知道，也很謝謝你。但我要的不是你「說好」，是你「在」。我常常覺得這段關係裡只有我一個人。我想把這幾次的事講給你聽，你可以先聽完嗎？",
+          surface: "……好，我聽。（坐下來）從哪一次開始？",
+          inner: "「不是說好，是在」……我好像第一次聽懂她要什麼。我一直以為我都在。",
+          review: "你先承認了他的付出，他才有餘裕聽見後面的話。「不是說好，是在」把兩年來說不清楚的感覺，濃縮成一句他聽得懂的話。",
+          d: [18, 12, 26, 30], vit: 18, quiet: -16, clarity: 10, missed: false,
+        },
+      ],
+    },
+  ],
+};
+
+["A", "B"].forEach((k) => {
+  SCRIPT[k] = SCRIPT[k].flatMap((a, i) => [{ ...a, part: "上" }, { ...SCRIPT_PART2[k][i], act: a.act, title: a.title, part: "下" }]);
+});
+
 /* ---------------------------- 資料：報告與翻譯機 --------------------------- */
 
 const DIMS = [
@@ -496,6 +724,7 @@ const PRACTICES = {
 /* -------------------------------- 計分引擎 -------------------------------- */
 
 const clamp = (n, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, n));
+const BEAT_WEIGHT = 0.55; // 每幕有上下兩個抉擇點，單次影響減半左右
 const BASE = { dims: [50, 50, 50, 50], vit: 62, quiet: 20, clarity: 100 };
 
 function computeState(perspective, choices) {
@@ -503,10 +732,10 @@ function computeState(perspective, choices) {
   const s = { dims: [...BASE.dims], vit: BASE.vit, quiet: BASE.quiet, clarity: BASE.clarity, tone: null };
   choices.forEach((optIdx, actIdx) => {
     const o = acts[actIdx].options[optIdx];
-    s.dims = s.dims.map((v, i) => clamp(v + o.d[i]));
-    s.vit = clamp(s.vit + o.vit);
-    s.quiet = clamp(s.quiet + o.quiet);
-    s.clarity = clamp(s.clarity + o.clarity, 22, 100);
+    s.dims = s.dims.map((v, i) => clamp(v + o.d[i] * BEAT_WEIGHT));
+    s.vit = clamp(s.vit + o.vit * BEAT_WEIGHT);
+    s.quiet = clamp(s.quiet + o.quiet * BEAT_WEIGHT);
+    s.clarity = clamp(s.clarity + o.clarity * BEAT_WEIGHT, 22, 100);
     s.tone = o.tone;
   });
   const avg = s.dims.reduce((a, b) => a + b, 0) / 4;
@@ -874,8 +1103,9 @@ function Landing({ onStart, onChat }) {
         </p>
         <div className="mx-auto mt-8 h-1.5 max-w-md rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-rose-400 opacity-80" />
         <div className="mx-auto mt-2 flex max-w-md justify-between text-xs text-sand-500"><span>理性任務</span><span>情感共鳴</span></div>
-        <PrimaryButton onClick={onChat} className="mt-9">開始一段對話，走一趟光譜</PrimaryButton>
-        <p className="mt-3 text-xs text-sand-500">一問一答，大約十分鐘。沒有測驗，沒有分數，只有五個值得被理解的位置。</p>
+        <PrimaryButton onClick={onStart} className="mt-9">進入雙視角互動劇場</PrimaryButton>
+        <div><button type="button" onClick={onChat} className="mt-4 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">或先用一段對話認識光譜</button></div>
+        <p className="mt-3 text-xs text-sand-500">三幕、六個抉擇，每人約十分鐘。你的每個選擇，都會改變下一段的開場。</p>
       </header>
 
       <section className="mt-24">
@@ -1014,7 +1244,8 @@ function Theater({ perspective, xray, setXray, choices, shownIdx, answered, onCh
   const state = useMemo(() => computeState(perspective, choices), [perspective, choices]);
   const partner = CAST[PERSPECTIVES[perspective].partner];
   const isLast = shownIdx === acts.length - 1;
-  const meta = ACT_META[shownIdx];
+  const meta = { ...ACT_META[Math.floor(shownIdx / 2)], ...(act.meta || {}) };
+  const scene = act.bridge && shownIdx > 0 ? [{ who: "narr", text: act.bridge[acts[shownIdx - 1].options[choices[shownIdx - 1]].tone] }, ...act.scene] : act.scene;
   const ActIcon = meta.icon;
 
   return (
@@ -1022,9 +1253,8 @@ function Theater({ perspective, xray, setXray, choices, shownIdx, answered, onCh
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <ol className="flex items-center gap-2" aria-label="劇幕進度">
           {acts.map((a, i) => (
-            <li key={a.act} aria-current={i === shownIdx ? "step" : undefined} className={`flex items-center gap-2 text-xs ${i === shownIdx ? "text-sand-100" : i < shownIdx ? "text-sand-400" : "text-sand-600"}`}>
+            <li key={i} aria-current={i === shownIdx ? "step" : undefined} className={`flex items-center gap-2 text-xs ${i === shownIdx ? "text-sand-100" : i < shownIdx ? "text-sand-400" : "text-sand-600"}`}>
               <span className={`flex h-6 w-6 items-center justify-center rounded-full border text-[11px] ${i === shownIdx ? "border-amber-300 text-amber-300" : i < shownIdx ? "border-sand-500 bg-sand-700" : "border-sand-700"}`}>{i < shownIdx ? <Check className="h-3 w-3" /> : i + 1}</span>
-              <span className="hidden sm:inline">{a.act}</span>
               {i < acts.length - 1 && <span className="h-px w-4 bg-sand-700 sm:w-8" />}
             </li>
           ))}
@@ -1041,7 +1271,7 @@ function Theater({ perspective, xray, setXray, choices, shownIdx, answered, onCh
         <div className="flex items-start gap-4">
           <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber-400/20 text-amber-300"><ActIcon className="h-7 w-7" /></span>
           <div>
-            <div className="text-xs tracking-[0.2em] text-amber-300">{act.act}</div>
+            <div className="text-xs tracking-[0.2em] text-amber-300">{act.act}・{act.part}</div>
             <h2 className="font-display mt-0.5 text-2xl font-semibold text-sand-50">《{act.title}》</h2>
             <div className="mt-2 flex flex-wrap gap-1.5 text-xs text-sand-400">
               <span className="rounded-full bg-sand-800/70 px-2.5 py-0.5">{meta.when}</span>
@@ -1052,11 +1282,11 @@ function Theater({ perspective, xray, setXray, choices, shownIdx, answered, onCh
         </div>
 
         <div className="mt-5 space-y-3">
-          {act.scene.map((l, i) => <Bubble key={i} who={l.who} text={l.text} perspective={perspective} delay={answered ? 0 : i * 0.35} />)}
+          {scene.map((l, i) => <Bubble key={i} who={l.who} text={l.text} perspective={perspective} delay={answered ? 0 : i * 0.35} />)}
         </div>
 
         {!answered && (
-          <div className="fade-up mt-7" style={{ animationDelay: `${act.scene.length * 0.35}s` }}>
+          <div className="fade-up mt-7" style={{ animationDelay: `${scene.length * 0.35}s` }}>
             <div className="mb-3 flex items-center gap-2 text-sm font-medium text-sand-300"><MessageCircle className="h-4 w-4 text-cyan-300" />你會怎麼回？<span className="text-xs font-normal text-sand-500">沒有標準答案，選你最可能說出口的那一句。</span></div>
             <div className="space-y-3">
               {act.options.map((o, i) => (
@@ -1097,7 +1327,7 @@ function Theater({ perspective, xray, setXray, choices, shownIdx, answered, onCh
             )}
 
             <div className="fade-up pt-4 text-right" style={{ animationDelay: "1.5s" }}>
-              <PrimaryButton onClick={onNext}>{isLast ? "查看診斷報告" : `進入${acts[shownIdx + 1].act}`}</PrimaryButton>
+              <PrimaryButton onClick={onNext}>{isLast ? "查看診斷報告" : acts[shownIdx + 1].act === act.act ? "這一幕還沒結束" : `進入${acts[shownIdx + 1].act}`}</PrimaryButton>
             </div>
           </div>
         )}
@@ -1283,7 +1513,7 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
           </div>
           <p className="mt-3 text-sm leading-relaxed text-sand-300">{verdict.text}</p>
           <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-            <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{missedCount}／3</div><div className="text-sand-500">漏接的訊號</div></div>
+            <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{missedCount}／{acts.length}</div><div className="text-sand-500">漏接的訊號</div></div>
             <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{Math.round(state.quiet)}%</div><div className="text-sand-500">終焉沙漏</div></div>
             <div className="rounded-lg bg-sand-950/70 p-2"><div className="text-lg font-semibold text-sand-100">{state.vit <= 10 ? "死線" : Math.round(state.vit)}</div><div className="text-sand-500">關係生命力</div></div>
           </div>
@@ -1310,9 +1540,9 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
             const o = picked[i];
             const best = a.options.find((x) => x.tone === "warm");
             return (
-              <li key={a.act} className={`rounded-2xl border bg-sand-900/60 p-5 sm:p-6 ${TONE_STYLE[o.tone].border}`}>
+              <li key={i} className={`rounded-2xl border bg-sand-900/60 p-5 sm:p-6 ${TONE_STYLE[o.tone].border}`}>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs tracking-widest text-sand-500">{a.act}</span>
+                  <span className="text-xs tracking-widest text-sand-500">{a.act}・{a.part}</span>
                   <h3 className="font-display text-lg font-semibold text-sand-50">《{a.title}》</h3>
                   <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${TONE_STYLE[o.tone].chip}`}>{o.tag}</span>
                   {o.missed ? <span className="rounded-full bg-rose-500/15 px-2 py-0.5 text-xs font-medium text-rose-300">訊號漏接</span> : <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-300">訊號接住</span>}
@@ -1440,7 +1670,7 @@ function PairReport({ results, xray, onRestart, onHome }) {
                   <div className={`text-xs font-medium ${c.text}`}>走{c.name}視角的人</div>
                   <div className="font-display mt-1 text-xl font-semibold text-sand-50">{v.title}</div>
                   <p className="mt-2 text-sm leading-relaxed text-sand-300">{v.text}</p>
-                  <div className="mt-3 text-xs text-sand-500">終焉風險 {st[k].risk}／100・漏接 {SCRIPT[k].filter((a, i) => a.options[results[k][i]].missed).length}／3</div>
+                  <div className="mt-3 text-xs text-sand-500">終焉風險 {st[k].risk}／100・漏接 {SCRIPT[k].filter((a, i) => a.options[results[k][i]].missed).length}／{SCRIPT[k].length}</div>
                 </div>
               );
             })}
@@ -1459,9 +1689,9 @@ function PairReport({ results, xray, onRestart, onHome }) {
           <section className="mt-14">
             <SectionTitle kicker="SAME NIGHT, TWO STORIES" title="同一個晚上，兩種經歷">每一幕，左邊是走柏翰視角的人說的話，右邊是走語安視角的人說的話。底下是對方當時沒說出口的心聲。</SectionTitle>
             <ol className="space-y-5">
-              {[0, 1, 2].map((i) => (
+              {SCRIPT.A.map((_, i) => (
                 <li key={i} className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-5">
-                  <div className="text-xs tracking-widest text-sand-500">{SCRIPT.A[i].act}</div>
+                  <div className="text-xs tracking-widest text-sand-500">{SCRIPT.A[i].act}・{SCRIPT.A[i].part}</div>
                   <h3 className="font-display text-lg font-semibold text-sand-50">《{SCRIPT.A[i].title}》</h3>
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     {["A", "B"].map((k) => {
