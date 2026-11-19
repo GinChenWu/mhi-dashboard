@@ -49,6 +49,7 @@ const GLOBAL_CSS = `
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .marquee { animation: marquee 46s linear infinite; }
 .marquee-mask { -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent); }
+.font-body { font-family: "Noto Serif TC", "Songti TC", "PMingLiU", serif; }
 .font-display { font-family: "LXGW WenKai TC", "Noto Serif TC", "Songti TC", "PMingLiU", "Source Han Serif TC", serif; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .fade-up { animation: fadeUp .55s ease both; }
@@ -1421,128 +1422,207 @@ function SaidMarquee() {
     </div>
   );
   return (
-    <div className="mt-20 sm:mt-28">
-      <div className="text-center text-[11px] tracking-[0.35em] text-sand-500">那些我們都說過的話</div>
-      <div className="marquee-mask mt-5 overflow-hidden">
-        <div className="marquee flex w-max">{row(false)}{row(true)}</div>
+    <div className="marquee-mask overflow-hidden">
+      <div className="marquee flex w-max">{row(false)}{row(true)}</div>
+    </div>
+  );
+}
+
+const WRAP = "mx-auto max-w-5xl px-4 sm:px-6";
+const TINT = "#F3E6D0";
+const INK = "#2B2019";
+
+/* 段落之間的波浪邊，讓不同底色的區塊自然銜接 */
+function Wave({ fill, flip }) {
+  return (
+    <svg viewBox="0 0 1440 70" preserveAspectRatio="none" className={`-mb-px block h-8 w-full sm:h-14 ${flip ? "-mt-px mb-0 rotate-180" : ""}`} aria-hidden="true">
+      <path d="M0,40 C 240,92 480,0 720,30 S 1200,82 1440,24 V70 H0 Z" fill={fill} />
+    </svg>
+  );
+}
+
+/* 首頁每一段的標題：置中，背後襯一個很淡的大字 */
+function SectionHead({ glyph, kicker, title, children, dark }) {
+  return (
+    <div className="relative">
+      <span aria-hidden="true" className={`font-display pointer-events-none absolute -top-12 right-0 select-none text-[8rem] leading-none sm:-top-20 sm:text-[14rem] ${dark ? "text-white/5" : "text-sand-800/60"}`}>{glyph}</span>
+      <div className="relative mx-auto mb-10 max-w-2xl text-center sm:mb-14">
+        <div className="font-sans text-[11px] font-medium tracking-[0.35em] text-sand-500">{kicker}</div>
+        <h2 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-[2.75rem] sm:leading-tight" style={{ textWrap: "balance" }}>{title}</h2>
+        <div className="mt-4"><Ornament /></div>
+        {children && <p className="mt-5 text-[15px] leading-loose text-sand-400 sm:text-base sm:leading-loose">{children}</p>}
       </div>
     </div>
   );
 }
 
-function ChatArt() {
-  return (
-    <svg viewBox="0 0 320 130" className="w-full" aria-hidden="true">
-      <circle cx="160" cy="64" r="58" fill="#F5B25E" opacity=".22" />
-      <rect x="30" y="18" width="150" height="34" rx="17" fill="#FFFBF4" stroke="#D9C8AD" />
-      <path d="M48 35 H140" stroke="#B9A68A" strokeWidth="3" strokeLinecap="round" />
-      <rect x="150" y="58" width="140" height="30" rx="15" fill="#B85C1C" opacity=".9" />
-      <path d="M170 73 H262" stroke="#FFF8EC" strokeWidth="3" strokeLinecap="round" opacity=".85" />
-      <rect x="30" y="94" width="118" height="26" rx="13" fill="#FFFBF4" stroke="#D9C8AD" />
-      <path d="M48 107 H118" stroke="#B9A68A" strokeWidth="3" strokeLinecap="round" />
-      <circle cx="14" cy="107" r="10" fill="url(#heroBand)" />
-      <path d="M200 110 H300" stroke="url(#heroBand)" strokeWidth="3" strokeLinecap="round" opacity=".8" />
-      {[206, 230, 250, 272, 294].map((x, i) => <circle key={x} cx={x} cy="110" r={i === 2 ? 5 : 3.5} fill="#FFFBF4" stroke={["#3B8C8C", "#6E9FB0", "#E8973A", "#D9414F", "#C2697B"][i]} strokeWidth="2" />)}
-    </svg>
-  );
-}
+const STEPS = [
+  { n: "一", title: "聽一句話", text: "從一個很日常的場景開始。有人開口說了一句話，你選你最可能的回應。" },
+  { n: "二", title: "走過五種回應", text: "同一句話，沿著光譜看五種人怎麼接：他心裡在想什麼，對方又聽到了什麼。" },
+  { n: "三", title: "帶走一張小卡", text: "最後留下一張屬於你的小卡：你站在哪裡，下一次可以多做的一件小事。" },
+];
 
-function TheaterArt() {
+/* 對話體驗的示意：一支手機裡的小譯 */
+function PhoneMock() {
   return (
-    <svg viewBox="0 0 320 130" className="w-full" aria-hidden="true">
-      <defs><linearGradient id="spot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F5B25E" stopOpacity=".55" /><stop offset="1" stopColor="#F5B25E" stopOpacity="0" /></linearGradient></defs>
-      <path d="M160 0 L236 118 H84 Z" fill="url(#spot)" />
-      <path d="M0 0 H70 C 62 40, 40 78, 0 96 Z" fill="#3B8C8C" opacity=".28" />
-      <path d="M0 0 H40 C 36 34, 22 60, 0 74 Z" fill="#3B8C8C" opacity=".3" />
-      <path d="M320 0 H250 C 258 40, 280 78, 320 96 Z" fill="#D9596A" opacity=".26" />
-      <path d="M320 0 H280 C 284 34, 298 60, 320 74 Z" fill="#D9596A" opacity=".3" />
-      <ellipse cx="160" cy="118" rx="96" ry="8" fill="#33291F" opacity=".08" />
-      {[[128, "url(#figL)"], [192, "url(#figR)"]].map(([cx, fill]) => (
-        <g key={cx}><circle cx={cx} cy="70" r="11" fill={fill} /><path d={`M ${cx - 19},118 Q ${cx - 19},86 ${cx},86 Q ${cx + 19},86 ${cx + 19},118 Z`} fill={fill} /></g>
-      ))}
-      {[140, 160, 180].map((x, i) => <circle key={x} cx={x} cy="20" r="4" fill={i === 0 ? "#E8973A" : "#FFFBF4"} stroke="#E8973A" strokeWidth="1.5" />)}
-    </svg>
-  );
-}
-
-/* 首頁的每一段：標題置中，背後襯一個很淡的大字 */
-function LandingSection({ glyph, kicker, title, intro, children }) {
-  return (
-    <section className="relative mt-24 sm:mt-36">
-      <span aria-hidden="true" className="font-display pointer-events-none absolute -top-14 right-0 select-none text-[9rem] leading-none text-sand-800/60 sm:-top-20 sm:text-[14rem]">{glyph}</span>
-      <div className="relative">
-        <LandingHeading kicker={kicker} title={title}>{intro}</LandingHeading>
-        {children}
+    <div className="mx-auto w-[16.5rem] rounded-[2.6rem] border-[7px] bg-sand-950 p-3 shadow-[0_40px_70px_-35px_rgba(60,35,10,.7)]" style={{ borderColor: "#3A2C22" }} aria-hidden="true">
+      <div className="mx-auto mb-3 h-1.5 w-16 rounded-full" style={{ background: "#3A2C22", opacity: 0.6 }} />
+      <div className="font-sans space-y-2 text-[11px] leading-snug">
+        <div className="rounded-2xl border border-sand-800 bg-sand-900 px-3 pb-1 pt-2"><MiniSpectrum active="outsource" /></div>
+        <div className="flex items-end gap-1.5">
+          <span className="font-display flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-amber-400 text-[9px] font-bold text-[#FFF8EC]">譯</span>
+          <div className="rounded-2xl rounded-bl-sm border border-sand-800 bg-sand-900 px-3 py-1.5 text-sand-100">嗨，我是小譯。先來看一個場景。</div>
+        </div>
+        <div className="ml-6 rounded-2xl border border-sand-700 bg-sand-800/60 px-3 py-2">
+          <div className="text-[9px] text-sand-500">有人開口說</div>
+          <div className="font-display text-[13px] text-sand-50">「連假快到了，我們來排一下行程好不好？」</div>
+        </div>
+        <div className="flex justify-end"><div className="rounded-2xl rounded-br-sm bg-gradient-to-r from-[#A8432F] to-[#B85C1C] px-3 py-1.5 text-[#FFF8EC]">都可以啊，看你，你喜歡就好。</div></div>
+        <div className="flex items-end gap-1.5">
+          <span className="h-5 w-5 shrink-0" />
+          <div className="rounded-2xl rounded-bl-sm border border-sand-800 bg-sand-900 px-3 py-1.5 text-sand-100">好，記下來了。我們一站一站看。</div>
+        </div>
+        <div className="ml-6 rounded-2xl border border-dashed border-amber-400/60 bg-amber-400/10 px-3 py-2">
+          <div className="text-[9px] font-medium text-amber-300">他心裡的聲音</div>
+          <div className="font-display text-[12px] leading-snug text-sand-100">我沒有特別的想法，你開心最重要。</div>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }
 
-function Landing({ onStart, onChat }) {
-  const ways = [
-    { key: "chat", art: ChatArt, title: "跟小譯聊一段", text: "小譯會用一個日常場景，帶你一站一站看五種回應。每一站都會告訴你：他心裡在想什麼、對方聽到什麼、兩邊可以怎麼做。", meta: ["約 10 分鐘", "三個隨機場景", "一問一答"], cta: "開始對話", run: onChat, tint: "border-amber-400/50 from-amber-400/15" },
-    { key: "theater", art: TheaterArt, title: "親自演一遍", text: "走進一段感情的三幕故事，選你會說的話，看看對方表面怎麼回、心裡其實怎麼想。可以一個人，也可以兩個人輪流。", meta: ["約 15 分鐘", "三幕六個抉擇", "可雙人對照"], cta: "走進劇場", run: onStart, tint: "border-rose-400/40 from-rose-400/10" },
-  ];
-  const vertical = { writingMode: "vertical-rl" };
+/* 劇場體驗的示意：一幕戲的儀表板與選項 */
+function StageMock() {
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-16 pt-2 sm:px-6 sm:pt-6">
-      <header className="fade-up text-center">
-        <div className="mx-auto grid max-w-3xl grid-cols-[auto_1fr_auto] items-center gap-2 sm:gap-6">
-          <p className="font-display text-base tracking-[0.35em] text-sand-300 sm:text-xl" style={vertical}>話一出口卻變了樣</p>
-          <HeroArt />
-          <p className="font-display text-base tracking-[0.35em] text-sand-100 sm:text-xl" style={vertical}>明明很在乎</p>
+    <div className="mx-auto w-full max-w-sm rounded-[2rem] border border-sand-800 bg-sand-900 p-5 shadow-[0_40px_70px_-35px_rgba(60,35,10,.6)]" aria-hidden="true">
+      <div className="font-sans text-[10px] tracking-[0.2em] text-amber-300">第二幕・上</div>
+      <div className="font-display mt-0.5 text-lg font-semibold text-sand-50">《暴風雨前的客氣與平靜》</div>
+      <svg viewBox="0 0 320 96" className="mt-3 w-full">
+        <line x1="70" y1="50" x2="250" y2="50" stroke="#EADFCB" strokeDasharray="3 6" />
+        {[[44, "url(#figL)"], [276, "url(#figR)"]].map(([cx, fill]) => (
+          <g key={cx}><circle cx={cx} cy="34" r="12" fill={fill} /><path d={`M ${cx - 22},86 Q ${cx - 22},52 ${cx},52 Q ${cx + 22},52 ${cx + 22},86 Z`} fill={fill} /></g>
+        ))}
+        {[92, 128, 160, 196, 228].map((x, i) => <circle key={x} cx={x} cy={50 + [-6, 4, -3, 6, -2][i]} r="4" fill="#E8973A" opacity={0.45 + i * 0.12} />)}
+      </svg>
+      <svg viewBox="0 0 320 34" className="mt-1 w-full"><polyline points="0,17 40,17 46,14 52,17 60,17 64,20 70,3 76,29 81,17 110,17 118,12 126,17 150,17 156,14 162,17 170,17 174,20 180,3 186,29 191,17 220,17 228,12 236,17 260,17 266,14 272,17 280,17 284,20 290,3 296,29 301,17 320,17" fill="none" stroke="#2F7A54" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+      <div className="font-sans mt-3 space-y-2 text-[12px] leading-snug">
+        <div className="rounded-xl border border-sand-700 bg-sand-950/70 px-3 py-2 text-sand-400">「好喔，那就好。你真的很獨立……」</div>
+        <div className="rounded-xl border border-amber-400 bg-amber-400/15 px-3 py-2 text-sand-100">「『處理好了』跟『沒事』好像不太一樣……」</div>
+        <div className="rounded-xl border border-dashed border-amber-400/60 bg-amber-400/10 px-3 py-2">
+          <div className="text-[10px] font-medium text-amber-300">語安的內心 OS</div>
+          <div className="font-display text-[13px] text-sand-100">他發現了。我以為他永遠不會發現。</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Landing({ onStart, onChat, go }) {
+  const vertical = { writingMode: "vertical-rl" };
+  const ways = [
+    { key: "chat", mock: PhoneMock, kicker: "CONVERSATION", title: "跟小譯聊一段", text: "小譯會用一個日常場景，帶你一站一站看五種回應。每一站都會告訴你：他心裡在想什麼、對方聽到什麼、兩邊可以怎麼做。", points: ["三個隨機場景，每次進來不一樣", "一問一答，不用打字", "結束時有一張可以帶走的小卡"], time: "約 10 分鐘", cta: "開始對話", run: onChat },
+    { key: "theater", mock: StageMock, kicker: "THEATER", title: "親自演一遍", text: "走進一段感情的三幕故事，選你會說的話，看看對方表面怎麼回、心裡其實怎麼想。你的每個選擇，都會改變下一段的開場。", points: ["兩個視角，可以換邊再演一次", "三幕六個抉擇，選項每次順序不同", "可以兩個人輪流，最後一起看對照"], time: "約 15 分鐘", cta: "走進劇場", run: onStart },
+  ];
+  const ghost = "inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400";
+  return (
+    <div className="font-body">
+      {/* ── 主視覺 ── */}
+      <header className={`${WRAP} fade-up pb-4 pt-4 text-center sm:pt-8`}>
+        <div className="mx-auto max-w-4xl rounded-[2.25rem] border border-sand-700/70 bg-gradient-to-b from-[#FFFAF0] to-[#FBEEDB] p-2 shadow-[0_40px_90px_-45px_rgba(120,72,20,.6)] sm:rounded-[2.75rem] sm:p-3">
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-sand-800 bg-gradient-to-b from-[#FFF6E6] via-[#FDF1DE] to-[#F7E6CC] sm:rounded-[2.25rem]">
+            <HeroArt />
+            <p className="font-display absolute right-3 top-4 text-sm tracking-[0.4em] text-sand-100 sm:right-7 sm:top-8 sm:text-xl" style={vertical}>明明很在乎</p>
+            <p className="font-display absolute left-3 top-4 text-sm tracking-[0.4em] text-sand-300 sm:left-7 sm:top-8 sm:text-xl" style={vertical}>話一出口卻變了樣</p>
+            <span aria-hidden="true" className="font-display absolute bottom-3 right-3 flex h-8 w-8 -rotate-6 items-center justify-center rounded-md bg-[#B8402F] text-base text-[#FFF3E2] shadow-warm ring-1 ring-inset ring-[#FFF3E2]/50 sm:bottom-6 sm:right-7 sm:h-12 sm:w-12 sm:text-2xl">懂</span>
+          </div>
         </div>
 
-        <div className="mt-6 text-[11px] tracking-[0.4em] text-sand-500">THE COMMUNICATION SPECTRUM</div>
-        <div className="mt-4 inline-flex items-start gap-3">
-          <h1 className="font-display text-6xl font-semibold tracking-[0.14em] text-sand-50 sm:text-8xl">溝通光譜</h1>
-          <span aria-hidden="true" className="font-display mt-2 flex h-10 w-10 -rotate-6 items-center justify-center rounded-md bg-[#B8402F] text-xl text-[#FFF3E2] shadow-warm ring-1 ring-inset ring-[#FFF3E2]/50 sm:h-12 sm:w-12 sm:text-2xl">懂</span>
-        </div>
+        <div className="font-sans mt-9 text-[11px] tracking-[0.4em] text-sand-500 sm:mt-12">THE COMMUNICATION SPECTRUM</div>
+        <h1 className="font-display mt-4 text-6xl font-semibold tracking-[0.14em] text-sand-50 sm:text-8xl">溝通光譜</h1>
         <svg viewBox="0 0 220 14" className="mx-auto mt-3 h-3.5 w-56" aria-hidden="true"><path d="M4 9 C 40 2, 70 13, 110 7 S 180 3, 216 8" fill="none" stroke="url(#heroBand)" strokeWidth="3" strokeLinecap="round" opacity=".8" /></svg>
-        <p className="font-display mt-6 text-lg tracking-[0.2em] text-sand-300 sm:text-xl">關於我們怎麼說話，又怎麼被聽見</p>
-        <p className="mx-auto mt-6 max-w-lg text-[15px] leading-loose text-sand-400">你是不是也遇過？想關心對方，結果吵起來；對方說「沒事」，你卻越想越不對勁。很多時候沒有誰對誰錯，只是兩個人習慣的說話方式不一樣。</p>
-        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <p className="font-display mt-6 text-lg tracking-[0.2em] text-sand-300 sm:text-2xl">關於我們怎麼說話，又怎麼被聽見</p>
+        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-loose text-sand-400 sm:text-[17px] sm:leading-loose">你是不是也遇過？想關心對方，結果吵起來；對方說「沒事」，你卻越想越不對勁。很多時候沒有誰對誰錯，只是兩個人習慣的說話方式不一樣。</p>
+        <div className="font-sans mt-9 flex flex-wrap items-center justify-center gap-3">
           <PrimaryButton onClick={onChat}>開始一段對話</PrimaryButton>
-          <button type="button" onClick={onStart} className="inline-flex items-center gap-2 rounded-full border border-sand-600 bg-sand-900/60 px-6 py-3 text-sm font-semibold text-sand-100 transition hover:bg-sand-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">進入互動劇場<ArrowRight className="h-4 w-4" /></button>
+          <button type="button" onClick={onStart} className={`${ghost} border-sand-600 bg-sand-900/60 text-sand-100 hover:bg-sand-800`}>進入互動劇場<ArrowRight className="h-4 w-4" /></button>
         </div>
-        <ul className="mx-auto mt-8 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-sand-500">
+        <ul className="font-sans mx-auto mt-8 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-sand-500">
           <li className="flex items-center gap-1.5"><Timer className="h-3.5 w-3.5 text-amber-300" />十到十五分鐘</li>
           <li className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-300" />沒有分數</li>
           <li className="flex items-center gap-1.5"><Heart className="h-3.5 w-3.5 text-amber-300" />不分對錯</li>
         </ul>
       </header>
 
-      <SaidMarquee />
+      {/* ── 那些我們都說過的話 ── */}
+      <div className="mt-16 sm:mt-24">
+        <div className="font-sans text-center text-[11px] tracking-[0.35em] text-sand-500">那些我們都說過的話</div>
+        <div className="mt-5"><SaidMarquee /></div>
+      </div>
 
-      <LandingSection glyph="話" kicker="SAID ／ HEARD" title="一句話的兩面" intro="同一句話，說的人心裡想的，和聽的人收到的，常常不是同一件事。選一句看看。">
-        <TwoSides />
-      </LandingSection>
+      {/* ── 三個步驟 ── */}
+      <section className={`${WRAP} mt-20 sm:mt-28`}>
+        <ol className="grid gap-8 md:grid-cols-3 md:gap-6">
+          {STEPS.map((s, i) => (
+            <li key={s.n} className="relative flex gap-5 md:block md:text-center">
+              {i < STEPS.length - 1 && <span aria-hidden="true" className="absolute left-7 top-14 h-[calc(100%-1.5rem)] w-px bg-sand-700 md:left-[calc(50%+2.25rem)] md:top-7 md:h-px md:w-[calc(100%-3rem)]" />}
+              <span className="font-display relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-amber-400/60 bg-sand-900 text-2xl text-amber-300 shadow-warm md:mx-auto">{s.n}</span>
+              <div className="md:mt-5">
+                <h3 className="font-display text-xl font-semibold text-sand-50">{s.title}</h3>
+                <p className="mt-2 text-[15px] leading-loose text-sand-400">{s.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-      <LandingSection glyph="譜" kicker="FIVE WAYS OF ANSWERING" title="五種說話的方式" intro="把常見的回話方式由左到右排開：左邊的人習慣先處理事情，右邊的人習慣先顧感受，中間是兩邊都顧到。沒有哪一種比較差。">
+      {/* ── 一句話的兩面（深一階的底色） ── */}
+      <div className="mt-20 sm:mt-28">
+        <Wave fill={TINT} />
+        <section style={{ background: TINT }} className="py-16 sm:py-24">
+          <div className={WRAP}>
+            <SectionHead glyph="話" kicker="SAID ／ HEARD" title="一句話的兩面">同一句話，說的人心裡想的，和聽的人收到的，常常不是同一件事。選一句看看。</SectionHead>
+            <TwoSides />
+          </div>
+        </section>
+        <Wave fill={TINT} flip />
+      </div>
+
+      {/* ── 五種說話的方式 ── */}
+      <section className={`${WRAP} mt-16 sm:mt-24`}>
+        <SectionHead glyph="譜" kicker="FIVE WAYS OF ANSWERING" title="五種說話的方式">把常見的回話方式由左到右排開：左邊的人習慣先處理事情，右邊的人習慣先顧感受，中間是兩邊都顧到。沒有哪一種比較差。</SectionHead>
         <SpectrumRibbon />
-      </LandingSection>
+      </section>
 
-      <LandingSection glyph="行" kicker="TWO WAYS IN" title="兩種走法" intro="想輕鬆一點，就跟小譯聊；想親身體會，就自己演一遍。兩種都可以，順序隨你。">
-        <div className="grid gap-5 md:grid-cols-2">
-          {ways.map((w) => (
-            <div key={w.key} className={`flex flex-col overflow-hidden rounded-[2rem] border bg-gradient-to-b to-sand-900 shadow-warm ${w.tint}`}>
-              <div className="px-6 pt-6 sm:px-8 sm:pt-8"><w.art /></div>
-              <div className="flex flex-1 flex-col p-7 pt-5 sm:p-8 sm:pt-5">
-                <h3 className="font-display text-2xl font-semibold text-sand-50">{w.title}</h3>
-                <p className="mt-3 flex-1 text-[15px] leading-loose text-sand-300">{w.text}</p>
-                <ul className="mt-5 flex flex-wrap gap-2 text-xs text-sand-400">
-                  {w.meta.map((m) => <li key={m} className="rounded-full bg-sand-800/70 px-3 py-1">{m}</li>)}
+      {/* ── 兩種走法 ── */}
+      <section className={`${WRAP} mt-24 sm:mt-36`}>
+        <SectionHead glyph="行" kicker="TWO WAYS IN" title="兩種走法">想輕鬆一點，就跟小譯聊；想親身體會，就自己演一遍。兩種都可以，順序隨你。</SectionHead>
+        <div className="space-y-16 sm:space-y-24">
+          {ways.map((w, i) => (
+            <div key={w.key} className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
+              <div className={`relative ${i % 2 ? "md:order-2" : ""}`}>
+                <span aria-hidden="true" className={`absolute inset-x-6 inset-y-4 rounded-[3rem] blur-2xl ${i % 2 ? "bg-rose-400/25" : "bg-amber-400/30"}`} />
+                <div className="relative"><w.mock /></div>
+              </div>
+              <div>
+                <div className="font-sans text-[11px] tracking-[0.35em] text-sand-500">{w.kicker}</div>
+                <h3 className="font-display mt-2 text-3xl font-semibold text-sand-50 sm:text-4xl">{w.title}</h3>
+                <p className="mt-4 text-[15px] leading-loose text-sand-300 sm:text-base sm:leading-loose">{w.text}</p>
+                <ul className="mt-5 space-y-2.5 text-[15px] text-sand-300">
+                  {w.points.map((pt) => <li key={pt} className="flex items-start gap-2.5"><Check className="mt-1 h-4 w-4 shrink-0 text-amber-300" />{pt}</li>)}
                 </ul>
-                <button type="button" onClick={w.run} className="mt-6 inline-flex items-center justify-center gap-2 self-start rounded-full bg-gradient-to-r from-[#A8432F] to-[#B85C1C] px-5 py-2.5 text-sm font-semibold text-[#FFF8EC] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">
-                  {w.cta}<ArrowRight className="h-4 w-4" />
-                </button>
+                <div className="font-sans mt-7 flex flex-wrap items-center gap-4">
+                  <button type="button" onClick={w.run} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#A8432F] to-[#B85C1C] px-6 py-3 text-sm font-semibold text-[#FFF8EC] shadow-lg shadow-orange-900/20 transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">{w.cta}<ArrowRight className="h-4 w-4" /></button>
+                  <span className="flex items-center gap-1.5 text-xs text-sand-500"><Timer className="h-3.5 w-3.5" />{w.time}</span>
+                </div>
               </div>
             </div>
           ))}
         </div>
-      </LandingSection>
+      </section>
 
-      <LandingSection glyph="問" kicker="QUESTIONS" title="你可能想問" intro="開始之前，先回答幾個常被問到的問題。">
+      {/* ── 你可能想問 ── */}
+      <section className={`${WRAP} mt-24 sm:mt-36`}>
+        <SectionHead glyph="問" kicker="QUESTIONS" title="你可能想問">開始之前，先回答幾個常被問到的問題。</SectionHead>
         <div className="mx-auto max-w-2xl space-y-3">
           {FAQ.map(([q, a]) => (
             <details key={q} className="group rounded-3xl border border-sand-800 bg-sand-900/80 px-6 py-4 shadow-warm">
@@ -1554,16 +1634,48 @@ function Landing({ onStart, onChat }) {
             </details>
           ))}
         </div>
-      </LandingSection>
-
-      <section className="mt-24 text-center sm:mt-36">
-        <Ornament />
-        <p className="font-display mx-auto mt-8 max-w-2xl text-2xl leading-loose text-sand-100 sm:text-3xl" style={{ textWrap: "balance" }}>理解不等於同意。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。</p>
-        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <PrimaryButton onClick={onChat}>開始一段對話</PrimaryButton>
-          <button type="button" onClick={onStart} className="inline-flex items-center gap-2 rounded-full border border-sand-600 bg-sand-900/60 px-6 py-3 text-sm font-semibold text-sand-100 transition hover:bg-sand-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">進入互動劇場<ArrowRight className="h-4 w-4" /></button>
-        </div>
       </section>
+
+      {/* ── 深色收尾與頁尾 ── */}
+      <div className="mt-24 sm:mt-36">
+        <Wave fill={INK} />
+        <div style={{ background: INK }} className="relative overflow-hidden">
+          <svg viewBox="0 0 720 420" preserveAspectRatio="xMidYMid slice" className="pointer-events-none absolute inset-0 h-full w-full opacity-40" aria-hidden="true">
+            {HERO_STRANDS.map((s) => <path key={s.o} d={strand(s.o * 1.6, 10)} fill="none" stroke="url(#heroBand)" strokeWidth={s.width} opacity={s.opacity * 0.7} />)}
+          </svg>
+          <section className={`${WRAP} relative py-20 text-center sm:py-28`}>
+            <span aria-hidden="true" className="font-display mx-auto flex h-11 w-11 -rotate-6 items-center justify-center rounded-md bg-[#B8402F] text-xl text-[#FFF3E2] ring-1 ring-inset ring-[#FFF3E2]/50">懂</span>
+            <p className="font-display mx-auto mt-8 max-w-2xl text-2xl leading-loose text-[#F7ECDD] sm:text-4xl sm:leading-loose" style={{ textWrap: "balance" }}>理解不等於同意。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。</p>
+            <div className="font-sans mt-10 flex flex-wrap items-center justify-center gap-3">
+              <PrimaryButton onClick={onChat}>開始一段對話</PrimaryButton>
+              <button type="button" onClick={onStart} className={`${ghost} border-[#7A6652] text-[#F7ECDD] hover:bg-white/10`}>進入互動劇場<ArrowRight className="h-4 w-4" /></button>
+            </div>
+          </section>
+          <footer className={`${WRAP} font-sans relative pb-10`}>
+            <div className="grid gap-8 border-t border-white/10 pt-10 text-sm sm:grid-cols-[1.4fr_1fr_1fr]">
+              <div>
+                <div className="flex items-center gap-2"><LogoMark className="h-7 w-7" /><span className="font-display text-lg tracking-[0.12em] text-[#F7ECDD]">溝通光譜</span></div>
+                <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-[#BDA98F]">陪你看懂不同的人怎麼說話、怎麼在乎。</p>
+              </div>
+              <div>
+                <div className="text-[11px] tracking-[0.3em] text-[#8F7B66]">體驗</div>
+                <ul className="mt-3 space-y-2 text-[#E5D6C2]">
+                  <li><button type="button" onClick={onChat} className="hover:text-white">跟小譯聊一段</button></li>
+                  <li><button type="button" onClick={onStart} className="hover:text-white">三幕互動劇場</button></li>
+                </ul>
+              </div>
+              <div>
+                <div className="text-[11px] tracking-[0.3em] text-[#8F7B66]">說明</div>
+                <ul className="mt-3 space-y-2 text-[13px] leading-relaxed text-[#BDA98F]">
+                  <li>心理教育用途，不是臨床診斷工具。</li>
+                  <li>你的回答只留在這個頁面裡，不會被傳送或儲存。</li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-10 text-center text-[11px] tracking-[0.2em] text-[#8F7B66]">THE COMMUNICATION SPECTRUM</div>
+          </footer>
+        </div>
+      </div>
     </div>
   );
 }
@@ -2849,7 +2961,8 @@ const navOf = (view) => (view === "landing" || view === "chat" ? view : "setup")
 function AppHeader({ view, go }) {
   const active = navOf(view);
   return (
-    <header className="relative z-20 mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
+    <div className={["chat", "theater", "handoff"].includes(view) ? "relative z-20" : "sticky top-0 z-30 border-b border-sand-800/60 bg-sand-950/80 backdrop-blur-md"}>
+    <header className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
       <button type="button" onClick={() => go("landing")} className="flex items-center gap-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="溝通光譜，回到首頁">
         <LogoMark />
         <span className="font-display text-lg font-semibold tracking-[0.12em] text-sand-50">溝通光譜</span>
@@ -2860,6 +2973,7 @@ function AppHeader({ view, go }) {
         ))}
       </nav>
     </header>
+    </div>
   );
 }
 
@@ -2932,7 +3046,7 @@ export default function App() {
         )}
         {view === "pairReport" && <PairReport results={results} xray={xray} onRestart={() => go("setup")} onHome={() => go("landing")} />}
       </main>
-      {!["chat", "theater", "handoff"].includes(view) && <AppFooter go={go} />}
+      {!["landing", "chat", "theater", "handoff"].includes(view) && <AppFooter go={go} />}
     </div>
   );
 }
