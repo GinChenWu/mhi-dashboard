@@ -1188,6 +1188,61 @@ function PrimaryButton({ children, onClick, className = "", tone = "ink" }) {
   );
 }
 
+/* 可以帶走的小卡：對話、劇場單人、雙人揭曉共用。rows 的每一列：label 小標、name 重點字（可帶 color）、note 補充、text 內文。 */
+function KeepsakeCard({ kicker = "Today's Note", title, rows, children }) {
+  const [copied, setCopied] = useState(null); // null | "ok" | "fail"
+  const text = [`聽見光譜｜${title}`, ...rows.map((r) => `${r.label}：${[r.name, r.note, r.text].filter(Boolean).join("　")}`)].join("\n");
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied("ok");
+      setTimeout(() => setCopied(null), 2200);
+    } catch {
+      setCopied("fail");
+    }
+  };
+  return (
+    <div className="rounded-[2rem] border border-amber-400/50 bg-gradient-to-br from-amber-400/15 via-sand-900 to-rose-400/10 p-6 shadow-warm sm:p-8">
+      <div className="font-latin text-center text-xl italic text-amber-300">{kicker}</div>
+      <h2 className="font-display mt-1 text-center text-2xl font-semibold text-sand-50">{title}</h2>
+      {children}
+      <dl className="mt-5 space-y-4">
+        {rows.map((r) => (
+          <div key={r.label}>
+            <dt className="text-xs text-sand-500">{r.label}</dt>
+            {(r.name || r.note) && <dd className="mt-1">{r.name && <span className="font-display text-xl font-semibold" style={{ color: r.color || "#33291F" }}>{r.name}</span>}{r.note && <span className="ml-2 text-sm text-sand-400">{r.note}</span>}</dd>}
+            {r.text && <dd className="font-display mt-1 text-[16px] leading-relaxed text-sand-100">{r.text}</dd>}
+          </div>
+        ))}
+      </dl>
+      <div className="mt-6 border-t border-sand-700 pt-4 text-center">
+        <button type="button" onClick={copy} className="rounded-full border border-sand-600 px-5 py-2.5 text-sm font-medium text-sand-100 transition hover:bg-sand-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">{copied === "ok" ? "已複製，可以貼到備忘錄" : "複製小卡文字"}</button>
+        {copied === "fail" && <p className="mt-2 text-xs text-sand-500">這個瀏覽器不允許自動複製，請長按上面的文字自行複製。</p>}
+      </div>
+    </div>
+  );
+}
+
+/* 劇場：依四個維度裡最低的那一項，給一件下次可以多做的小事 */
+const NEXT_STEP = {
+  A: [
+    "當她說「沒事」，多問一句：「處理好了，那你呢？」",
+    "下一次她問你意見，先認領一小塊：「這一段我來。」",
+    "想說「都可以」之前，先說出一個自己的偏好。",
+    "慌的時候，把「現在就講清楚」換成「你什麼時候可以談？」",
+  ],
+  B: [
+    "想說「沒事」的時候，改成：「有事，但我需要一點時間整理。」",
+    "需要幫忙時，給他一件明確的事：「你負責找咖啡店。」",
+    "把一個吞下去的需要說出來，附上時間：「今晚聽我講十分鐘。」",
+    "被逼問時先喊暫停：「給我二十分鐘，我今晚一定講完。」",
+  ],
+};
+function nextStepFor(perspective, dims) {
+  const i = dims.indexOf(Math.min(...dims));
+  return { dim: DIMS[i].label, text: NEXT_STEP[perspective][i] };
+}
+
 function SectionTitle({ kicker, title, children }) {
   return (
     <div className="mb-6">
@@ -1442,7 +1497,7 @@ function SectionHead({ glyph, en, title, children }) {
 const STEPS = [
   { n: "01", en: "Listen", title: "聽一句話", text: "從一個很日常的場景開始。有人開口說了一句話，你選你最可能的回應。" },
   { n: "02", en: "Walk", title: "走過五種回應", text: "同一句話，沿著光譜看五種人怎麼接：他心裡在想什麼，對方又聽到了什麼。" },
-  { n: "03", en: "Keep", title: "帶走一張小卡", text: "最後留下一張屬於你的小卡：你站在哪裡，下一次可以多做的一件小事。" },
+  { n: "03", en: "Keep", title: "帶走一張小卡", text: "不管走的是對話還是劇場，走到最後都會有一張屬於你的小卡：你站在哪裡，下一次可以多做的一件小事。" },
 ];
 
 /* 對話體驗的示意：一支手機裡的小譯 */
@@ -1504,7 +1559,7 @@ function Landing({ onStart, onChat }) {
   const vertical = { writingMode: "vertical-rl" };
   const ways = [
     { key: "chat", mock: PhoneMock, en: "Conversation", title: "跟小譯聊一段", text: "小譯會用一個日常場景，帶你一站一站看五種回應。每一站都會告訴你：他心裡在想什麼、對方聽到什麼、兩邊可以怎麼做。", points: ["三個隨機場景，每次進來不一樣", "一問一答，不用打字", "結束時有一張可以帶走的小卡"], time: "約 10 分鐘", cta: "開始對話", run: onChat },
-    { key: "theater", mock: StageMock, en: "Theater", title: "親自演一遍", text: "走進一段感情的三幕故事，選你會說的話，看看對方表面怎麼回、心裡其實怎麼想。你的每個選擇，都會改變下一段的開場。", points: ["兩個視角，可以換邊再演一次", "三幕六個抉擇，選項每次順序不同", "可以兩個人輪流，最後一起看對照"], time: "約 15 分鐘", cta: "走進劇場", run: onStart },
+    { key: "theater", mock: StageMock, en: "Theater", title: "親自演一遍", text: "走進一段感情的三幕故事，選你會說的話，看看對方表面怎麼回、心裡其實怎麼想。你的每個選擇，都會改變下一段的開場。", points: ["三幕六個抉擇，選項每次順序不同", "可以兩個人輪流作答，最後一起揭曉", "演完有一張小卡和完整的回顧"], time: "約 15 分鐘", cta: "走進劇場", run: onStart },
   ];
   const ghost = "inline-flex items-center rounded-full border px-6 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400";
   return (
@@ -2064,6 +2119,18 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
         <p className="font-display mt-2 text-[17px] leading-loose text-sand-200">{EPILOGUES[perspective][state.level]}</p>
       </section>
 
+      <section className="fade-up mt-6" style={{ animationDelay: ".25s" }}>
+        <KeepsakeCard
+          kicker="Your Note"
+          title="這一輪帶走的小卡"
+          rows={[
+            { label: "你扮演的是", name: CAST[PERSPECTIVES[perspective].you].name, color: CAST[PERSPECTIVES[perspective].you].stroke, note: CAST[PERSPECTIVES[perspective].you].tag },
+            { label: "這一輪的你", name: verdict.title, text: verdict.text },
+            { label: `下一次可以多做的一件小事（${nextStepFor(perspective, state.dims).dim}）`, text: nextStepFor(perspective, state.dims).text },
+          ]}
+        />
+      </section>
+
       <section className="mt-6 grid gap-6 md:grid-cols-2">
         <div className="flex flex-col items-center rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
           <h2 className="mb-2 self-start text-sm font-semibold text-sand-200">四維度溝通雷達圖</h2>
@@ -2245,6 +2312,17 @@ function PairReport({ results, xray, onRestart, onHome }) {
 
       {tab === "pair" ? (
         <div className="fade-up">
+          <section className="mt-6">
+            <KeepsakeCard
+              kicker="Our Note"
+              title="你們一起帶走的小卡"
+              rows={[
+                { label: "扮演柏翰的人，下一次可以多做的", name: VERDICTS.A[st.A.level].title, color: CAST.linear.stroke, text: nextStepFor("A", st.A.dims).text },
+                { label: "扮演語安的人，下一次可以多做的", name: VERDICTS.B[st.B.level].title, color: CAST.sensitive.stroke, text: nextStepFor("B", st.B.dims).text },
+                { label: "今晚可以聊的一題", text: TALK_CARDS[2] },
+              ]}
+            />
+          </section>
           <section className="mt-6 grid gap-4 sm:grid-cols-2">
             {["A", "B"].map((k) => {
               const c = CAST[PERSPECTIVES[k].you];
@@ -2942,27 +3020,16 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
         const picked = STOPS.find((x) => x.id === finalPick) || mine;
         return (
           <div className="fade-up mt-8">
-            <div className="rounded-[2rem] border border-amber-400/50 bg-gradient-to-br from-amber-400/15 via-sand-900 to-rose-400/10 p-6 shadow-warm">
-              <div className="font-latin text-center text-xl italic text-amber-300">Today's Note</div>
-              <h2 className="font-display mt-2 text-center text-2xl font-semibold text-sand-50">今天帶走的小卡</h2>
+            <KeepsakeCard
+              title="今天帶走的小卡"
+              rows={[
+                { label: "今天的場景", text: `「${scn.opener}」` },
+                { label: "你的回應落在", name: mine.name, color: mine.color, note: mine.side, text: mine.step },
+                { label: "你說比較懂了的是", name: picked.name, color: picked.color, text: picked.recap },
+              ]}
+            >
               <div className="mt-5"><MiniSpectrum active={home} /></div>
-              <dl className="mt-5 space-y-4">
-                <div>
-                  <dt className="text-xs text-sand-500">今天的場景</dt>
-                  <dd className="font-display mt-1 text-[16px] leading-relaxed text-sand-100">「{scn.opener}」</dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-sand-500">你的回應落在</dt>
-                  <dd className="mt-1"><span className="font-display text-xl font-semibold" style={{ color: mine.color }}>{mine.name}</span><span className="ml-2 text-sm text-sand-400">{mine.side}</span></dd>
-                  <dd className="mt-1 text-[15px] leading-relaxed text-sand-200">{mine.step}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-sand-500">你說比較懂了的是</dt>
-                  <dd className="mt-1"><span className="font-display text-xl font-semibold" style={{ color: picked.color }}>{picked.name}</span></dd>
-                  <dd className="mt-1 text-[15px] leading-relaxed text-sand-200">{picked.recap}</dd>
-                </div>
-              </dl>
-            </div>
+            </KeepsakeCard>
             <div className="mt-6 text-center">
               <PrimaryButton onClick={onRestart}>換一個場景再走一次</PrimaryButton>
               <div><button type="button" onClick={onTheater} className="mt-3 text-sm text-sand-500 underline decoration-sand-700 underline-offset-4 hover:text-sand-300">進入互動劇場</button></div>
