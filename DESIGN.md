@@ -108,6 +108,6 @@ One orchestrated moment: on load the hero painting, title, text and buttons arri
 
 - Do keep English short, lower in the hierarchy than the Chinese it accompanies.
 - Do write copy as speech; quote what people actually say.
-- Don't assign a gender to a position on the spectrum.
+- Don't assign a gender to a position on the spectrum or to a character. The two theater characters have gender-neutral names (阿澄, 小安); narration uses the name, analysis says 對方, and the partner's inner voice speaks to 你. In the conversation, 他 stands for anyone and the guide says so.
 - Don't add scores, badges or rankings to the home page or the conversation.
 - Don't introduce new accent colours, all-caps labels, or middle-dot separators.
