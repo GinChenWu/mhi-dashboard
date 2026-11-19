@@ -31,7 +31,8 @@ npx @google/design.md lint DESIGN.md     # 檢查視覺規範檔
 | --- | --- |
 | `src/App.jsx` | 所有畫面與內容 |
 | ├ 劇場資料與計分 | `SCRIPT`（兩個視角 × 三幕 × 上下兩個抉擇點 × 五種回應）、`computeState` |
-| ├ 劇場畫面 | `Setup` → `Theater`（含 `RelationshipDashboard`）→ `Report`／`PairReport`（含 `Translator`） |
+| ├ 劇場畫面 | `Setup` → `Theater`（含 `RelationshipDashboard`）→ `Report`（含 `Translator`） |
+| ├ 雙人模式 | 每一段戲兩人輪流各答一次（`Handoff` 換手卡），過程不顯示任何解析，全部答完經 `RevealGate` 進入 `PairReport` 的三份揭曉 |
 | ├ 對話 | `STOPS`（五個位置）、`SCENARIOS`（三個隨機場景）、`SpectrumChat` |
 | ├ 首頁 | `Landing`：主視覺、一句話的兩面、五種說話的方式、兩種走法、常見問題 |
 | └ 外框 | `AppHeader`、`AppFooter`、`App` |

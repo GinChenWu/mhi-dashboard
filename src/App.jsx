@@ -1679,7 +1679,7 @@ function Setup({ mode, setMode, perspective, setPerspective, xray, setXray, onBe
 
       <div role="radiogroup" aria-label="體驗方式" className="mb-6 grid gap-3 sm:grid-cols-2">
         {[
-          { id: "pair", icon: Users, title: "兩個人一起", text: "輪流用同一支手機，各走一個視角。兩人都走完後，一起看雙人對照與聊天卡。" },
+          { id: "pair", icon: Users, title: "兩個人一起", text: "輪流用同一支手機。每一段戲兩個人各答一次，過程中看不到對方的選擇和任何解析，全部答完再一起揭曉。" },
           { id: "solo", icon: User, title: "我先自己走一遍", text: "一個人體驗其中一個視角，看完自己的診斷報告。" },
         ].map((m) => (
           <button key={m.id} type="button" role="radio" aria-checked={mode === m.id} onClick={() => setMode(m.id)} className={`flex items-start gap-3 rounded-3xl border p-5 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${mode === m.id ? "border-rose-400/70 bg-rose-400/10" : "border-sand-800 bg-sand-900/80 hover:border-sand-600"}`}>
@@ -1688,7 +1688,7 @@ function Setup({ mode, setMode, perspective, setPerspective, xray, setXray, onBe
           </button>
         ))}
       </div>
-      {mode === "pair" && <p className="mb-3 text-sm leading-relaxed text-sand-400">第一位先選一個視角，第二位會自動走另一邊。<span className="text-sand-200">小建議：各自選「比較不像自己」的那一邊</span>，會更容易懂對方。</p>}
+      {mode === "pair" && <p className="mb-3 text-sm leading-relaxed text-sand-400">先決定誰扮演誰：現在拿著手機的人選一個角色，另一個人就是另一邊。<span className="text-sand-200">小建議：各自選「比較不像自己」的那一邊</span>，會更容易懂對方。</p>}
 
       <div role="radiogroup" aria-label="體驗視角" className="grid gap-4 sm:grid-cols-2">
         {Object.values(PERSPECTIVES).map((p) => {
@@ -1719,6 +1719,16 @@ function Setup({ mode, setMode, perspective, setPerspective, xray, setXray, onBe
         })}
       </div>
 
+      {mode === "pair" ? (
+        <div className="mt-6 rounded-3xl border border-sand-800 bg-sand-900/80 p-6 shadow-warm">
+          <div className="flex items-center gap-2 text-sm font-semibold text-sand-100"><Users className="h-4 w-4 text-rose-300" />兩個人怎麼進行</div>
+          <ol className="mt-4 space-y-3 text-sm leading-relaxed text-sand-300">
+            {["每一段戲，兩個人各答一次。畫面最上方會寫明現在輪到誰。", "答完把手機交給對方。換手的時候會先出現一張提示卡，避免看到對方的畫面。", "過程中只看得到對方表面的回應，所有內心話和解析都先藏起來。", "六段都答完之後一次揭曉：給柏翰看的、給語安看的，以及兩個人一起看的。"].map((t, i) => (
+              <li key={i} className="flex gap-3"><span className="font-latin flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-amber-400/60 text-sm italic text-amber-300">{i + 1}</span>{t}</li>
+            ))}
+          </ol>
+        </div>
+      ) : (
       <div className="mt-6 rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm font-semibold text-sand-100"><Brain className="h-4 w-4 text-amber-300" />伴侶腦內 X 光透視（上帝視角）</div>
@@ -1735,6 +1745,7 @@ function Setup({ mode, setMode, perspective, setPerspective, xray, setXray, onBe
           </div>
         </div>
       </div>
+      )}
 
       <div className="mt-8 text-center"><PrimaryButton onClick={onBegin}>開始第一幕</PrimaryButton></div>
     </div>
@@ -1770,7 +1781,7 @@ function Bubble({ who, text, perspective, delay = 0 }) {
   );
 }
 
-function Theater({ perspective, xray, setXray, choices, order, shownIdx, answered, onChoose, onNext, onQuit }) {
+function Theater({ perspective, xray, setXray, choices, order, shownIdx, answered, onChoose, onNext, onQuit, pair, lastTurn }) {
   const acts = SCRIPT[perspective];
   const act = acts[shownIdx];
   const chosen = answered ? act.options[choices[shownIdx]] : null;
@@ -1784,8 +1795,22 @@ function Theater({ perspective, xray, setXray, choices, order, shownIdx, answere
   const afterEnd = 0.9 + after.length * 0.5;
   const ActIcon = meta.icon;
 
+  const me = CAST[PERSPECTIVES[perspective].you];
   return (
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-8 sm:px-6">
+      {pair && (
+        <div className="mb-5 flex items-center gap-3 rounded-3xl border px-4 py-3" style={{ borderColor: `${me.stroke}88`, background: me.fill }} role="status">
+          <svg viewBox="0 0 80 80" className="h-10 w-10 shrink-0" aria-hidden="true">
+            <circle cx="40" cy="26" r="13" fill={me.fill} stroke={me.stroke} strokeWidth="3" />
+            <path d="M 14,74 Q 14,44 40,44 Q 66,44 66,74 Z" fill={me.fill} stroke={me.stroke} strokeWidth="3" />
+          </svg>
+          <div>
+            <div className="text-xs text-sand-400">現在輪到</div>
+            <div className={`font-display text-lg font-semibold ${me.text}`}>扮演{me.name}的人</div>
+          </div>
+          <div className="ml-auto text-right text-xs leading-relaxed text-sand-400">另一位請先不要看<br />答完再交給對方</div>
+        </div>
+      )}
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <ol className="flex items-center gap-2" aria-label="劇幕進度">
           {acts.map((a, i) => (
@@ -1796,14 +1821,15 @@ function Theater({ perspective, xray, setXray, choices, order, shownIdx, answere
           ))}
         </ol>
         <div className="flex items-center gap-2">
-          <XrayToggle xray={xray} setXray={setXray} compact />
+          {!pair && <XrayToggle xray={xray} setXray={setXray} compact />}
           <button type="button" onClick={onQuit} className="rounded-full border border-sand-800 px-3.5 py-2 text-xs text-sand-500 hover:text-sand-300">離開</button>
         </div>
       </div>
 
-      <RelationshipDashboard perspective={perspective} state={state} xray={xray} animKey={choices.length} />
+      {/* 雙人進行中所有狀態都先藏起來，所以不顯示儀表板，等揭曉時再看 */}
+      {!pair && <RelationshipDashboard perspective={perspective} state={state} xray={xray} animKey={choices.length} />}
 
-      <article key={shownIdx} className="mt-6 rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-5 sm:p-7">
+      <article key={shownIdx} className={`${pair ? "" : "mt-6 "}rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-5 sm:p-7`}>
         <div className="flex items-start gap-4">
           <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber-400/20 text-amber-300"><ActIcon className="h-7 w-7" /></span>
           <div>
@@ -1859,12 +1885,12 @@ function Theater({ perspective, xray, setXray, choices, order, shownIdx, answere
               </div>
             ) : (
               <p className="fade-up flex items-center gap-2 pt-1 text-xs text-sand-500" style={{ animationDelay: `${afterEnd + 0.3}s` }}>
-                <EyeOff className="h-3.5 w-3.5" />你只聽得見對方說出口的話。這句回應背後是什麼？結算時揭曉。
+                <EyeOff className="h-3.5 w-3.5" />{pair ? "你只聽得見對方說出口的話。心裡話要等兩個人都答完，再一起揭曉。" : "你只聽得見對方說出口的話。這句回應背後是什麼？結算時揭曉。"}
               </p>
             )}
 
             <div className="fade-up pt-4 text-right" style={{ animationDelay: `${afterEnd + 0.7}s` }}>
-              <PrimaryButton onClick={onNext}>{isLast ? "查看診斷報告" : acts[shownIdx + 1].act === act.act ? "繼續這一幕" : `進入${acts[shownIdx + 1].act}`}</PrimaryButton>
+              <PrimaryButton onClick={onNext}>{pair ? (lastTurn ? "兩個人都答完了" : "答完了，交給對方") : isLast ? "查看診斷報告" : acts[shownIdx + 1].act === act.act ? "繼續這一幕" : `進入${acts[shownIdx + 1].act}`}</PrimaryButton>
             </div>
           </div>
         )}
@@ -2030,7 +2056,7 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
       <header className="fade-up text-center">
         <div className="font-latin text-xl italic text-amber-300">Your Report</div>
         <h1 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-4xl">你的光譜診斷</h1>
-        {!xray && <p className="mt-3 text-sm text-amber-300/90">你全程關閉了 X 光。以下，是你當時看不見的一切。</p>}
+        {!xray && !embedded && <p className="mt-3 text-sm text-amber-300/90">你全程關閉了 X 光。以下，是你當時看不見的一切。</p>}
       </header>
 
       <section className="fade-up mt-10 rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-6 sm:p-8" style={{ animationDelay: ".15s" }}>
@@ -2165,31 +2191,50 @@ const TALK_CARDS = [
   "這一週，我們各自想試哪一件小事？",
 ];
 
-function Handoff({ nextPerspective, onBegin }) {
+function Handoff({ nextPerspective, round, total, onBegin }) {
   const c = CAST[PERSPECTIVES[nextPerspective].you];
+  const beat = SCRIPT[nextPerspective][round];
   return (
-    <div className="mx-auto max-w-xl px-4 pb-24 pt-20 text-center sm:px-6">
-      <div className="fade-up rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-8">
-        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-rose-400/20 text-rose-300"><Users className="h-8 w-8" /></span>
-        <h1 className="font-display mt-5 text-2xl font-semibold text-sand-50">第一位走完了</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-sand-300">請把手機交給對方。<br />結果先保密，等兩個人都走完，再一起打開。</p>
-        <p className="mt-5 rounded-2xl bg-sand-950 px-4 py-3 text-sm leading-relaxed text-sand-400">第二位會走<span className={`font-semibold ${c.text}`}>{c.name}</span>的視角：{PERSPECTIVES[nextPerspective].blurb}</p>
-        <PrimaryButton onClick={onBegin} className="mt-7">我是第二位，開始</PrimaryButton>
+    <div className="mx-auto max-w-xl px-4 pb-24 pt-14 text-center sm:px-6">
+      <div className="fade-up rounded-[2rem] border p-8 shadow-warm" style={{ borderColor: `${c.stroke}88`, background: c.fill }}>
+        <div className="text-xs text-sand-400">第 {round + 1} 段／共 {total} 段・{beat.act}{beat.part}</div>
+        <svg viewBox="0 0 80 80" className="mx-auto mt-5 h-20 w-20" aria-hidden="true">
+          <circle cx="40" cy="26" r="13" fill={c.fill} stroke={c.stroke} strokeWidth="2.5" />
+          <path d="M 14,74 Q 14,44 40,44 Q 66,44 66,74 Z" fill={c.fill} stroke={c.stroke} strokeWidth="2.5" />
+        </svg>
+        <div className="mt-4 text-sm text-sand-400">請把手機交給</div>
+        <h1 className={`font-display mt-1 text-3xl font-semibold ${c.text}`}>扮演{c.name}的人</h1>
+        <p className="mt-4 text-[15px] leading-relaxed text-sand-300">輪到你回答這一段。<br />剛剛那一位，請先不要看螢幕。</p>
+        <PrimaryButton onClick={onBegin} className="mt-7">我拿到手機了</PrimaryButton>
+      </div>
+    </div>
+  );
+}
+
+function RevealGate({ onReveal }) {
+  return (
+    <div className="mx-auto max-w-xl px-4 pb-24 pt-14 text-center sm:px-6">
+      <div className="fade-up rounded-[2rem] border border-amber-400/50 bg-gradient-to-br from-amber-400/15 via-sand-900 to-rose-400/10 p-8 shadow-warm">
+        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sand-950 text-amber-300 shadow-warm"><Users className="h-8 w-8" /></span>
+        <div className="font-latin mt-5 text-xl italic text-amber-300">Together</div>
+        <h1 className="font-display mt-1 text-3xl font-semibold text-sand-50">兩個人都答完了</h1>
+        <p className="mt-4 text-[15px] leading-loose text-sand-300">接下來會一次打開三份內容：<br />給柏翰看的、給語安看的，還有兩個人一起看的。<br />坐在一起，準備好了再按。</p>
+        <PrimaryButton onClick={onReveal} className="mt-7">一起揭曉</PrimaryButton>
       </div>
     </div>
   );
 }
 
 function PairReport({ results, xray, onRestart, onHome }) {
-  const [tab, setTab] = useState("pair");
+  const [tab, setTab] = useState("A");
   const st = { A: computeState("A", results.A), B: computeState("B", results.B) };
-  const tabs = [{ id: "pair", label: "雙人對照" }, { id: "A", label: "柏翰視角報告" }, { id: "B", label: "語安視角報告" }];
+  const tabs = [{ id: "A", label: "給柏翰看" }, { id: "B", label: "給語安看" }, { id: "pair", label: "兩個人一起看" }];
   return (
     <div className="mx-auto max-w-4xl px-4 pb-24 pt-12 sm:px-6">
       <header className="fade-up text-center">
         <div className="font-latin text-xl italic text-amber-300">Together</div>
-        <h1 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-4xl">你們的雙人對照</h1>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-sand-400">這不是成績單，也沒有誰贏誰輸。它只是一張地圖，讓你們看見彼此站在哪裡、中間隔著什麼。</p>
+        <h1 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-4xl">你們的揭曉</h1>
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-sand-400">這不是成績單，也沒有誰贏誰輸。三份內容都可以兩個人一起看：先各自看寫給自己的那一份，再看最後一份。</p>
       </header>
 
       <div role="tablist" aria-label="報告切換" className="mt-8 grid grid-cols-3 gap-2">
@@ -2272,7 +2317,12 @@ function PairReport({ results, xray, onRestart, onHome }) {
           </section>
         </div>
       ) : (
-        <div key={tab} className="mt-8"><Report perspective={tab} choices={results[tab]} xray={xray} embedded /></div>
+        <div key={tab} className="mt-8">
+          <p className="mb-6 rounded-3xl border px-5 py-4 text-sm leading-relaxed text-sand-200" style={{ borderColor: `${CAST[PERSPECTIVES[tab].you].stroke}88`, background: CAST[PERSPECTIVES[tab].you].fill }}>
+            這一份是寫給<span className={`font-semibold ${CAST[PERSPECTIVES[tab].you].text}`}>扮演{CAST[PERSPECTIVES[tab].you].name}的人</span>：你說的每一句話，{CAST[PERSPECTIVES[tab].partner].name}表面怎麼回、心裡其實怎麼想。
+          </p>
+          <Report perspective={tab} choices={results[tab]} xray={false} embedded />
+        </div>
       )}
 
       <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
@@ -2952,7 +3002,7 @@ const navOf = (view) => (view === "landing" || view === "chat" ? view : "setup")
 function AppHeader({ view, go }) {
   const active = navOf(view);
   return (
-    <div className={["chat", "theater", "handoff"].includes(view) ? "relative z-20" : "sticky top-0 z-30 border-b border-sand-800/60 bg-sand-950/80 backdrop-blur-md"}>
+    <div className={["chat", "theater", "handoff", "reveal"].includes(view) ? "relative z-20" : "sticky top-0 z-30 border-b border-sand-800/60 bg-sand-950/80 backdrop-blur-md"}>
     <header className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
       <button type="button" onClick={() => go("landing")} className="-my-1 flex items-center gap-2 rounded-full py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="聽見光譜，回到首頁">
         <LogoMark />
@@ -2985,40 +3035,45 @@ function AppFooter({ go }) {
 
 export default function App() {
   const [chatRun, setChatRun] = useState(0); // 每次重玩對話就加一，讓對話重新開始並換一個場景
-  const [view, setView] = useState("landing"); // landing | setup | theater | handoff | report | pairReport
+  const [view, setView] = useState("landing"); // landing | chat | setup | theater | handoff | reveal | report | pairReport
   const [mode, setMode] = useState("pair"); // pair 兩人輪流 | solo 一個人
-  const [perspective, setPerspective] = useState("A");
+  const [perspective, setPerspective] = useState("A"); // 單人：選的視角；雙人：現在輪到哪一邊
   const [xray, setXray] = useState(true);
-  const [choices, setChoices] = useState([]);
-  const [order, setOrder] = useState([]); // 每個抉擇點的選項顯示順序（每次開始時重新洗牌）
-  const [pending, setPending] = useState(null); // 已選擇但尚未按「下一幕」的選項
-  const [results, setResults] = useState({ A: null, B: null }); // 雙人模式：兩個視角各自的選擇
+  const [progress, setProgress] = useState({ A: [], B: [] }); // 兩個視角各自已確定的選擇
+  const [orders, setOrders] = useState({ A: [], B: [] }); // 每個抉擇點的選項顯示順序（每次開始時重新洗牌）
+  const [pending, setPending] = useState(null); // 已選擇但尚未按下一步的選項
 
   const go = (v) => {
     setView(v);
     window.scrollTo({ top: 0 });
   };
-  const begin = (p = perspective, fresh = true) => {
-    setOrder(SCRIPT[p].map((beat) => shuffle(beat.options.map((_, i) => i))));
+  const shuffleFor = (p) => SCRIPT[p].map((beat) => shuffle(beat.options.map((_, i) => i)));
+  const begin = (p = perspective) => {
+    setOrders({ A: shuffleFor("A"), B: shuffleFor("B") });
+    setProgress({ A: [], B: [] });
     setPerspective(p);
-    setChoices([]);
     setPending(null);
-    if (fresh) setResults({ A: null, B: null });
     go("theater");
   };
   const other = perspective === "A" ? "B" : "A";
+  const pair = mode === "pair";
+  const total = SCRIPT[perspective].length;
+  const choices = progress[perspective];
 
   const shownChoices = pending === null ? choices : [...choices, pending];
   const handleNext = () => {
     const next = [...choices, pending];
-    setChoices(next);
+    const merged = { ...progress, [perspective]: next };
+    setProgress(merged);
     setPending(null);
-    if (next.length < SCRIPT[perspective].length) return window.scrollTo({ top: 0, behavior: "smooth" });
-    if (mode === "solo") return go("report");
-    const merged = { ...results, [perspective]: next };
-    setResults(merged);
-    go(merged[other] ? "pairReport" : "handoff");
+    if (!pair) return next.length < total ? window.scrollTo({ top: 0, behavior: "smooth" }) : go("report");
+    // 雙人：每答完一段就換人；兩邊都答完六段才揭曉
+    if (merged.A.length === total && merged.B.length === total) return go("reveal");
+    setPerspective(other);
+    go("handoff");
   };
+  // 這一次作答結束後，是否兩個人就都答完了
+  const lastTurn = pair && choices.length === total - 1 && progress[other].length === total;
 
   return (
     <div className="relative min-h-screen bg-sand-950 text-sand-100 antialiased">
@@ -3030,15 +3085,16 @@ export default function App() {
         {view === "chat" && <SpectrumChat key={chatRun} onTheater={() => go("setup")} onHome={() => go("landing")} onRestart={() => { setChatRun((n) => n + 1); window.scrollTo({ top: 0 }); }} />}
         {view === "setup" && <Setup mode={mode} setMode={setMode} perspective={perspective} setPerspective={setPerspective} xray={xray} setXray={setXray} onBegin={() => begin()} onBack={() => go("landing")} />}
         {view === "theater" && (
-          <Theater perspective={perspective} xray={xray} setXray={setXray} choices={shownChoices} order={order} shownIdx={choices.length} answered={pending !== null} onChoose={setPending} onNext={handleNext} onQuit={() => go("setup")} />
+          <Theater key={perspective} perspective={perspective} xray={pair ? false : xray} setXray={setXray} choices={shownChoices} order={orders[perspective]} shownIdx={choices.length} answered={pending !== null} onChoose={setPending} onNext={handleNext} onQuit={() => go("setup")} pair={pair} lastTurn={lastTurn} />
         )}
-        {view === "handoff" && <Handoff nextPerspective={other} onBegin={() => begin(other, false)} />}
+        {view === "handoff" && <Handoff nextPerspective={perspective} round={choices.length} total={total} onBegin={() => go("theater")} />}
+        {view === "reveal" && <RevealGate onReveal={() => go("pairReport")} />}
         {view === "report" && (
           <Report perspective={perspective} choices={choices} xray={xray} onRestart={() => begin()} onSwitch={() => begin(other)} onHome={() => go("landing")} />
         )}
-        {view === "pairReport" && <PairReport results={results} xray={xray} onRestart={() => go("setup")} onHome={() => go("landing")} />}
+        {view === "pairReport" && <PairReport results={progress} xray={false} onRestart={() => go("setup")} onHome={() => go("landing")} />}
       </main>
-      {!["landing", "chat", "theater", "handoff"].includes(view) && <AppFooter go={go} />}
+      {!["landing", "chat", "theater", "handoff", "reveal"].includes(view) && <AppFooter go={go} />}
     </div>
   );
 }
