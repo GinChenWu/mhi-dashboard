@@ -25,6 +25,12 @@ import {
   Sparkles,
   Waypoints,
 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { BlurFade } from "@/components/magicui/blur-fade";
+import { Marquee } from "@/components/magicui/marquee";
+import { NumberTicker } from "@/components/magicui/number-ticker";
+import { cn } from "@/lib/utils";
 
 /* ============================================================================
  * 《聽見光譜》 The Spectrum of Being Heard
@@ -1020,7 +1026,7 @@ function SignalParticles({ tone, animKey }) {
   const shape = {
     warm: <circle r={5.5} fill="#E8973A" filter="url(#glow)" />,
     neutral: <circle r={3.5} fill="#54463A" />,
-    cold: <polygon points="0,-7 5,0 0,7 -5,0" fill="#8C7A66" stroke="#7D6B58" strokeWidth={1} />,
+    cold: <polygon points="0,-7 5,0 0,7 -5,0" fill="#726150" stroke="#726150" strokeWidth={1} />,
     half: <circle r={4} fill="#F5C98A" stroke="#E8973A" strokeWidth={1} />,
     spike: <polygon points="-12,-5 12,0 -12,5 -7,0" fill="#D9414F" filter="url(#glowRed)" />,
   }[tone];
@@ -1046,7 +1052,7 @@ function Firewall({ up }) {
   return (
     <g className="wall" style={{ transform: up ? "scaleY(1)" : "scaleY(0)", opacity: up ? 1 : 0 }}>
       {bricks}
-      <text x={434} y={32} textAnchor="middle" fill="#B8404F" fontSize="13" fontWeight="600">防衛高牆</text>
+      <text x={434} y={32} textAnchor="middle" fill="#AC3E4B" fontSize="13" fontWeight="600">防衛高牆</text>
     </g>
   );
 }
@@ -1076,12 +1082,12 @@ function HourglassMeter({ quiet }) {
       </defs>
       <g clipPath="url(#hgClip)">
         <rect className="sand" x="8" y="10" width="44" height="30" fill="#E8973A" opacity=".85" style={{ transform: `scaleY(${1 - q})`, transformOrigin: "30px 40px" }} />
-        <rect className="sand" x="8" y="40" width="44" height="30" fill="#8C7A66" style={{ transform: `scaleY(${q})`, transformOrigin: "30px 70px" }} />
+        <rect className="sand" x="8" y="40" width="44" height="30" fill="#726150" style={{ transform: `scaleY(${q})`, transformOrigin: "30px 70px" }} />
         {q > 0.02 && q < 0.98 && <line x1="30" y1="38" x2="30" y2="70" stroke="#E8973A" strokeWidth="1.2" strokeDasharray="2 3" />}
       </g>
-      <path d="M10,10 C10,30 27,36 27,40 C27,44 10,50 10,70 H50 C50,50 33,44 33,40 C33,36 50,30 50,10 Z" fill="none" stroke="#7D6B58" strokeWidth="1.8" />
-      <line x1="7" y1="8" x2="53" y2="8" stroke="#7D6B58" strokeWidth="3" strokeLinecap="round" />
-      <line x1="7" y1="72" x2="53" y2="72" stroke="#7D6B58" strokeWidth="3" strokeLinecap="round" />
+      <path d="M10,10 C10,30 27,36 27,40 C27,44 10,50 10,70 H50 C50,50 33,44 33,40 C33,36 50,30 50,10 Z" fill="none" stroke="#726150" strokeWidth="1.8" />
+      <line x1="7" y1="8" x2="53" y2="8" stroke="#726150" strokeWidth="3" strokeLinecap="round" />
+      <line x1="7" y1="72" x2="53" y2="72" stroke="#726150" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
@@ -1094,7 +1100,7 @@ function RelationshipDashboard({ perspective, state, xray, animKey }) {
   const clarity = xray ? state.clarity : 100;
   const flat = xray && state.vit <= 10;
   const amp = xray ? 0.15 + (state.vit / 100) * 0.95 : 0.8;
-  const ecgColor = !xray ? "#7D6B58" : state.vit > 55 ? "#2F7A54" : state.vit > 25 ? "#B4610F" : "#B8404F";
+  const ecgColor = !xray ? "#726150" : state.vit > 55 ? "#2F704E" : state.vit > 25 ? "#945418" : "#AC3E4B";
   const vitLabel = !xray ? "表面看起來：平穩" : flat ? "死線 Flatline" : state.vit > 55 ? "活躍" : state.vit > 25 ? "振幅衰減中" : "幾乎沒有波動";
   const toneLabel = { warm: "暖光粒子：訊號抵達", half: "微光粒子：訊號只到了一半", cold: "下沉冰晶：訊號半途墜落", spike: "紅色尖刺：對方升起防衛高牆", neutral: "你以為：訊號正常送達" }[tone] || "等待你發出訊號";
 
@@ -1150,9 +1156,9 @@ function RelationshipDashboard({ perspective, state, xray, animKey }) {
 function Backdrop() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 overflow-hidden">
-      <div className="orb absolute -left-32 top-10 h-96 w-96 rounded-full bg-amber-500/30 blur-3xl" />
-      <div className="orb absolute -right-32 top-1/3 h-[28rem] w-[28rem] rounded-full bg-rose-500/20 blur-3xl" style={{ animationDelay: "-6s" }} />
-      <div className="orb absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-cyan-500/20 blur-3xl" style={{ animationDelay: "-11s" }} />
+      <div className="absolute -left-32 top-10 h-96 w-96 rounded-full bg-amber-500/30 blur-3xl" />
+      <div className="absolute -right-32 top-1/3 h-[28rem] w-[28rem] rounded-full bg-rose-500/20 blur-3xl" style={{ animationDelay: "-6s" }} />
+      <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-cyan-500/20 blur-3xl" style={{ animationDelay: "-11s" }} />
       <div className="grain absolute inset-0" />
     </div>
   );
@@ -1173,15 +1179,11 @@ function XrayToggle({ xray, setXray, compact }) {
   );
 }
 
-function PrimaryButton({ children, onClick, className = "" }) {
+function PrimaryButton({ children, onClick, className = "", tone = "ink" }) {
+  const tones = { ink: "bg-[#2B2019] text-[#FFF8EC] hover:bg-[#44342A]", paper: "bg-[#F7ECDD] text-[#2B2019] hover:bg-white" };
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#A8432F] to-[#B85C1C] px-6 py-3 text-sm font-semibold text-[#FFF8EC] shadow-lg shadow-orange-900/20 transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${className}`}
-    >
+    <button type="button" onClick={onClick} className={cn("inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold shadow-[0_10px_24px_-12px_rgba(43,32,25,.7)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent", tones[tone], className)}>
       {children}
-      <ArrowRight className="h-4 w-4 transition group-hover:transand-x-0.5" />
     </button>
   );
 }
@@ -1254,7 +1256,7 @@ function HeroArt() {
       <defs>
         <linearGradient id="heroBand" x1="0" x2="1"><stop offset="0" stopColor="#3B8C8C" /><stop offset=".5" stopColor="#E8973A" /><stop offset="1" stopColor="#D9596A" /></linearGradient>
         <radialGradient id="heroGlow"><stop offset="0" stopColor="#F5B25E" stopOpacity=".55" /><stop offset=".6" stopColor="#F5B25E" stopOpacity=".18" /><stop offset="1" stopColor="#F5B25E" stopOpacity="0" /></radialGradient>
-        <linearGradient id="figL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8CCBC4" /><stop offset="1" stopColor="#2F6F73" /></linearGradient>
+        <linearGradient id="figL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#8CCBC4" /><stop offset="1" stopColor="#2F6D71" /></linearGradient>
         <linearGradient id="figR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#F7C2A6" /><stop offset="1" stopColor="#C8485A" /></linearGradient>
         <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#E6D6BA" /><stop offset="1" stopColor="#F3E8D4" stopOpacity="0" /></linearGradient>
         <linearGradient id="hillNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#DCC7A4" /><stop offset="1" stopColor="#EFE2CB" stopOpacity="0" /></linearGradient>
@@ -1281,7 +1283,7 @@ function HeroArt() {
 
       <path d="M0,384 C 96,362 204,392 320,374 S 566,352 720,382 V420 H0 Z" fill="url(#hillNear)" />
 
-      {[[112, "url(#figL)", "#2F6F73"], [608, "url(#figR)", "#C8485A"]].map(([cx, fill, ink], i) => (
+      {[[112, "url(#figL)", "#2F6D71"], [608, "url(#figR)", "#C8485A"]].map(([cx, fill, ink], i) => (
         <g key={cx}>
           <ellipse cx={cx} cy={376} rx="50" ry="6" fill="#33291F" opacity=".08" />
           <circle cx={cx} cy={250} r="23" fill={fill} />
@@ -1307,23 +1309,17 @@ function TwoSides() {
   const dash = "h-5 w-px border-l border-dashed border-sand-600 md:h-px md:w-7 md:border-l-0 md:border-t";
   return (
     <div>
-      <div role="tablist" aria-label="選一句話" className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
+      <Tabs value={String(idx)} onValueChange={(v) => setIdx(Number(v))}>
+      <TabsList aria-label="選一句話" className="flex-col gap-2 sm:flex-row sm:flex-wrap">
         {TWO_SIDES.map((t, i) => (
-          <button
-            key={t.short}
-            role="tab"
-            type="button"
-            aria-selected={i === idx}
-            onClick={() => setIdx(i)}
-            className={`font-display rounded-full border px-5 py-2.5 text-[15px] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 ${i === idx ? "border-amber-400 bg-amber-400/20 text-sand-50 shadow-warm" : "border-sand-800 bg-sand-900/70 text-sand-400 hover:text-sand-200"}`}
-          >
+          <TabsTrigger key={t.short} value={String(i)} className="font-display rounded-full border border-sand-700 bg-sand-900/70 px-5 py-2.5 text-left text-[15px] text-sand-400 hover:text-sand-200 data-[state=active]:border-amber-400 data-[state=active]:bg-amber-400/20 data-[state=active]:text-sand-50 data-[state=active]:shadow-warm">
             「{t.short}」
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
+      </TabsList>
 
-      <div key={idx} role="tabpanel" className="fade-up mt-10">
-        <p className="font-display text-center text-2xl leading-relaxed text-sand-50 sm:text-3xl" style={{ textWrap: "balance" }}>「{item.line}」</p>
+      <TabsContent key={idx} value={String(idx)} className="fade-up mt-10">
+        <p className="font-display text-2xl leading-relaxed text-sand-50 sm:text-4xl sm:leading-relaxed">「{item.line}」</p>
         <div className="mt-8 grid items-stretch gap-3 md:grid-cols-[1fr_auto_1fr] md:gap-2">
           <div className="rounded-[1.75rem] border border-cyan-400/40 bg-cyan-400/10 p-6 sm:p-7">
             <div className="flex items-center gap-2 text-xs font-medium tracking-[0.2em] text-cyan-300"><MessageCircle className="h-4 w-4" />說的人，心裡想的是</div>
@@ -1331,7 +1327,7 @@ function TwoSides() {
           </div>
           <div className="flex flex-col items-center justify-center md:flex-row" aria-hidden="true">
             <span className={dash} />
-            <span className="floaty my-1 flex h-10 w-10 items-center justify-center rounded-full border border-sand-800 bg-sand-900 text-amber-300 shadow-warm md:mx-1 md:my-0"><Send className="h-4 w-4" /></span>
+            <span className="my-1 flex h-10 w-10 items-center justify-center rounded-full border border-sand-800 bg-sand-900 text-amber-300 shadow-warm md:mx-1 md:my-0"><Send className="h-4 w-4" /></span>
             <span className={dash} />
           </div>
           <div className="rounded-[1.75rem] border border-rose-400/40 bg-rose-400/10 p-6 sm:p-7">
@@ -1339,11 +1335,12 @@ function TwoSides() {
             <p className="font-display mt-3 text-[17px] leading-loose text-sand-100">{item.got}</p>
           </div>
         </div>
-        <div className="mx-auto mt-4 max-w-2xl rounded-[1.75rem] border border-amber-400/40 bg-amber-400/10 p-6 sm:p-7">
+        <div className="mt-4 rounded-[1.75rem] border border-amber-400/40 bg-amber-400/10 p-6 sm:p-7">
           <div className="flex items-center gap-2 text-xs font-medium tracking-[0.2em] text-amber-300"><Sparkles className="h-4 w-4" />話在中間，發生了什麼</div>
           <p className="mt-3 text-[15px] leading-loose text-sand-200">{item.why}</p>
         </div>
-      </div>
+      </TabsContent>
+      </Tabs>
     </div>
   );
 }
@@ -1393,23 +1390,24 @@ function SpectrumRibbon() {
   );
 }
 
-/* 那些我們都說過的話：緩慢橫移的一行字，當作段落之間的過場 */
+/* 那些我們都說過的話：兩行反向緩慢橫移的字（Magic UI 的 Marquee） */
 const SAID_LINES = ["都可以啊，看你。", "沒事，你忙你的。", "你決定就好，錢我出。", "我現在就要答案！", "嗯，辛苦了。早點休息吧。", "你管就好。", "我都陪你。", "沒關係，我自己來。"];
 
 function SaidMarquee() {
-  const row = (hidden) => (
-    <div className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
-      {SAID_LINES.map((t) => (
+  const row = (lines, reverse) => (
+    <Marquee reverse={reverse} repeat={3} className="p-0 [--duration:70s] [--gap:0rem]">
+      {lines.map((t) => (
         <span key={t} className="flex items-center">
           <span className="font-display whitespace-nowrap px-6 text-2xl text-sand-600 sm:text-3xl">{t}</span>
           <span className="h-1.5 w-1.5 rotate-45 bg-amber-400/70" />
         </span>
       ))}
-    </div>
+    </Marquee>
   );
   return (
-    <div className="marquee-mask overflow-hidden">
-      <div className="marquee flex w-max">{row(false)}{row(true)}</div>
+    <div className="marquee-mask space-y-3">
+      {row(SAID_LINES.slice(0, 4), false)}
+      {row(SAID_LINES.slice(4), true)}
     </div>
   );
 }
@@ -1427,15 +1425,14 @@ function Wave({ fill, flip }) {
   );
 }
 
-/* 首頁每一段的標題：置中，背後襯一個很淡的大字 */
-function SectionHead({ glyph, kicker, title, children, dark }) {
+/* 首頁每一段的標題：中文標題配一行英文，靠左；背後襯一個很淡的大字 */
+function SectionHead({ glyph, en, title, children }) {
   return (
-    <div className="relative">
-      <span aria-hidden="true" className={`font-display pointer-events-none absolute -top-12 right-0 select-none text-[8rem] leading-none sm:-top-20 sm:text-[14rem] ${dark ? "text-white/5" : "text-sand-800/60"}`}>{glyph}</span>
-      <div className="relative mx-auto mb-10 max-w-2xl text-center sm:mb-14">
-        <div className="font-latin text-xl italic text-amber-300 sm:text-2xl">{kicker}</div>
-        <h2 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-[2.75rem] sm:leading-tight" style={{ textWrap: "balance" }}>{title}</h2>
-        <div className="mt-4"><Ornament /></div>
+    <div className="relative mb-10 sm:mb-14">
+      <span aria-hidden="true" className="font-display pointer-events-none absolute -top-10 right-0 select-none text-[7rem] leading-none text-sand-800/60 sm:-top-20 sm:text-[14rem]">{glyph}</span>
+      <div className="relative max-w-2xl">
+        <h2 className="font-display text-[2rem] font-semibold leading-tight text-sand-50 sm:text-5xl">{title}</h2>
+        <p className="font-latin mt-1 text-xl italic text-amber-300 sm:text-2xl">{en}</p>
         {children && <p className="mt-5 text-[15px] leading-loose text-sand-400 sm:text-base sm:leading-loose">{children}</p>}
       </div>
     </div>
@@ -1490,7 +1487,7 @@ function StageMock() {
         ))}
         {[92, 128, 160, 196, 228].map((x, i) => <circle key={x} cx={x} cy={50 + [-6, 4, -3, 6, -2][i]} r="4" fill="#E8973A" opacity={0.45 + i * 0.12} />)}
       </svg>
-      <svg viewBox="0 0 320 34" className="mt-1 w-full"><polyline points="0,17 40,17 46,14 52,17 60,17 64,20 70,3 76,29 81,17 110,17 118,12 126,17 150,17 156,14 162,17 170,17 174,20 180,3 186,29 191,17 220,17 228,12 236,17 260,17 266,14 272,17 280,17 284,20 290,3 296,29 301,17 320,17" fill="none" stroke="#2F7A54" strokeWidth="1.8" strokeLinejoin="round" /></svg>
+      <svg viewBox="0 0 320 34" className="mt-1 w-full"><polyline points="0,17 40,17 46,14 52,17 60,17 64,20 70,3 76,29 81,17 110,17 118,12 126,17 150,17 156,14 162,17 170,17 174,20 180,3 186,29 191,17 220,17 228,12 236,17 260,17 266,14 272,17 280,17 284,20 290,3 296,29 301,17 320,17" fill="none" stroke="#2F704E" strokeWidth="1.8" strokeLinejoin="round" /></svg>
       <div className="font-sans mt-3 space-y-2 text-[12px] leading-snug">
         <div className="rounded-xl border border-sand-700 bg-sand-950/70 px-3 py-2 text-sand-400">「好喔，那就好。你真的很獨立……」</div>
         <div className="rounded-xl border border-amber-400 bg-amber-400/15 px-3 py-2 text-sand-100">「『處理好了』跟『沒事』好像不太一樣……」</div>
@@ -1503,60 +1500,64 @@ function StageMock() {
   );
 }
 
-function Landing({ onStart, onChat, go }) {
+function Landing({ onStart, onChat }) {
   const vertical = { writingMode: "vertical-rl" };
   const ways = [
-    { key: "chat", mock: PhoneMock, kicker: "Conversation", title: "跟小譯聊一段", text: "小譯會用一個日常場景，帶你一站一站看五種回應。每一站都會告訴你：他心裡在想什麼、對方聽到什麼、兩邊可以怎麼做。", points: ["三個隨機場景，每次進來不一樣", "一問一答，不用打字", "結束時有一張可以帶走的小卡"], time: "約 10 分鐘", cta: "開始對話", run: onChat },
-    { key: "theater", mock: StageMock, kicker: "Theater", title: "親自演一遍", text: "走進一段感情的三幕故事，選你會說的話，看看對方表面怎麼回、心裡其實怎麼想。你的每個選擇，都會改變下一段的開場。", points: ["兩個視角，可以換邊再演一次", "三幕六個抉擇，選項每次順序不同", "可以兩個人輪流，最後一起看對照"], time: "約 15 分鐘", cta: "走進劇場", run: onStart },
+    { key: "chat", mock: PhoneMock, en: "Conversation", title: "跟小譯聊一段", text: "小譯會用一個日常場景，帶你一站一站看五種回應。每一站都會告訴你：他心裡在想什麼、對方聽到什麼、兩邊可以怎麼做。", points: ["三個隨機場景，每次進來不一樣", "一問一答，不用打字", "結束時有一張可以帶走的小卡"], time: "約 10 分鐘", cta: "開始對話", run: onChat },
+    { key: "theater", mock: StageMock, en: "Theater", title: "親自演一遍", text: "走進一段感情的三幕故事，選你會說的話，看看對方表面怎麼回、心裡其實怎麼想。你的每個選擇，都會改變下一段的開場。", points: ["兩個視角，可以換邊再演一次", "三幕六個抉擇，選項每次順序不同", "可以兩個人輪流，最後一起看對照"], time: "約 15 分鐘", cta: "走進劇場", run: onStart },
   ];
-  const ghost = "inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400";
+  const ghost = "inline-flex items-center rounded-full border px-6 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400";
   return (
     <div className="font-body">
-      {/* ── 主視覺 ── */}
-      <header className={`${WRAP} fade-up pb-4 pt-4 text-center sm:pt-8`}>
-        <div className="mx-auto max-w-4xl rounded-[2.25rem] border border-sand-700/70 bg-gradient-to-b from-[#FFFAF0] to-[#FBEEDB] p-2 shadow-[0_40px_90px_-45px_rgba(120,72,20,.6)] sm:rounded-[2.75rem] sm:p-3">
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-sand-800 bg-gradient-to-b from-[#FFF6E6] via-[#FDF1DE] to-[#F7E6CC] sm:rounded-[2.25rem]">
-            <HeroArt />
-            <p className="font-display absolute right-3 top-4 text-sm tracking-[0.4em] text-sand-100 sm:right-7 sm:top-8 sm:text-xl" style={vertical}>明明很在乎</p>
-            <p className="font-display absolute left-3 top-4 text-sm tracking-[0.4em] text-sand-300 sm:left-7 sm:top-8 sm:text-xl" style={vertical}>話一出口卻變了樣</p>
-            <span aria-hidden="true" className="font-latin absolute bottom-1.5 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm italic text-sand-500 sm:bottom-4 sm:text-xl">on being heard</span>
+      {/* ── 主視覺：進站時由上而下依序浮現，是整頁唯一的自動進場動畫 ── */}
+      <header className={`${WRAP} pb-4 pt-4 text-center sm:pt-8`}>
+        <BlurFade duration={0.7} offset={10}>
+          <div className="mx-auto max-w-4xl rounded-[2.25rem] border border-sand-700/70 bg-gradient-to-b from-[#FFFAF0] to-[#FBEEDB] p-2 shadow-[0_40px_90px_-45px_rgba(120,72,20,.6)] sm:rounded-[2.75rem] sm:p-3">
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-sand-800 bg-gradient-to-b from-[#FFF6E6] via-[#FDF1DE] to-[#F7E6CC] sm:rounded-[2.25rem]">
+              <HeroArt />
+              <p className="font-display absolute right-3 top-4 text-sm tracking-[0.4em] text-sand-100 sm:right-7 sm:top-8 sm:text-xl" style={vertical}>明明很在乎</p>
+              <p className="font-display absolute left-3 top-4 text-sm tracking-[0.4em] text-sand-300 sm:left-7 sm:top-8 sm:text-xl" style={vertical}>話一出口卻變了樣</p>
+              <span aria-hidden="true" className="font-latin absolute bottom-1.5 left-1/2 -translate-x-1/2 whitespace-nowrap text-sm italic text-sand-500 sm:bottom-4 sm:text-xl">on being heard</span>
+            </div>
           </div>
-        </div>
+        </BlurFade>
 
-        <div className="font-latin mt-9 text-2xl italic text-amber-300 sm:mt-12 sm:text-4xl">The Spectrum of Being Heard</div>
-        <h1 className="font-display mt-4 text-6xl font-semibold tracking-[0.14em] text-sand-50 sm:text-8xl">聽見光譜</h1>
-        <svg viewBox="0 0 220 14" className="mx-auto mt-3 h-3.5 w-56" aria-hidden="true"><path d="M4 9 C 40 2, 70 13, 110 7 S 180 3, 216 8" fill="none" stroke="url(#heroBand)" strokeWidth="3" strokeLinecap="round" opacity=".8" /></svg>
-        <p className="font-display mt-6 text-lg tracking-[0.2em] text-sand-300 sm:text-2xl">關於我們怎麼說話，又怎麼被聽見</p>
-        <p className="font-sans mt-3 text-[10px] tracking-[0.4em] text-sand-500 sm:text-[11px]">HOW WE SPEAK　·　HOW WE ARE HEARD</p>
-        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-loose text-sand-400 sm:text-[17px] sm:leading-loose">你是不是也遇過？想關心對方，結果吵起來；對方說「沒事」，你卻越想越不對勁。很多時候沒有誰對誰錯，只是兩個人習慣的說話方式不一樣。</p>
-        <div className="font-sans mt-9 flex flex-wrap items-center justify-center gap-3">
-          <PrimaryButton onClick={onChat}>開始一段對話</PrimaryButton>
-          <button type="button" onClick={onStart} className={`${ghost} border-sand-600 bg-sand-900/60 text-sand-100 hover:bg-sand-800`}>進入互動劇場<ArrowRight className="h-4 w-4" /></button>
-        </div>
-        <ul className="font-sans mx-auto mt-8 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-sand-500">
-          <li className="flex items-center gap-1.5"><Timer className="h-3.5 w-3.5 text-amber-300" />十到十五分鐘</li>
-          <li className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-300" />沒有標準答案</li>
-          <li className="flex items-center gap-1.5"><Heart className="h-3.5 w-3.5 text-amber-300" />不分對錯</li>
-        </ul>
+        <BlurFade delay={0.25} duration={0.6}>
+          <h1 className="font-display mt-9 text-6xl font-semibold tracking-[0.14em] text-sand-50 sm:mt-12 sm:text-8xl">聽見光譜</h1>
+          <p className="font-latin mt-2 text-2xl italic text-amber-300 sm:text-4xl">The Spectrum of Being Heard</p>
+        </BlurFade>
+        <BlurFade delay={0.45} duration={0.6}>
+          <p className="font-display mt-7 text-lg tracking-[0.2em] text-sand-300 sm:text-2xl">關於我們怎麼說話，又怎麼被聽見</p>
+          <p className="mx-auto mt-5 max-w-xl text-[15px] leading-loose text-sand-400 sm:text-[17px] sm:leading-loose">你是不是也遇過？想關心對方，結果吵起來；對方說「沒事」，你卻越想越不對勁。很多時候沒有誰對誰錯，只是兩個人習慣的說話方式不一樣。</p>
+        </BlurFade>
+        <BlurFade delay={0.65} duration={0.6}>
+          <div className="font-sans mt-9 flex flex-wrap items-center justify-center gap-3">
+            <PrimaryButton onClick={onChat}>開始一段對話</PrimaryButton>
+            <button type="button" onClick={onStart} className={`${ghost} border-sand-600 bg-sand-900/60 text-sand-100 hover:bg-sand-800`}>進入互動劇場</button>
+          </div>
+          <ul className="font-sans mx-auto mt-8 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-sand-500">
+            <li className="flex items-center gap-1.5"><Timer className="h-3.5 w-3.5 text-amber-300" />十到十五分鐘</li>
+            <li className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-300" />沒有標準答案</li>
+            <li className="flex items-center gap-1.5"><Heart className="h-3.5 w-3.5 text-amber-300" />不分對錯</li>
+          </ul>
+        </BlurFade>
       </header>
 
       {/* ── 那些我們都說過的話 ── */}
       <div className="mt-16 sm:mt-24">
-        <div className="font-latin text-center text-xl italic text-amber-300 sm:text-2xl">Things we have all said</div>
-        <div className="font-sans mt-1 text-center text-[11px] tracking-[0.35em] text-sand-500">那些我們都說過的話</div>
+        <p className={`${WRAP} font-display text-lg text-sand-300`}>那些我們都說過的話<span className="font-latin ml-3 text-xl italic text-amber-300">Things we have all said</span></p>
         <div className="mt-5"><SaidMarquee /></div>
       </div>
 
       {/* ── 三個步驟 ── */}
       <section className={`${WRAP} mt-20 sm:mt-28`}>
-        <ol className="grid gap-8 md:grid-cols-3 md:gap-6">
+        <ol className="grid gap-8 md:grid-cols-3 md:gap-10">
           {STEPS.map((s, i) => (
-            <li key={s.n} className="relative flex gap-5 md:block md:text-center">
-              {i < STEPS.length - 1 && <span aria-hidden="true" className="absolute left-7 top-14 h-[calc(100%-1.5rem)] w-px bg-sand-700 md:left-[calc(50%+2.25rem)] md:top-7 md:h-px md:w-[calc(100%-3rem)]" />}
-              <span className="font-latin relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-amber-400/60 bg-sand-900 text-2xl italic text-amber-300 shadow-warm md:mx-auto">{s.n}</span>
+            <li key={s.n} className="relative flex gap-5 md:block">
+              {i < STEPS.length - 1 && <span aria-hidden="true" className="absolute left-7 top-14 h-[calc(100%-1.5rem)] w-px bg-sand-700 md:left-[4.5rem] md:top-7 md:h-px md:w-[calc(100%-2.5rem)]" />}
+              <span className="font-latin relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-amber-400/60 bg-sand-900 text-2xl italic text-amber-300">{s.n}</span>
               <div className="md:mt-5">
-                <div className="font-latin text-lg italic text-amber-300">{s.en}</div>
-                <h3 className="font-display text-xl font-semibold text-sand-50">{s.title}</h3>
+                <h3 className="font-display text-xl font-semibold text-sand-50">{s.title}<span className="font-latin ml-2.5 text-lg font-normal italic text-amber-300">{s.en}</span></h3>
                 <p className="mt-2 text-[15px] leading-loose text-sand-400">{s.text}</p>
               </div>
             </li>
@@ -1569,7 +1570,7 @@ function Landing({ onStart, onChat, go }) {
         <Wave fill={TINT} />
         <section style={{ background: TINT }} className="py-16 sm:py-24">
           <div className={WRAP}>
-            <SectionHead glyph="話" kicker="Said &amp; Heard" title="一句話的兩面">同一句話，說的人心裡想的，和聽的人收到的，常常不是同一件事。選一句看看。</SectionHead>
+            <SectionHead glyph="話" en="Said &amp; Heard" title="一句話的兩面">同一句話，說的人心裡想的，和聽的人收到的，常常不是同一件事。選一句看看。</SectionHead>
             <TwoSides />
           </div>
         </section>
@@ -1578,13 +1579,13 @@ function Landing({ onStart, onChat, go }) {
 
       {/* ── 五種說話的方式 ── */}
       <section className={`${WRAP} mt-16 sm:mt-24`}>
-        <SectionHead glyph="譜" kicker="Five Ways of Answering" title="五種說話的方式">把常見的回話方式由左到右排開：左邊的人習慣先處理事情，右邊的人習慣先顧感受，中間是兩邊都顧到。沒有哪一種比較差。</SectionHead>
+        <SectionHead glyph="譜" en="Five Ways of Answering" title="五種說話的方式">把常見的回話方式由左到右排開：左邊的人習慣先處理事情，右邊的人習慣先顧感受，中間是兩邊都顧到。沒有哪一種比較差。</SectionHead>
         <SpectrumRibbon />
       </section>
 
       {/* ── 兩種走法 ── */}
       <section className={`${WRAP} mt-24 sm:mt-36`}>
-        <SectionHead glyph="行" kicker="Two Ways In" title="兩種走法">想輕鬆一點，就跟小譯聊；想親身體會，就自己演一遍。兩種都可以，順序隨你。</SectionHead>
+        <SectionHead glyph="行" en="Two Ways In" title="兩種走法">想輕鬆一點，就跟小譯聊；想親身體會，就自己演一遍。兩種都可以，順序隨你。</SectionHead>
         <div className="space-y-16 sm:space-y-24">
           {ways.map((w, i) => (
             <div key={w.key} className="grid items-center gap-10 md:grid-cols-2 md:gap-14">
@@ -1593,14 +1594,14 @@ function Landing({ onStart, onChat, go }) {
                 <div className="relative"><w.mock /></div>
               </div>
               <div>
-                <div className="font-latin text-xl italic text-amber-300 sm:text-2xl">{w.kicker}</div>
-                <h3 className="font-display mt-2 text-3xl font-semibold text-sand-50 sm:text-4xl">{w.title}</h3>
+                <h3 className="font-display text-3xl font-semibold text-sand-50 sm:text-4xl">{w.title}</h3>
+                <p className="font-latin mt-1 text-xl italic text-amber-300 sm:text-2xl">{w.en}</p>
                 <p className="mt-4 text-[15px] leading-loose text-sand-300 sm:text-base sm:leading-loose">{w.text}</p>
                 <ul className="mt-5 space-y-2.5 text-[15px] text-sand-300">
                   {w.points.map((pt) => <li key={pt} className="flex items-start gap-2.5"><Check className="mt-1 h-4 w-4 shrink-0 text-amber-300" />{pt}</li>)}
                 </ul>
                 <div className="font-sans mt-7 flex flex-wrap items-center gap-4">
-                  <button type="button" onClick={w.run} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#A8432F] to-[#B85C1C] px-6 py-3 text-sm font-semibold text-[#FFF8EC] shadow-lg shadow-orange-900/20 transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400">{w.cta}<ArrowRight className="h-4 w-4" /></button>
+                  <PrimaryButton onClick={w.run}>{w.cta}</PrimaryButton>
                   <span className="flex items-center gap-1.5 text-xs text-sand-500"><Timer className="h-3.5 w-3.5" />{w.time}</span>
                 </div>
               </div>
@@ -1609,19 +1610,18 @@ function Landing({ onStart, onChat, go }) {
         </div>
       </section>
 
-      {/* ── 你可能想問 ── */}
+      {/* ── 你可能想問（shadcn/ui 的 Accordion） ── */}
       <section className={`${WRAP} mt-24 sm:mt-36`}>
-        <SectionHead glyph="問" kicker="Questions" title="你可能想問">開始之前，先回答幾個常被問到的問題。</SectionHead>
-        <div className="mx-auto max-w-2xl space-y-3">
-          {FAQ.map(([q, a]) => (
-            <details key={q} className="group rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm">
-              <summary className="font-display flex cursor-pointer list-none items-center justify-between gap-4 rounded-3xl px-6 py-4 text-[17px] text-sand-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 [&::-webkit-details-marker]:hidden">
-                {q}
-                <ChevronRight className="h-4 w-4 shrink-0 text-sand-500 transition group-open:rotate-90" />
-              </summary>
-              <p className="px-6 pb-5 text-[15px] leading-loose text-sand-400">{a}</p>
-            </details>
-          ))}
+        <div className="grid gap-x-14 md:grid-cols-[1fr_1.5fr]">
+          <SectionHead glyph="問" en="Questions" title="你可能想問">開始之前，先回答幾個常被問到的問題。</SectionHead>
+          <Accordion type="single" collapsible className="relative border-t border-sand-700">
+            {FAQ.map(([q, a]) => (
+              <AccordionItem key={q} value={q}>
+                <AccordionTrigger className="font-display text-[17px] text-sand-100 sm:text-lg">{q}</AccordionTrigger>
+                <AccordionContent className="text-[15px] leading-loose text-sand-400">{a}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
 
@@ -1632,13 +1632,12 @@ function Landing({ onStart, onChat, go }) {
           <svg viewBox="0 0 720 420" preserveAspectRatio="xMidYMid slice" className="pointer-events-none absolute inset-0 h-full w-full opacity-40" aria-hidden="true">
             {HERO_STRANDS.map((s) => <path key={s.o} d={strand(s.o * 1.6, 10)} fill="none" stroke="url(#heroBand)" strokeWidth={s.width} opacity={s.opacity * 0.7} />)}
           </svg>
-          <section className={`${WRAP} relative py-20 text-center sm:py-28`}>
-            <p className="font-latin text-2xl italic text-[#E8B77A] sm:text-4xl">Understanding is not agreeing.</p>
-            <div className="mx-auto mt-6 h-px w-16 bg-[#E8B77A]/50" />
-            <p className="font-display mx-auto mt-8 max-w-2xl text-2xl leading-loose text-[#F7ECDD] sm:text-4xl sm:leading-loose" style={{ textWrap: "balance" }}>理解不等於同意。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。</p>
-            <div className="font-sans mt-10 flex flex-wrap items-center justify-center gap-3">
-              <PrimaryButton onClick={onChat}>開始一段對話</PrimaryButton>
-              <button type="button" onClick={onStart} className={`${ghost} border-[#7A6652] text-[#F7ECDD] hover:bg-white/10`}>進入互動劇場<ArrowRight className="h-4 w-4" /></button>
+          <section className={`${WRAP} relative py-20 sm:py-28`}>
+            <p className="font-display max-w-3xl text-[1.7rem] leading-loose text-[#F7ECDD] sm:text-5xl sm:leading-[1.7]" style={{ textWrap: "balance" }}>理解不等於同意。只是當你看得見對方站在哪裡，就比較知道要往哪裡伸手。</p>
+            <p className="font-latin mt-6 text-2xl italic text-[#E8B77A] sm:text-3xl">Understanding is not agreeing.</p>
+            <div className="font-sans mt-10 flex flex-wrap items-center gap-3">
+              <PrimaryButton tone="paper" onClick={onChat}>開始一段對話</PrimaryButton>
+              <button type="button" onClick={onStart} className={`${ghost} border-[#7A6652] text-[#F7ECDD] hover:bg-white/10`}>進入互動劇場</button>
             </div>
           </section>
           <footer className={`${WRAP} font-sans relative pb-10`}>
@@ -1648,21 +1647,21 @@ function Landing({ onStart, onChat, go }) {
                 <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-[#BDA98F]">陪你看懂不同的人怎麼說話、怎麼在乎。</p>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.3em] text-[#8F7B66]">體驗</div>
+                <div className="text-[13px] text-[#A8947D]">體驗</div>
                 <ul className="mt-1 text-[#E5D6C2]">
                   <li><button type="button" onClick={onChat} className="-mx-2 rounded-lg px-2 py-2 hover:text-white">跟小譯聊一段</button></li>
                   <li><button type="button" onClick={onStart} className="-mx-2 rounded-lg px-2 py-2 hover:text-white">三幕互動劇場</button></li>
                 </ul>
               </div>
               <div>
-                <div className="text-[11px] tracking-[0.3em] text-[#8F7B66]">說明</div>
+                <div className="text-[13px] text-[#A8947D]">說明</div>
                 <ul className="mt-3 space-y-2 text-[13px] leading-relaxed text-[#BDA98F]">
                   <li>心理教育用途，不是臨床診斷工具。</li>
                   <li>你的回答只留在這個頁面裡，不會被傳送或儲存。</li>
                 </ul>
               </div>
             </div>
-            <div className="font-latin mt-10 text-center text-lg italic text-[#BDA98F]">The Spectrum of Being Heard</div>
+            <div className="font-latin mt-10 text-lg italic text-[#BDA98F]">The Spectrum of Being Heard</div>
           </footer>
         </div>
       </div>
@@ -1896,7 +1895,7 @@ function RadarChart({ dims, dims2 }) {
       {DIMS.map((d, i) => (
         <g key={d.key}>
           <text x={labelPos[i][0]} y={labelPos[i][1]} textAnchor={anchors[i]} fill="#33291F" fontSize="13" fontWeight="600">{d.label}</text>
-          <text x={labelPos[i][0]} y={labelPos[i][1] + 16} textAnchor={anchors[i]} fontSize="13" fontWeight="700"><tspan fill={dims2 ? "#2F6F73" : "#B4610F"}>{Math.round(dims[i])}</tspan>{dims2 && <tspan fill="#B4610F">{` ／ ${Math.round(dims2[i])}`}</tspan>}</text>
+          <text x={labelPos[i][0]} y={labelPos[i][1] + 16} textAnchor={anchors[i]} fontSize="13" fontWeight="700"><tspan fill={dims2 ? "#2F6D71" : "#945418"}>{Math.round(dims[i])}</tspan>{dims2 && <tspan fill="#945418">{` ／ ${Math.round(dims2[i])}`}</tspan>}</text>
         </g>
       ))}
     </svg>
@@ -1904,17 +1903,19 @@ function RadarChart({ dims, dims2 }) {
 }
 
 function RiskGauge({ risk, level }) {
-  const color = { low: "#2F7A54", mid: "#B4610F", high: "#B8404F" }[level];
+  const color = { low: "#2F704E", mid: "#945418", high: "#AC3E4B" }[level];
   const label = { low: "暖流暢通", mid: "訊號衰減中", high: "瀕臨斷線" }[level];
   const r = 70, circ = Math.PI * r;
   return (
     <div className="flex flex-col items-center">
+      <div className="relative">
       <svg viewBox="0 0 180 104" className="w-56" role="img" aria-label={`關係疏離風險指數 ${risk}，${label}`}>
         <path d="M 20 94 A 70 70 0 0 1 160 94" fill="none" stroke="#EADFCB" strokeWidth="12" strokeLinecap="round" />
         <path d="M 20 94 A 70 70 0 0 1 160 94" fill="none" stroke={color} strokeWidth="12" strokeLinecap="round" strokeDasharray={`${(risk / 100) * circ} ${circ}`} style={{ transition: "stroke-dasharray 1.2s ease" }} />
-        <text x="90" y="80" textAnchor="middle" fill="#33291F" fontSize="38" fontWeight="700">{risk}</text>
-        <text x="90" y="98" textAnchor="middle" fill="#8C7A66" fontSize="10">／100</text>
+        <text x="90" y="98" textAnchor="middle" fill="#726150" fontSize="10">／100</text>
       </svg>
+      <div aria-hidden="true" className="absolute inset-x-0 top-[40%] text-center"><NumberTicker value={risk} className="text-[2.6rem] font-bold leading-none text-sand-100" /></div>
+      </div>
       <div className="mt-1 rounded-full px-3 py-1 text-sm font-semibold" style={{ color, background: `${color}1f` }}>{label}</div>
     </div>
   );
@@ -3024,7 +3025,7 @@ export default function App() {
       <style>{GLOBAL_CSS}</style>
       <Backdrop />
       <AppHeader view={view} go={go} />
-      <main key={view} className="fade-up relative">
+      <main key={view} className={view === "landing" ? "relative" : "fade-up relative"}>
         {view === "landing" && <Landing onStart={() => go("setup")} onChat={() => go("chat")} />}
         {view === "chat" && <SpectrumChat key={chatRun} onTheater={() => go("setup")} onHome={() => go("landing")} onRestart={() => { setChatRun((n) => n + 1); window.scrollTo({ top: 0 }); }} />}
         {view === "setup" && <Setup mode={mode} setMode={setMode} perspective={perspective} setPerspective={setPerspective} xray={xray} setXray={setXray} onBegin={() => begin()} onBack={() => go("landing")} />}
