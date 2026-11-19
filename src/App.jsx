@@ -4,15 +4,12 @@ import {
   Send,
   User,
   Users,
-  Coffee,
   Heart,
   KeyRound,
   Luggage,
   Mail,
   Moon,
   Timer,
-  VolumeX,
-  Wind,
   Brain,
   Check,
   ChevronRight,
@@ -23,7 +20,6 @@ import {
   Languages,
   Lock,
   MessageCircle,
-  Quote,
   RotateCcw,
   ShieldAlert,
   Sparkles,
@@ -1169,7 +1165,7 @@ function XrayToggle({ xray, setXray, compact }) {
       role="switch"
       aria-checked={xray}
       onClick={() => setXray(!xray)}
-      className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${xray ? "border-amber-400/60 bg-amber-400/10 text-amber-200" : "border-sand-700 bg-sand-900 text-sand-400 hover:text-sand-200"}`}
+      className={`flex items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${xray ? "border-amber-400/60 bg-amber-400/10 text-amber-200" : "border-sand-700 bg-sand-900 text-sand-400 hover:text-sand-200"}`}
     >
       {xray ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
       {compact ? (xray ? "X 光：開" : "X 光：關") : xray ? "伴侶腦內 X 光透視：開啟" : "伴侶腦內 X 光透視：關閉"}
@@ -1193,7 +1189,7 @@ function PrimaryButton({ children, onClick, className = "" }) {
 function SectionTitle({ kicker, title, children }) {
   return (
     <div className="mb-6">
-      <div className="text-xs font-medium tracking-[0.25em] text-cyan-300/80">{kicker}</div>
+      <div className="font-latin text-xl italic text-amber-300">{kicker}</div>
       <h2 className="font-display mt-2 text-2xl font-semibold text-sand-50 sm:text-3xl">{title}</h2>
       {children && <p className="mt-3 max-w-2xl text-sm leading-relaxed text-sand-400">{children}</p>}
     </div>
@@ -1228,7 +1224,7 @@ const TWO_SIDES = [
 ];
 
 const FAQ = [
-  ["這是心理測驗嗎？", "不是。這裡不會幫你分類，也不會打分數。五種說話的方式只是一張地圖：同一個人在不同時候、面對不同的人，會站到不同的位置。"],
+  ["這是心理測驗嗎？", "不是。五種說話的方式只是一張地圖，不是把人分類：同一個人在不同時候、面對不同的人，會站到不同的位置。劇場最後有一份報告，裡面的數字只是回顧你這一輪的選擇，不是對你這個人的評價。"],
   ["一定要兩個人一起嗎？", "不用，一個人就可以走完對話和劇場。如果想跟伴侶或朋友一起，劇場裡有輪流用同一支手機的雙人模式，走完可以一起看對照。"],
   ["我的回答會被記錄嗎？", "不會。所有內容都只在你的瀏覽器裡進行，關掉頁面就沒有了，不會傳送到任何地方。"],
   ["看完之後可以做什麼？", "挑一件最小的事試試看就好。例如下次想說「都可以」的時候，先說出一個自己的想法；或是對方說「沒事」的時候，多問一句。"],
@@ -1242,17 +1238,6 @@ function Ornament() {
       <circle cx="49" cy="6" r="1.3" fill="#D9C8AD" />
       <circle cx="71" cy="6" r="1.3" fill="#D9C8AD" />
     </svg>
-  );
-}
-
-function LandingHeading({ kicker, title, children }) {
-  return (
-    <div className="mx-auto mb-10 max-w-2xl text-center">
-      <div className="text-[11px] font-medium tracking-[0.35em] text-sand-500">{kicker}</div>
-      <h2 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-4xl" style={{ textWrap: "balance" }}>{title}</h2>
-      <div className="mt-4"><Ornament /></div>
-      {children && <p className="mt-4 text-[15px] leading-loose text-sand-400">{children}</p>}
-    </div>
   );
 }
 
@@ -1550,7 +1535,7 @@ function Landing({ onStart, onChat, go }) {
         </div>
         <ul className="font-sans mx-auto mt-8 flex max-w-md flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-sand-500">
           <li className="flex items-center gap-1.5"><Timer className="h-3.5 w-3.5 text-amber-300" />十到十五分鐘</li>
-          <li className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-300" />沒有分數</li>
+          <li className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-300" />沒有標準答案</li>
           <li className="flex items-center gap-1.5"><Heart className="h-3.5 w-3.5 text-amber-300" />不分對錯</li>
         </ul>
       </header>
@@ -1629,12 +1614,12 @@ function Landing({ onStart, onChat, go }) {
         <SectionHead glyph="問" kicker="Questions" title="你可能想問">開始之前，先回答幾個常被問到的問題。</SectionHead>
         <div className="mx-auto max-w-2xl space-y-3">
           {FAQ.map(([q, a]) => (
-            <details key={q} className="group rounded-3xl border border-sand-800 bg-sand-900/80 px-6 py-4 shadow-warm">
-              <summary className="font-display flex cursor-pointer list-none items-center justify-between gap-4 text-[17px] text-sand-100 [&::-webkit-details-marker]:hidden">
+            <details key={q} className="group rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm">
+              <summary className="font-display flex cursor-pointer list-none items-center justify-between gap-4 rounded-3xl px-6 py-4 text-[17px] text-sand-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 [&::-webkit-details-marker]:hidden">
                 {q}
                 <ChevronRight className="h-4 w-4 shrink-0 text-sand-500 transition group-open:rotate-90" />
               </summary>
-              <p className="mt-3 text-[15px] leading-loose text-sand-400">{a}</p>
+              <p className="px-6 pb-5 text-[15px] leading-loose text-sand-400">{a}</p>
             </details>
           ))}
         </div>
@@ -1664,9 +1649,9 @@ function Landing({ onStart, onChat, go }) {
               </div>
               <div>
                 <div className="text-[11px] tracking-[0.3em] text-[#8F7B66]">體驗</div>
-                <ul className="mt-3 space-y-2 text-[#E5D6C2]">
-                  <li><button type="button" onClick={onChat} className="hover:text-white">跟小譯聊一段</button></li>
-                  <li><button type="button" onClick={onStart} className="hover:text-white">三幕互動劇場</button></li>
+                <ul className="mt-1 text-[#E5D6C2]">
+                  <li><button type="button" onClick={onChat} className="-mx-2 rounded-lg px-2 py-2 hover:text-white">跟小譯聊一段</button></li>
+                  <li><button type="button" onClick={onStart} className="-mx-2 rounded-lg px-2 py-2 hover:text-white">三幕互動劇場</button></li>
                 </ul>
               </div>
               <div>
@@ -1690,8 +1675,8 @@ function Landing({ onStart, onChat, go }) {
 function Setup({ mode, setMode, perspective, setPerspective, xray, setXray, onBegin, onBack }) {
   return (
     <div className="mx-auto max-w-4xl px-4 pb-24 pt-14 sm:px-6">
-      <button type="button" onClick={onBack} className="mb-6 text-xs text-sand-500 hover:text-sand-300">← 回到首頁</button>
-      <SectionTitle kicker="SETUP" title="選擇你要走進誰的心裡">同一段感情，兩個人經歷的是兩個故事。選一個視角開始；結束後，很推薦換另一邊再走一次——理解，常常是從「原來你那時候是這樣想的」開始的。</SectionTitle>
+      <button type="button" onClick={onBack} className="-ml-2 mb-4 rounded-lg px-2 py-2.5 text-sm text-sand-500 hover:text-sand-300">← 回到首頁</button>
+      <SectionTitle kicker="Before We Begin" title="選擇你要走進誰的心裡">同一段感情，兩個人經歷的是兩個故事。選一個視角開始；結束後，很推薦換另一邊再走一次——理解，常常是從「原來你那時候是這樣想的」開始的。</SectionTitle>
 
       <div role="radiogroup" aria-label="體驗方式" className="mb-6 grid gap-3 sm:grid-cols-2">
         {[
@@ -1813,7 +1798,7 @@ function Theater({ perspective, xray, setXray, choices, order, shownIdx, answere
         </ol>
         <div className="flex items-center gap-2">
           <XrayToggle xray={xray} setXray={setXray} compact />
-          <button type="button" onClick={onQuit} className="rounded-full border border-sand-800 px-3 py-1.5 text-xs text-sand-500 hover:text-sand-300">離開</button>
+          <button type="button" onClick={onQuit} className="rounded-full border border-sand-800 px-3.5 py-2 text-xs text-sand-500 hover:text-sand-300">離開</button>
         </div>
       </div>
 
@@ -1880,7 +1865,7 @@ function Theater({ perspective, xray, setXray, choices, order, shownIdx, answere
             )}
 
             <div className="fade-up pt-4 text-right" style={{ animationDelay: `${afterEnd + 0.7}s` }}>
-              <PrimaryButton onClick={onNext}>{isLast ? "查看診斷報告" : acts[shownIdx + 1].act === act.act ? "這一幕還沒結束" : `進入${acts[shownIdx + 1].act}`}</PrimaryButton>
+              <PrimaryButton onClick={onNext}>{isLast ? "查看診斷報告" : acts[shownIdx + 1].act === act.act ? "繼續這一幕" : `進入${acts[shownIdx + 1].act}`}</PrimaryButton>
             </div>
           </div>
         )}
@@ -1958,7 +1943,7 @@ function Translator({ defaultTab }) {
           <h4 className="text-sm font-semibold text-cyan-300">一、看懂隱形求救：她說的 → 其實是</h4>
           <div className="mt-3 flex flex-wrap gap-2">
             {DECODER.map((d, i) => (
-              <button key={d.heard} type="button" aria-pressed={i === dIdx} onClick={() => setDIdx(i)} className={`rounded-full border px-3 py-1.5 text-left text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${i === dIdx ? "border-cyan-400/60 bg-cyan-400/10 text-cyan-100" : "border-sand-700 text-sand-400 hover:text-sand-200"}`}>{d.heard}</button>
+              <button key={d.heard} type="button" aria-pressed={i === dIdx} onClick={() => setDIdx(i)} className={`rounded-full border px-3.5 py-2 text-left text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${i === dIdx ? "border-cyan-400/60 bg-cyan-400/10 text-cyan-100" : "border-sand-700 text-sand-400 hover:text-sand-200"}`}>{d.heard}</button>
             ))}
           </div>
           <div key={dIdx} className="fade-up mt-4 grid gap-3 sm:grid-cols-2">
@@ -1996,7 +1981,7 @@ function Translator({ defaultTab }) {
           <h4 className="text-sm font-semibold text-amber-300">選一句你常說（或常吞下去）的話，轉成對方能執行的邀請</h4>
           <div className="mt-3 flex flex-wrap gap-2">
             {CONVERTER.map((c, i) => (
-              <button key={c.vague} type="button" aria-pressed={i === cIdx} onClick={() => setCIdx(i)} className={`rounded-full border px-3 py-1.5 text-left text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${i === cIdx ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-sand-700 text-sand-400 hover:text-sand-200"}`}>{c.vague}</button>
+              <button key={c.vague} type="button" aria-pressed={i === cIdx} onClick={() => setCIdx(i)} className={`rounded-full border px-3.5 py-2 text-left text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 ${i === cIdx ? "border-amber-400/60 bg-amber-400/10 text-amber-100" : "border-sand-700 text-sand-400 hover:text-sand-200"}`}>{c.vague}</button>
             ))}
           </div>
           <div key={cIdx} className="fade-up mt-4 space-y-3">
@@ -2042,7 +2027,7 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
   return (
     <div className={embedded ? "" : "mx-auto max-w-4xl px-4 pb-24 pt-14 sm:px-6"}>
       <header className="fade-up text-center">
-        <div className="text-xs tracking-[0.3em] text-sand-400">DIAGNOSTIC REPORT</div>
+        <div className="font-latin text-xl italic text-amber-300">Your Report</div>
         <h1 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-4xl">你的光譜診斷</h1>
         {!xray && <p className="mt-3 text-sm text-amber-300/90">你全程關閉了 X 光。以下，是你當時看不見的一切。</p>}
       </header>
@@ -2087,7 +2072,7 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
       </section>
 
       <section className="mt-16">
-        <SectionTitle kicker="REPLAY" title="劇本回顧覆盤">逐幕拆解：你說了什麼、對方表面回了什麼、而她／他心裡真正發生了什麼。</SectionTitle>
+        <SectionTitle kicker="Replay" title="劇本回顧覆盤">逐幕拆解：你說了什麼、對方表面回了什麼、而她／他心裡真正發生了什麼。</SectionTitle>
         <ol className="space-y-5">
           {acts.map((a, i) => {
             const o = picked[i];
@@ -2134,7 +2119,7 @@ function Report({ perspective, choices, xray, onRestart, onSwitch, onHome, embed
       </section>
 
       <section className="mt-16">
-        <SectionTitle kicker="TRANSLATOR" title="跨光譜雙向翻譯機">
+        <SectionTitle kicker="Translator" title="跨光譜雙向翻譯機">
           <span className="inline-flex items-center gap-1.5"><Languages className="h-4 w-4 text-violet-300" />兩個人不是不相愛，只是說著不同解析度的語言。這裡有兩本手冊，建議兩邊都翻一翻。</span>
         </SectionTitle>
         <Translator defaultTab={perspective === "A" ? "decoder" : "converter"} />
@@ -2201,7 +2186,7 @@ function PairReport({ results, xray, onRestart, onHome }) {
   return (
     <div className="mx-auto max-w-4xl px-4 pb-24 pt-12 sm:px-6">
       <header className="fade-up text-center">
-        <div className="text-xs tracking-[0.3em] text-sand-400">TOGETHER</div>
+        <div className="font-latin text-xl italic text-amber-300">Together</div>
         <h1 className="font-display mt-3 text-3xl font-semibold text-sand-50 sm:text-4xl">你們的雙人對照</h1>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-sand-400">這不是成績單，也沒有誰贏誰輸。它只是一張地圖，讓你們看見彼此站在哪裡、中間隔著什麼。</p>
       </header>
@@ -2240,7 +2225,7 @@ function PairReport({ results, xray, onRestart, onHome }) {
           </section>
 
           <section className="mt-14">
-            <SectionTitle kicker="SAME NIGHT, TWO STORIES" title="同一個晚上，兩種經歷">每一幕，左邊是走柏翰視角的人說的話，右邊是走語安視角的人說的話。底下是對方當時沒說出口的心聲。</SectionTitle>
+            <SectionTitle kicker="Same Night, Two Stories" title="同一個晚上，兩種經歷">每一幕，左邊是走柏翰視角的人說的話，右邊是走語安視角的人說的話。底下是對方當時沒說出口的心聲。</SectionTitle>
             <ol className="space-y-5">
               {SCRIPT.A.map((_, i) => (
                 <li key={i} className="rounded-3xl border border-sand-800 bg-sand-900/80 shadow-warm p-5">
@@ -2269,7 +2254,7 @@ function PairReport({ results, xray, onRestart, onHome }) {
           </section>
 
           <section className="mt-14">
-            <SectionTitle kicker="LET'S TALK" title="一起聊聊">挑一兩張就好。一個人說的時候，另一個人只要聽，先不解釋、不反駁。</SectionTitle>
+            <SectionTitle kicker="Let's Talk" title="一起聊聊">挑一兩張就好。一個人說的時候，另一個人只要聽，先不解釋、不反駁。</SectionTitle>
             <ol className="grid gap-3 sm:grid-cols-2">
               {TALK_CARDS.map((q, i) => (
                 <li key={i} className="flex gap-3 rounded-3xl border border-amber-400/40 bg-amber-400/10 p-5">
@@ -2281,7 +2266,7 @@ function PairReport({ results, xray, onRestart, onHome }) {
           </section>
 
           <section className="mt-14">
-            <SectionTitle kicker="TRANSLATOR" title="跨光譜雙向翻譯機">兩本手冊，一人一本。也可以交換著看：看看對方那一本，是怎麼描述你的。</SectionTitle>
+            <SectionTitle kicker="Translator" title="跨光譜雙向翻譯機">兩本手冊，一人一本。也可以交換著看：看看對方那一本，是怎麼描述你的。</SectionTitle>
             <Translator defaultTab="decoder" />
           </section>
         </div>
@@ -2290,7 +2275,7 @@ function PairReport({ results, xray, onRestart, onHome }) {
       )}
 
       <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
-        <button type="button" onClick={onRestart} className="inline-flex items-center gap-2 rounded-full border border-sand-700 px-5 py-3 text-sm text-sand-300 transition hover:border-sand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"><RotateCcw className="h-4 w-4" />交換視角再走一次</button>
+        <button type="button" onClick={onRestart} className="inline-flex items-center gap-2 rounded-full border border-sand-700 px-5 py-3 text-sm text-sand-300 transition hover:border-sand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"><RotateCcw className="h-4 w-4" />重新選視角，再走一次</button>
         <button type="button" onClick={onHome} className="rounded-full px-4 py-3 text-sm text-sand-500 hover:text-sand-300">回到首頁</button>
       </div>
     </div>
@@ -2907,7 +2892,7 @@ function SpectrumChat({ onTheater, onHome, onRestart }) {
         return (
           <div className="fade-up mt-8">
             <div className="rounded-[2rem] border border-amber-400/50 bg-gradient-to-br from-amber-400/15 via-sand-900 to-rose-400/10 p-6 shadow-warm">
-              <div className="text-center text-[11px] tracking-[0.35em] text-sand-500">TODAY'S NOTE</div>
+              <div className="font-latin text-center text-xl italic text-amber-300">Today's Note</div>
               <h2 className="font-display mt-2 text-center text-2xl font-semibold text-sand-50">今天帶走的小卡</h2>
               <div className="mt-5"><MiniSpectrum active={home} /></div>
               <dl className="mt-5 space-y-4">
@@ -2968,7 +2953,7 @@ function AppHeader({ view, go }) {
   return (
     <div className={["chat", "theater", "handoff"].includes(view) ? "relative z-20" : "sticky top-0 z-30 border-b border-sand-800/60 bg-sand-950/80 backdrop-blur-md"}>
     <header className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-      <button type="button" onClick={() => go("landing")} className="flex items-center gap-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="聽見光譜，回到首頁">
+      <button type="button" onClick={() => go("landing")} className="-my-1 flex items-center gap-2 rounded-full py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="聽見光譜，回到首頁">
         <LogoMark />
         <span className="font-display text-lg font-semibold tracking-[0.12em] text-sand-50">聽見光譜</span>
         <span className="font-latin hidden text-base italic text-sand-500 sm:inline">Being Heard</span>
@@ -2989,8 +2974,8 @@ function AppFooter({ go }) {
       <div className="border-t border-sand-800 pt-8 text-center">
         <div className="flex items-center justify-center gap-2"><LogoMark className="h-6 w-6" /><span className="font-display text-base tracking-[0.12em] text-sand-200">聽見光譜</span></div>
         <p className="mx-auto mt-3 max-w-md text-xs leading-relaxed text-sand-500">陪你看懂不同的人怎麼說話、怎麼在乎。這是心理教育用途的互動內容，不是臨床診斷工具。你的回答只留在這個頁面裡，不會被傳送或儲存。</p>
-        <div className="mt-4 flex justify-center gap-6 text-xs text-sand-400">
-          {NAV.map(([id, label]) => <button key={id} type="button" onClick={() => go(id)} className="underline decoration-sand-700 underline-offset-4 hover:text-sand-200">{label}</button>)}
+        <div className="mt-2 flex justify-center gap-2 text-xs text-sand-400">
+          {NAV.map(([id, label]) => <button key={id} type="button" onClick={() => go(id)} className="rounded-lg px-3 py-2.5 underline decoration-sand-700 underline-offset-4 hover:text-sand-200">{label}</button>)}
         </div>
       </div>
     </footer>
