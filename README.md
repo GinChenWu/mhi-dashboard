@@ -1,3 +1,17 @@
+# 灰階空間（Grayscale Space）
+
+大部分的事，都在黑白之間。這個專案包含品牌首頁和兩個互動作品，三個都是獨立的網站，共用配色、字體與元件：
+
+| 網站 | 進入點 | 建置 |
+| --- | --- | --- |
+| 灰階空間（品牌首頁） | `home.html`、`src/home/` | `npx vite build --config vite.home.config.js` |
+| 聽見光譜 | `index.html`、`src/App.jsx` | `npm run build` |
+| 先別急著留言 | `comment.html`、`src/comment/` | `npx vite build --config vite.comment.config.js` |
+
+品牌首頁的主視覺是 `src/home/logo-animated.svg`（品牌提供的動畫 logo，原封不動嵌入）；`logo-static.svg` 是靜態版本。首頁的配色取自 logo：紙色 #E3DFD4、五片灰、赭色 #C08F4F。
+
+---
+
 # 聽見光譜（The Spectrum of Being Heard）
 
 關於我們怎麼說話，又怎麼被聽見。一個互動網頁，用一段對話和三幕劇場，帶人認識五種說話的方式：只談分工、都聽你的、一起商量、急著逼問、不再開口。

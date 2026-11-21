@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <title>灰階空間 GRAYSCALE SPACE Logo</title>
+  <defs>
+    <filter id="paperNoise" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+      <feComponentTransfer in="grayNoise" result="softNoise">
+        <feFuncA type="linear" slope="0.08"/>
+      </feComponentTransfer>
+    </filter>
+    <pattern id="paperGrain" width="200" height="200" patternUnits="userSpaceOnUse">
+      <rect width="200" height="200" fill="#808080" filter="url(#paperNoise)"/>
+    </pattern>
+  </defs>
+  <style>
+    .panel {
+      mix-blend-mode: multiply;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .p1 { animation: altP1 6s ease-in-out infinite; }
+    .p2 { animation: altP2 6s ease-in-out infinite; }
+    .p3 { animation: altP3 6s ease-in-out infinite; }
+    .p4 { animation: altP4 6s ease-in-out infinite; }
+    .p5 { animation: altP5 6s ease-in-out infinite; }
+    .dot {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: altDot 6s ease-in-out infinite;
+    }
+    .wave {
+      stroke-dasharray: 660;
+      stroke-dashoffset: 0;
+      animation: waveDraw 6s ease-in-out infinite;
+    }
+
+    /* Alternating bloom (1 -> 5 -> 3 -> 2 -> 4), hold full harmony, then alternating pulse (odd vs even) */
+    @keyframes altP1 {
+      0%, 4%   { opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+      14%, 56% { opacity: 0.92; filter: saturate(1); transform: translateY(0px); }
+      66%, 74% { opacity: 0.95; filter: saturate(1.1); transform: translateY(-4px); }
+      82%, 88% { opacity: 0.35; filter: saturate(0.15); transform: translateY(3px); }
+      95%, 100%{ opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+    }
+    @keyframes altP5 {
+      0%, 10%  { opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+      20%, 56% { opacity: 0.92; filter: saturate(1); transform: translateY(0px); }
+      66%, 74% { opacity: 0.96; filter: saturate(1.1); transform: translateY(-4px); }
+      82%, 88% { opacity: 0.35; filter: saturate(0.15); transform: translateY(3px); }
+      95%, 100%{ opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+    }
+    @keyframes altP3 {
+      0%, 16%  { opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+      26%, 56% { opacity: 0.88; filter: saturate(1); transform: translateY(0px); }
+      66%, 74% { opacity: 0.94; filter: saturate(1.15); transform: translateY(-4px); }
+      82%, 88% { opacity: 0.35; filter: saturate(0.15); transform: translateY(3px); }
+      95%, 100%{ opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+    }
+    @keyframes altP2 {
+      0%, 22%  { opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+      32%, 56% { opacity: 0.88; filter: saturate(1); transform: translateY(0px); }
+      66%, 74% { opacity: 0.35; filter: saturate(0.15); transform: translateY(3px); }
+      82%, 88% { opacity: 0.94; filter: saturate(1.15); transform: translateY(-4px); }
+      95%, 100%{ opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+    }
+    @keyframes altP4 {
+      0%, 28%  { opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+      38%, 56% { opacity: 0.88; filter: saturate(1); transform: translateY(0px); }
+      66%, 74% { opacity: 0.35; filter: saturate(0.15); transform: translateY(3px); }
+      82%, 88% { opacity: 0.94; filter: saturate(1.15); transform: translateY(-4px); }
+      95%, 100%{ opacity: 0.14; filter: saturate(0); transform: translateY(6px); }
+    }
+    @keyframes altDot {
+      0%, 34%  { opacity: 0; transform: scale(0.4); }
+      44%, 58% { opacity: 1; transform: scale(1); }
+      68%, 74% { opacity: 0.65; transform: scale(0.92); }
+      82%, 88% { opacity: 1; transform: scale(1.12); }
+      95%, 100%{ opacity: 0; transform: scale(0.4); }
+    }
+    @keyframes waveDraw {
+      0%, 30%  { stroke-dashoffset: 660; opacity: 0; }
+      46%, 88% { stroke-dashoffset: 0; opacity: 0.92; }
+      96%, 100%{ stroke-dashoffset: -660; opacity: 0; }
+    }
+  </style>
+  <rect width="1000" height="1000" fill="#E3DFD4" />
+  <rect width="1000" height="1000" fill="url(#paperGrain)" opacity="0.22" />
+  <!-- Emblem: Five overlapping matte panels with generous balance -->
+  <g id="emblem" isolation="isolate">
+    <path class="panel p1" d="M 262.00 276.00 Q 262.00 265.00 272.51 268.24 L 345.49 290.76 Q 356.00 294.00 356.00 305.00 L 356.00 549.00 Q 356.00 560.00 345.40 562.93 L 272.60 583.07 Q 262.00 586.00 262.00 575.00 Z" fill="#4B5456" opacity="0.92" />
+    <path class="panel p2" d="M 344.00 325.00 Q 344.00 314.00 354.97 314.81 L 441.03 321.19 Q 452.00 322.00 452.00 333.00 L 452.00 575.00 Q 452.00 586.00 441.03 586.81 L 354.97 593.19 Q 344.00 594.00 344.00 583.00 Z" fill="#879495" opacity="0.88" />
+    <path class="panel p3" d="M 440.00 301.00 Q 440.00 290.00 450.97 289.17 L 535.03 282.83 Q 546.00 282.00 546.00 293.00 L 546.00 547.00 Q 546.00 558.00 535.01 558.41 L 450.99 561.59 Q 440.00 562.00 440.00 551.00 Z" fill="#939B8C" opacity="0.88" />
+    <path class="panel p4" d="M 534.00 347.00 Q 534.00 336.00 544.95 334.99 L 631.05 327.01 Q 642.00 326.00 642.00 337.00 L 642.00 581.00 Q 642.00 592.00 631.03 591.19 L 544.97 584.81 Q 534.00 584.00 534.00 573.00 Z" fill="#B09F87" opacity="0.88" />
+    <path class="panel p5" d="M 630.00 307.00 Q 630.00 296.00 640.55 292.90 L 721.45 269.10 Q 732.00 266.00 732.00 277.00 L 732.00 577.00 Q 732.00 588.00 721.34 585.28 L 640.66 564.72 Q 630.00 562.00 630.00 551.00 Z" fill="#D6CBB9" opacity="0.92" />
+    <!-- Warm ochre balance dot -->
+    <circle class="dot" cx="580" cy="296" r="19" fill="#C08F4F" />
+    <!-- Delicate flowing horizon line -->
+    <path class="wave" d="M 200 474 C 360 388, 525 514, 798 396" fill="none" stroke="#C8C1B4" stroke-width="3.2" stroke-linecap="round" opacity="0.92" />
+  </g>
+  <!-- Vector-outlined Traditional Chinese Title: 灰階空間 -->
+  <g id="title-zh" fill="#3C3F3E">
+    <path d="M324 485 310 480C343 417 383 323 388 251C452 191 514 338 324 485ZM857 739 806 677H346C353 716 358 755 363 796C386 797 397 806 401 820L292 838C288 783 283 729 276 677H55L64 647H271C232 387 151 167 38 1L53 -10C199 142 292 367 341 647H923C938 647 947 652 950 663C914 695 857 739 857 739ZM618 571C641 574 650 585 652 598L548 608C546 314 555 94 198 -60L209 -76C515 30 588 185 608 375C637 156 710 12 909 -72C917 -37 939 -23 972 -19L973 -7C815 46 726 126 675 242C755 301 836 383 884 439C907 434 916 438 922 449L825 504C793 438 728 339 666 264C639 335 625 419 617 518Z" transform="translate(312.00,712.00) scale(0.076000,-0.076000)" />
+    <path d="M777 823 685 834V477C685 435 697 419 758 419H825C932 419 960 426 960 452C960 465 955 470 935 477L932 571H920C912 532 902 490 896 479C892 474 888 472 881 472C873 471 853 471 828 471H774C750 471 747 475 747 488V639H917C931 639 940 644 943 655C916 682 871 719 871 719L833 668H747V799C766 802 775 811 777 823ZM580 717 542 668H466V801C497 806 506 814 508 825L404 835V490C404 473 400 467 376 454L412 381C420 384 429 392 435 405C523 454 607 505 651 531L645 545L466 479V639H623C637 639 646 644 649 655C622 682 580 717 580 717ZM707 413 611 444 580 329H490L422 361V-76H432C459 -76 485 -61 485 -54V-23H823V-69H833C854 -69 885 -54 886 -47V291C904 294 919 301 925 308L848 367L814 329H617C635 351 655 376 668 396C689 394 702 400 707 413ZM823 300V172H485V300ZM485 7V143H823V7ZM82 811V-77H93C124 -77 144 -59 144 -54V749H271C251 669 217 552 195 490C265 414 293 342 293 267C293 227 285 207 268 198C261 193 255 192 245 192C228 192 190 192 167 192V176C191 172 210 167 218 160C226 151 231 130 231 110C328 114 360 156 360 253C360 333 321 415 220 493C259 554 315 671 344 733C367 733 381 735 389 743L311 819L268 779H157Z" transform="translate(412.00,712.00) scale(0.076000,-0.076000)" />
+    <path d="M429 594C455 594 465 600 469 610L377 657C337 535 258 445 86 385L95 368C280 404 366 486 429 594ZM172 746 154 745C162 674 128 608 88 584C67 572 53 551 62 529C74 506 110 507 135 526C165 547 193 595 188 668H574V509C574 436 582 429 667 429H821C904 429 921 440 921 463C921 474 917 477 890 485L884 486H877C865 482 857 482 851 482C844 482 835 482 825 482H672C639 482 638 482 638 509V668H840C829 629 813 580 800 548L813 540C849 570 895 620 920 655C940 656 952 659 959 665L880 742L836 697H527C564 717 563 803 423 845L412 837C443 805 475 749 479 704L490 697H185C182 712 178 729 172 746ZM861 61 811 -2H531V285H812C827 285 836 290 839 301C806 331 753 371 753 371L706 315H191L199 285H465V-2H74L83 -31H925C940 -31 949 -26 952 -15C917 18 861 61 861 61Z" transform="translate(512.00,712.00) scale(0.076000,-0.076000)" />
+    <path d="M314 380V5H324C350 5 376 20 376 26V68H618V14H627C649 14 680 30 681 36V342C699 345 713 353 719 360L643 418L609 380H381L314 411ZM376 98V214H618V98ZM376 243V352H618V243ZM372 744V648H163V744ZM99 773V-78H110C141 -78 163 -61 163 -51V490H372V444H381C402 444 434 459 435 465V735C451 738 466 746 472 753L397 810L362 773H168L99 807ZM163 619H372V519H163ZM835 744V648H617V744ZM554 773V447H563C590 447 617 462 617 468V490H835V27C835 11 830 5 811 5C790 5 689 13 689 13V-3C734 -10 758 -18 774 -29C787 -39 793 -57 796 -78C890 -68 899 -34 899 19V731C920 735 936 744 943 752L859 816L825 773H622L554 804ZM617 619H835V519H617Z" transform="translate(612.00,712.00) scale(0.076000,-0.076000)" />
+  </g>
+  <!-- Vector-outlined English Subtitle: GRAYSCALE SPACE -->
+  <g id="title-en" fill="#3C3F3E" opacity="0.86">
+    <path d="M376 -13C473 -13 549 21 595 69V363H368V312H537V93C504 60 444 41 382 41C218 41 122 168 122 366C122 564 224 688 386 688C464 688 515 655 552 615L586 654C547 696 484 742 385 742C193 742 60 598 60 365C60 133 189 -13 376 -13Z" transform="translate(340.42,762.00) scale(0.022000,-0.022000)" />
+    <path d="M166 379V679H306C431 679 500 640 500 534C500 429 431 379 306 379ZM509 0H577L380 334C491 351 562 418 562 534C562 676 464 729 319 729H106V0H166V329H315Z" transform="translate(364.72,762.00) scale(0.022000,-0.022000)" />
+    <path d="M8 0H68L151 244H434L516 0H580L324 729H262ZM167 293 212 425C241 511 266 587 291 676H295C321 587 345 511 374 425L418 293Z" transform="translate(387.60,762.00) scale(0.022000,-0.022000)" />
+    <path d="M221 0H280V292L500 729H439L331 506C308 452 281 401 253 347H249C222 401 198 452 172 506L66 729H2L221 292Z" transform="translate(410.04,762.00) scale(0.022000,-0.022000)" />
+    <path d="M299 -13C442 -13 535 72 535 185C535 296 465 342 382 379L274 427C220 451 149 481 149 564C149 639 211 688 304 688C376 688 433 659 476 615L509 654C464 703 392 742 304 742C180 742 88 667 88 559C88 452 171 405 236 377L345 328C416 296 474 269 474 181C474 98 407 41 299 41C217 41 141 79 88 138L51 96C109 31 193 -13 299 -13Z" transform="translate(430.58,762.00) scale(0.022000,-0.022000)" />
+    <path d="M368 -13C463 -13 530 26 586 91L552 129C500 72 444 41 371 41C218 41 122 168 122 366C122 564 220 688 375 688C440 688 493 658 532 615L566 654C527 700 460 742 374 742C189 742 60 598 60 365C60 133 188 -13 368 -13Z" transform="translate(452.84,762.00) scale(0.022000,-0.022000)" />
+    <path d="M8 0H68L151 244H434L516 0H580L324 729H262ZM167 293 212 425C241 511 266 587 291 676H295C321 587 345 511 374 425L418 293Z" transform="translate(476.13,762.00) scale(0.022000,-0.022000)" />
+    <path d="M106 0H498V52H166V729H106Z" transform="translate(498.57,762.00) scale(0.022000,-0.022000)" />
+    <path d="M106 0H520V52H166V361H454V413H166V677H509V729H106Z" transform="translate(519.55,762.00) scale(0.022000,-0.022000)" />
+    <path d="M299 -13C442 -13 535 72 535 185C535 296 465 342 382 379L274 427C220 451 149 481 149 564C149 639 211 688 304 688C376 688 433 659 476 615L509 654C464 703 392 742 304 742C180 742 88 667 88 559C88 452 171 405 236 377L345 328C416 296 474 269 474 181C474 98 407 41 299 41C217 41 141 79 88 138L51 96C109 31 193 -13 299 -13Z" transform="translate(556.02,762.00) scale(0.022000,-0.022000)" />
+    <path d="M106 0H166V308H299C461 308 561 378 561 524C561 675 460 729 295 729H106ZM166 359V679H283C428 679 500 643 500 524C500 407 431 359 287 359Z" transform="translate(578.28,762.00) scale(0.022000,-0.022000)" />
+    <path d="M8 0H68L151 244H434L516 0H580L324 729H262ZM167 293 212 425C241 511 266 587 291 676H295C321 587 345 511 374 425L418 293Z" transform="translate(601.25,762.00) scale(0.022000,-0.022000)" />
+    <path d="M368 -13C463 -13 530 26 586 91L552 129C500 72 444 41 371 41C218 41 122 168 122 366C122 564 220 688 375 688C440 688 493 658 532 615L566 654C527 700 460 742 374 742C189 742 60 598 60 365C60 133 188 -13 368 -13Z" transform="translate(623.68,762.00) scale(0.022000,-0.022000)" />
+    <path d="M106 0H520V52H166V361H454V413H166V677H509V729H106Z" transform="translate(646.98,762.00) scale(0.022000,-0.022000)" />
+  </g>
+</svg>

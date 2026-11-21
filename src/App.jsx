@@ -1699,7 +1699,7 @@ function Landing({ onStart, onChat }) {
             <div className="grid gap-8 border-t border-white/10 pt-10 text-sm sm:grid-cols-[1.4fr_1fr_1fr]">
               <div>
                 <div className="flex items-center gap-2"><LogoMark className="h-7 w-7" /><span className="font-display text-lg tracking-[0.12em] text-[#F7ECDD]">聽見光譜</span></div>
-                <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-[#BDA98F]">陪你看懂不同的人怎麼說話、怎麼在乎。</p>
+                <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-[#BDA98F]">陪你看懂不同的人怎麼說話、怎麼在乎。<br />灰階空間的作品之一。</p>
               </div>
               <div>
                 <div className="text-[13px] text-[#A8947D]">體驗</div>

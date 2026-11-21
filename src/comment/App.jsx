@@ -537,7 +537,7 @@ function Landing({ onStart }) {
           <div className="font-sans mt-8"><Button tone="paper" onClick={onStart}>開始看第一則</Button></div>
           <div className="font-sans mt-12 grid gap-6 border-t border-white/10 pt-8 text-[13px] leading-relaxed text-[#BDA98F] sm:grid-cols-2">
             <p>貼文、帳號和人物都是虛構的，情節取材自常見的網路爭議。你的選擇只留在這個頁面裡，不會被傳送或儲存，也不會真的發到任何地方。</p>
-            <p>同系列的另一個作品：<a href={SPECTRUM_URL} target="_blank" rel="noreferrer" className="text-[#F7ECDD] underline decoration-[#7A6652] underline-offset-4">聽見光譜</a>，關於我們怎麼說話，又怎麼被聽見。</p>
+            <p>灰階空間的作品之一。同系列的另一個作品：<a href={SPECTRUM_URL} target="_blank" rel="noreferrer" className="text-[#F7ECDD] underline decoration-[#7A6652] underline-offset-4">聽見光譜</a>，關於我們怎麼說話，又怎麼被聽見。</p>
           </div>
         </section>
       </div>
