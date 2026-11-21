@@ -38,6 +38,20 @@ npx @google/design.md lint DESIGN.md     # 檢查視覺規範檔
 | └ 外框 | `AppHeader`、`AppFooter`、`App` |
 | `src/index.css` | 配色。`sand` 色階由淺到深反向編號：950 是頁面底色，50 是最深的文字色 |
 
+## 同系列：先別急著留言（Before You Comment）
+
+同一個專案裡的第二個網站，共用配色、字體與元件。三則虛構的貼文，每一則先寫下想留的話（不送出），再多看三層：沒被截到的部分、發文的前一天、後來。
+
+| 位置 | 內容 |
+| --- | --- |
+| `comment.html`、`vite.comment.config.js` | 獨立的進入點與建置設定，輸出到 `dist-comment/` |
+| `src/comment/stories.js` | 三則貼文的內容。要加新的貼文，照同樣的格式加一筆即可 |
+| `src/comment/App.jsx` | 首頁、單則貼文的四個階段、最後的草稿對照與小卡 |
+
+```bash
+npx vite build --config vite.comment.config.js   # 建置第二個網站
+```
+
 所有內容都在瀏覽器端執行，沒有後端，也不儲存使用者的回答。
 
 本體驗為心理教育用途，非臨床診斷工具。
