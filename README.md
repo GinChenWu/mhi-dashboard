@@ -8,7 +8,7 @@
 | 聽見光譜 | `index.html`、`src/App.jsx` | `npm run build` |
 | 先別急著留言 | `comment.html`、`src/comment/` | `npx vite build --config vite.comment.config.js` |
 
-品牌首頁的主視覺是 `src/home/logo-animated.svg`（品牌提供的動畫 logo，原封不動嵌入）；`logo-static.svg` 是靜態版本。首頁的配色取自 logo：紙色 #E3DFD4、五片灰、赭色 #C08F4F。
+品牌首頁只放標語和作品，主視覺是縮小的 `src/home/logo-animated.svg`（品牌提供的動畫 logo，原封不動嵌入）；`logo-static.svg` 是靜態版本。logo 的理念放在子頁「關於」（網址 `#about`）。首頁的配色取自 logo：紙色 #E3DFD4、五片灰、赭色 #C08F4F。
 
 ---
 

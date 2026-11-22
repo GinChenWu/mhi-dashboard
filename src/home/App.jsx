@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import logoAnimated from "./logo-animated.svg?raw";
 
 /* ============================================================================
  * 《灰階空間》 Grayscale Space：品牌首頁
  * 主視覺是品牌自己的動畫 logo（src/home/logo-animated.svg，原封不動嵌入）。
- * 「理念」一段把 logo 的五個元素對應到品牌的想法，點哪一個，logo 就亮哪一個。
+ * 首頁只放作品；「關於」是子頁（#about），把 logo 的五個元素對應到品牌的想法，點哪一個，logo 就亮哪一個。
  * 配色取自 logo 本身：紙色、五片灰、一個赭色的點。
  * ========================================================================== */
 
@@ -179,7 +179,152 @@ const BELIEFS = [
   ["不記錄你", "所有作品都在你的瀏覽器裡進行，你的回答不會被傳送或儲存。"],
 ];
 
+/* 只有兩個畫面：首頁（沒有 hash）和「關於這個標誌」（#about）。 */
+const readView = () => (typeof location !== "undefined" && location.hash === "#about" ? "about" : "home");
+
+function Footer() {
+  return (
+    <footer className="flex flex-wrap items-end justify-between gap-6 border-t pt-8 font-sans text-[13px]" style={{ borderColor: "rgba(227,223,212,.15)", color: C.onBand2 }}>
+      <div className="flex items-center gap-3">
+        <span className="rounded-xl p-1.5" style={{ background: C.paper }}><Mark className="h-7 w-7" /></span>
+        <div>
+          <div className="font-display text-base tracking-[0.14em]" style={{ color: C.onBand }}>灰階空間</div>
+          <div className="font-latin text-base italic">Grayscale Space</div>
+        </div>
+      </div>
+      <p className="max-w-xs leading-relaxed">心理教育用途的互動內容，不是臨床診斷工具。作品裡的人物與情節皆為虛構。</p>
+    </footer>
+  );
+}
+
+const btnInk = { background: C.ink, color: C.raised, "--tw-ring-color": C.ochre };
+const btnLine = { borderColor: "#A9A397", color: C.ink, "--tw-ring-color": C.ochre };
+const BTN = "rounded-full px-6 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
+
+function Home({ goAbout, toWorks }) {
+  return (
+    <>
+      {/* ── 主視覺：品牌的動畫 logo，安靜地放在標題上方 ── */}
+      <header className={`${WRAP} pb-16 pt-10 text-center sm:pb-24 sm:pt-16`}>
+        <h1 className="sr-only">灰階空間 Grayscale Space</h1>
+        <div className="gs-logo fade-in mx-auto w-44 overflow-hidden rounded-[1.75rem] sm:w-56" style={{ boxShadow: "0 30px 60px -40px rgba(47,51,50,.55)" }} role="img" aria-label="灰階空間 Grayscale Space 的動畫標誌" dangerouslySetInnerHTML={{ __html: logoAnimated.replace(/<\?xml[^>]*\?>/, "") }} />
+        <p className="font-display fade-in mt-10 text-[2rem] leading-snug sm:text-6xl sm:leading-tight" style={{ animationDelay: ".2s", textWrap: "balance" }}>大部分的事，都在黑白之間。</p>
+        <p className="font-latin fade-in mt-2 text-2xl italic sm:text-3xl" style={{ color: C.ochreText, animationDelay: ".3s" }}>Most things live in the grey.</p>
+        <p className="fade-in mx-auto mt-6 max-w-xl text-[16px] leading-loose" style={{ color: C.text2, animationDelay: ".4s" }}>網路上很多事，被講成非黑即白。灰階空間做一些小小的互動作品，陪你看看中間那一大片：不同的人怎麼說話、怎麼聽，一句話被裁掉之後又變成了什麼。</p>
+        <div className="fade-in mt-8 font-sans" style={{ animationDelay: ".5s" }}>
+          <button type="button" onClick={toWorks} className={`${BTN} hover:opacity-90`} style={btnInk}>看作品</button>
+        </div>
+      </header>
+
+      {/* ── 作品 ── */}
+      <section id="works" className="scroll-mt-16 py-20 sm:py-28" style={{ background: C.paper }}>
+        <div className={WRAP}>
+          <div className="mb-10 max-w-2xl sm:mb-14">
+            <h2 className="font-display text-[2rem] font-semibold leading-tight sm:text-5xl">作品</h2>
+            <p className="font-latin mt-1 text-xl italic sm:text-2xl" style={{ color: C.ochreText }}>Works</p>
+            <p className="mt-5 text-[16px] leading-loose" style={{ color: C.text2 }}>每一個作品都是一個小小的練習，十分鐘左右，手機就可以玩。</p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {WORK_LIST.map((w) => (
+              <article key={w.key} className="flex flex-col overflow-hidden rounded-[2rem]" style={{ background: C.raised, boxShadow: "0 30px 70px -45px rgba(47,51,50,.6)" }}>
+                <div className="px-6 pt-6 sm:px-8 sm:pt-8"><div className="rounded-2xl p-3" style={{ background: C.page }}><w.art /></div></div>
+                <div className="flex flex-1 flex-col p-6 sm:p-8">
+                  <h3 className="font-display text-3xl font-semibold">{w.title}</h3>
+                  <p className="font-latin text-xl italic" style={{ color: C.ochreText }}>{w.en}</p>
+                  <p className="mt-4 flex-1 text-[15px] leading-loose" style={{ color: C.text2 }}>{w.text}</p>
+                  <ul className="mt-5 flex flex-wrap gap-2 font-sans text-xs" style={{ color: C.text2 }}>
+                    {w.meta.map((m) => <li key={m} className="rounded-full px-3 py-1" style={{ background: C.page }}>{m}</li>)}
+                  </ul>
+                  <a href={w.url} target="_blank" rel="noreferrer" className={`${BTN} mt-6 self-start font-sans hover:opacity-90`} style={btnInk}>打開《{w.title}》</a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 我們的做法 ＋ 頁尾 ── */}
+      <section className="relative overflow-hidden" style={{ background: C.band }}>
+        <div className={`${WRAP} relative py-20 sm:py-28`}>
+          <p className="font-display max-w-3xl text-[1.75rem] leading-loose sm:text-5xl sm:leading-[1.6]" style={{ color: C.onBand, textWrap: "balance" }}>先別急著選邊，多看一眼。</p>
+          <p className="font-latin mt-3 text-2xl italic sm:text-3xl" style={{ color: C.onBandAccent }}>Look once more before you choose a side.</p>
+          <ul className="mt-12 grid gap-8 sm:grid-cols-3">
+            {BELIEFS.map(([t, d]) => (
+              <li key={t}>
+                <div className="mb-3 h-px w-10" style={{ background: C.onBandAccent }} />
+                <h3 className="font-display text-xl font-semibold" style={{ color: C.onBand }}>{t}</h3>
+                <p className="mt-2 text-[15px] leading-loose" style={{ color: C.onBand2 }}>{d}</p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-12 font-sans text-sm" style={{ color: C.onBand2 }}>
+            想知道這個標誌在說什麼？
+            <a href="#about" onClick={goAbout} className="ml-1 underline underline-offset-4" style={{ color: C.onBand, textDecorationColor: C.onBandAccent }}>關於灰階空間</a>
+          </p>
+          <div className="mt-16"><Footer /></div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function About({ goHome }) {
+  return (
+    <>
+      <section className="py-12 sm:py-20">
+        <div className={WRAP}>
+          <a href="#" onClick={goHome} className="font-sans -ml-2 inline-block rounded-lg px-2 py-2 text-sm" style={{ color: C.muted }}>← 回到首頁</a>
+          <div className="mb-10 mt-4 max-w-2xl sm:mb-14">
+            <h1 className="font-display text-[2.25rem] font-semibold leading-tight sm:text-6xl">為什麼是灰階</h1>
+            <p className="font-latin mt-1 text-xl italic sm:text-2xl" style={{ color: C.ochreText }}>Why grayscale</p>
+            <p className="mt-5 text-[16px] leading-loose" style={{ color: C.text2 }}>黑和白之間，其實有很多很多層灰。灰階空間的標誌就是在說這件事。點每一項，看看它在標誌裡的哪裡。</p>
+          </div>
+          <Ideas />
+        </div>
+      </section>
+      <section style={{ background: C.band }}>
+        <div className={`${WRAP} py-16 sm:py-20`}>
+          <p className="font-display max-w-2xl text-[1.6rem] leading-loose sm:text-4xl sm:leading-[1.6]" style={{ color: C.onBand }}>大部分的事，都在黑白之間。</p>
+          <a href="#" onClick={goHome} className={`${BTN} mt-8 inline-block font-sans`} style={{ background: C.onBand, color: C.ink, "--tw-ring-color": C.ochre }}>回到首頁看作品</a>
+          <div className="mt-16"><Footer /></div>
+        </div>
+      </section>
+    </>
+  );
+}
+
 export default function App() {
+  const [view, setView] = useState(readView);
+  useEffect(() => {
+    const onHash = () => {
+      setView(readView());
+      window.scrollTo({ top: 0 });
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+  // 切換畫面時不依賴 hashchange 事件（有些檢視環境不會觸發），自己更新
+  const goAbout = (e) => {
+    e?.preventDefault();
+    try { history.replaceState(null, "", "#about"); } catch {}
+    setView("about");
+    window.scrollTo({ top: 0 });
+  };
+  const goHome = (e) => {
+    e?.preventDefault();
+    try { history.replaceState(null, "", location.pathname + location.search); } catch {}
+    setView("home");
+    window.scrollTo({ top: 0 });
+  };
+  const toWorks = () => {
+    if (view !== "home") goHome();
+    requestAnimationFrame(() => document.getElementById("works")?.scrollIntoView({ behavior: "smooth" }));
+  };
+  const nav = [
+    { label: "作品", on: view === "home", run: toWorks },
+    { label: "關於", on: view === "about", run: goAbout },
+  ];
+
   return (
     <div className="font-body relative min-h-screen antialiased" style={{ background: C.page, color: C.ink }}>
       <style>{CSS}</style>
@@ -187,100 +332,21 @@ export default function App() {
 
       <div className="sticky top-0 z-30 border-b backdrop-blur-md" style={{ background: "rgba(236,233,226,.82)", borderColor: C.hair }}>
         <div className={`${WRAP} flex items-center justify-between py-3`}>
-          <a href="#top" className="flex items-center gap-2.5 rounded-full py-1 focus:outline-none focus-visible:ring-2" style={{ "--tw-ring-color": C.ochre }} aria-label="灰階空間，回到頂端">
+          <a href="#" onClick={goHome} className="flex items-center gap-2.5 rounded-full py-1 focus:outline-none focus-visible:ring-2" style={{ "--tw-ring-color": C.ochre }} aria-label="灰階空間，回到首頁">
             <Mark />
             <span className="font-display text-lg font-semibold tracking-[0.14em]">灰階空間</span>
             <span className="font-latin hidden text-base italic sm:inline" style={{ color: C.muted }}>Grayscale Space</span>
           </a>
-          <nav aria-label="主要導覽" className="flex gap-1 text-sm">
-            {[["#idea", "理念"], ["#works", "作品"]].map(([h, t]) => (
-              <a key={h} href={h} className="rounded-full px-3.5 py-2 transition hover:bg-black/5 focus:outline-none focus-visible:ring-2" style={{ color: C.text2, "--tw-ring-color": C.ochre }}>{t}</a>
+          <nav aria-label="主要導覽" className="flex gap-1 font-sans text-sm">
+            {nav.map((n) => (
+              <button key={n.label} type="button" onClick={n.run} aria-current={n.on ? "page" : undefined} className="rounded-full px-3.5 py-2 transition hover:bg-black/5 focus:outline-none focus-visible:ring-2" style={{ color: n.on ? C.ink : C.text2, background: n.on ? "rgba(47,51,50,.07)" : undefined, "--tw-ring-color": C.ochre }}>{n.label}</button>
             ))}
           </nav>
         </div>
       </div>
 
-      <main id="top" className="relative">
-        {/* ── 主視覺：品牌的動畫 logo ── */}
-        <header className={`${WRAP} pb-10 pt-8 text-center sm:pt-12`}>
-          <h1 className="sr-only">灰階空間 Grayscale Space</h1>
-          <div className="fade-in mx-auto max-w-[34rem] rounded-[2.25rem] p-2 sm:p-3" style={{ background: C.raised, boxShadow: "0 50px 100px -50px rgba(47,51,50,.55)" }}>
-            <div className="gs-logo overflow-hidden rounded-[1.75rem]" role="img" aria-label="灰階空間 Grayscale Space 的動畫標誌：五片灰色面板交錯亮起，一條線從左到右慢慢畫出來。" dangerouslySetInnerHTML={{ __html: logoAnimated.replace(/<\?xml[^>]*\?>/, "") }} />
-          </div>
-          <p className="font-display fade-in mt-10 text-[1.9rem] leading-snug sm:text-5xl sm:leading-tight" style={{ animationDelay: ".2s", textWrap: "balance" }}>大部分的事，都在黑白之間。</p>
-          <p className="font-latin fade-in mt-2 text-2xl italic sm:text-3xl" style={{ color: C.ochreText, animationDelay: ".3s" }}>Most things live in the grey.</p>
-          <p className="fade-in mx-auto mt-6 max-w-xl text-[16px] leading-loose" style={{ color: C.text2, animationDelay: ".4s" }}>網路上很多事，被講成非黑即白。灰階空間做一些小小的互動作品，陪你看看中間那一大片：不同的人怎麼說話、怎麼聽，一句話被裁掉之後又變成了什麼。</p>
-          <div className="fade-in mt-8 flex flex-wrap items-center justify-center gap-3 font-sans" style={{ animationDelay: ".5s" }}>
-            <a href="#works" className="rounded-full px-6 py-3 text-sm font-semibold transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2" style={{ background: C.ink, color: C.raised, "--tw-ring-color": C.ochre }}>看作品</a>
-            <a href="#idea" className="rounded-full border px-6 py-3 text-sm font-semibold transition hover:bg-black/5 focus:outline-none focus-visible:ring-2" style={{ borderColor: "#A9A397", color: C.ink, "--tw-ring-color": C.ochre }}>這個名字的意思</a>
-          </div>
-        </header>
-
-        {/* ── 理念：logo 的五個元素 ── */}
-        <section id="idea" className="scroll-mt-16 py-20 sm:py-28">
-          <div className={WRAP}>
-            <div className="mb-10 max-w-2xl sm:mb-14">
-              <h2 className="font-display text-[2rem] font-semibold leading-tight sm:text-5xl">為什麼是灰階</h2>
-              <p className="font-latin mt-1 text-xl italic sm:text-2xl" style={{ color: C.ochreText }}>Why grayscale</p>
-              <p className="mt-5 text-[16px] leading-loose" style={{ color: C.text2 }}>黑和白之間，其實有很多很多層灰。這個標誌就是在說這件事。點每一項，看看它在標誌裡的哪裡。</p>
-            </div>
-            <Ideas />
-          </div>
-        </section>
-
-        {/* ── 作品 ── */}
-        <section id="works" className="scroll-mt-16 py-20 sm:py-28" style={{ background: C.paper }}>
-          <div className={WRAP}>
-            <div className="mb-10 max-w-2xl sm:mb-14">
-              <h2 className="font-display text-[2rem] font-semibold leading-tight sm:text-5xl">作品</h2>
-              <p className="font-latin mt-1 text-xl italic sm:text-2xl" style={{ color: C.ochreText }}>Works</p>
-              <p className="mt-5 text-[16px] leading-loose" style={{ color: C.text2 }}>每一個作品都是一個小小的練習，十分鐘左右，手機就可以玩。</p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2">
-              {WORK_LIST.map((w) => (
-                <article key={w.key} className="flex flex-col overflow-hidden rounded-[2rem]" style={{ background: C.raised, boxShadow: "0 30px 70px -45px rgba(47,51,50,.6)" }}>
-                  <div className="px-6 pt-6 sm:px-8 sm:pt-8"><div className="rounded-2xl p-3" style={{ background: C.page }}><w.art /></div></div>
-                  <div className="flex flex-1 flex-col p-6 sm:p-8">
-                    <h3 className="font-display text-3xl font-semibold">{w.title}</h3>
-                    <p className="font-latin text-xl italic" style={{ color: C.ochreText }}>{w.en}</p>
-                    <p className="mt-4 flex-1 text-[15px] leading-loose" style={{ color: C.text2 }}>{w.text}</p>
-                    <ul className="mt-5 flex flex-wrap gap-2 font-sans text-xs" style={{ color: C.text2 }}>
-                      {w.meta.map((m) => <li key={m} className="rounded-full px-3 py-1" style={{ background: C.page }}>{m}</li>)}
-                    </ul>
-                    <a href={w.url} target="_blank" rel="noreferrer" className="mt-6 self-start rounded-full px-6 py-3 font-sans text-sm font-semibold transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2" style={{ background: C.ink, color: C.raised, "--tw-ring-color": C.ochre }}>打開《{w.title}》</a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── 我們的做法 ＋ 頁尾 ── */}
-        <section className="relative overflow-hidden" style={{ background: C.band }}>
-          <div className={`${WRAP} relative py-20 sm:py-28`}>
-            <p className="font-display max-w-3xl text-[1.75rem] leading-loose sm:text-5xl sm:leading-[1.6]" style={{ color: C.onBand, textWrap: "balance" }}>先別急著選邊，多看一眼。</p>
-            <p className="font-latin mt-3 text-2xl italic sm:text-3xl" style={{ color: C.onBandAccent }}>Look once more before you choose a side.</p>
-            <ul className="mt-12 grid gap-8 sm:grid-cols-3">
-              {BELIEFS.map(([t, d]) => (
-                <li key={t}>
-                  <div className="mb-3 h-px w-10" style={{ background: C.onBandAccent }} />
-                  <h3 className="font-display text-xl font-semibold" style={{ color: C.onBand }}>{t}</h3>
-                  <p className="mt-2 text-[15px] leading-loose" style={{ color: C.onBand2 }}>{d}</p>
-                </li>
-              ))}
-            </ul>
-            <footer className="mt-20 flex flex-wrap items-end justify-between gap-6 border-t pt-8 font-sans text-[13px]" style={{ borderColor: "rgba(227,223,212,.15)", color: C.onBand2 }}>
-              <div className="flex items-center gap-3">
-                <span className="rounded-xl p-1.5" style={{ background: C.paper }}><Mark className="h-7 w-7" /></span>
-                <div>
-                  <div className="font-display text-base tracking-[0.14em]" style={{ color: C.onBand }}>灰階空間</div>
-                  <div className="font-latin text-base italic">Grayscale Space</div>
-                </div>
-              </div>
-              <p className="max-w-xs leading-relaxed">心理教育用途的互動內容，不是臨床診斷工具。作品裡的人物與情節皆為虛構。</p>
-            </footer>
-          </div>
-        </section>
+      <main key={view} className="fade-in relative">
+        {view === "about" ? <About goHome={goHome} /> : <Home goAbout={goAbout} toWorks={toWorks} />}
       </main>
     </div>
   );
